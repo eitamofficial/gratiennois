@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: gratianopolis-postgres
+    environment:
+      POSTGRES_USER: wiki
+      POSTGRES_PASSWORD: wiki
+      POSTGRES_DB: gratianopolis
+    ports:
+      - "5432:5432"
+    volumes:
+      - gratianopolis-pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  gratianopolis-pgdata:

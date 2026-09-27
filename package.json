@@ -1,0 +1,56 @@
+{
+  "name": "gratianopolis-wiki",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Wiki officiel du IIIe Delphinat de Gratianopolis — micronation Discord",
+  "engines": {
+    "node": ">=20.9.0"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "check": "npm run check:diff && npm run check:analysis && npm run check:text && npm run check:markdown",
+    "check:diff": "node scripts/check-diff.mjs",
+    "check:analysis": "node scripts/check-analysis.mjs",
+    "check:render": "node scripts/check-render.mjs",
+    "check:theme": "node scripts/check-theme.mjs",
+    "check:discord": "node scripts/check-discord.mjs",
+    "check:db": "node scripts/check-db.mjs",
+    "link:roster": "node scripts/link-roster.mjs",
+    "cache:avatars": "node scripts/cache-discord-avatars.mjs",
+    "backfill": "node scripts/backfill-revisions.mjs",
+    "assets": "node scripts/generate_flag_assets.mjs",
+    "hash-password": "node scripts/hash-password.mjs",
+    "migrate": "node scripts/migrate.mjs",
+    "migrate:plan": "node scripts/migrate.mjs plan",
+    "check:text": "node scripts/check-text.mjs",
+    "assets:history": "node scripts/generate_historical_flag.mjs",
+    "ai:analyse": "node scripts/ai-analyse.mjs",
+    "check:deploy": "node scripts/check-deploy.mjs",
+    "check:deploy:strict": "node scripts/check-deploy.mjs --strict",
+    "check:markdown": "node scripts/check-markdown.mjs",
+    "check:oeuf": "node scripts/check-oeuf.mjs",
+    "check:oeuf:navigateur": "node scripts/check-oeuf-navigateur.mjs"
+  },
+  "dependencies": {
+    "next": "^15.1.6",
+    "pg": "^8.23.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "@types/pg": "^8.23.1",
+    "@types/react": "^19.0.4",
+    "@types/react-dom": "^19.0.2",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.5.23",
+    "sharp": "^0.35.4",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.7.3"
+  },
+  "overrides": {
+    "postcss": "^8.5.23"
+  }
+}

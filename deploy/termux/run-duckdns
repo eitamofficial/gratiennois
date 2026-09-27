@@ -1,0 +1,62 @@
+#!/data/data/com.termux/files/usr/bin/bash
+# Mise à jour de l'enregistrement DuckDNS.
+#
+# DuckDNS ne sert que d'un pointeur : un nom vers une adresse IP. Si votre box
+# change d'adresse — ce qui arrive à chaque reconnexion chez la plupart des
+# fournisseurs — le nom continue de viser l'ancienne IP et le wiki devient
+# injoignable, sans que rien n'ait l'air cassé. Ce service compare l'IP publique
+# à la dernière connue et ne signale à DuckDNS que lorsqu'elles diffèrent.
+#
+# Le jeton se trouve sur https://www.duckdns.org, en haut de la page, une fois
+# le sous-domaine créé. Il est aussi Secret : il vaut le droit de déplacer le
+# sous-domaine.
+#
+# À installer dans $PREFIX/var/service/duckdns/run.
+
+set -u
+
+: "${DUCKDNS_TOKEN:?le jeton DuckDNS est obligatoire}"
+: "${DUCKDNS_DOMAIN:?le sous-domaine DuckDNS est obligatoire}"
+: "${DUCKDNS_PERIODE:=300}"
+: "${DUCKDNS_MEMOIRE:=$PREFIX/var/lib/duckdns/ip}"
+
+journal() {
+  printf '%s %s\n' "$(date -u '+%Y-%m-%dT%H:%M:%SZ')" "$*"
+}
+
+mkdir -p "$(dirname "$DUCKDNS_MEMOIRE")"
+
+derniere=""
+[ -f "$DUCKDNS_MEMOIRE" ] && derniere=$(cat "$DUCKDNS_MEMOIRE")
+
+journal "surveillance de ${DUCKDNS_DOMAIN} (toutes les ${DUCKDNS_PERIODE}s)"
+
+while true; do
+  # L'IP publique n'est pas celle de la tablette : c'est celle de la box. La
+  # lire localement ne servirait à rien si la box est en double NAT.
+  ip=$(curl -s --max-time 20 https://api.ipify.org)
+
+  if [ -z "$ip" ]; then
+    journal "impossible de lire l'adresse IP publique (réseau indisponible ?)"
+  elif [ "$ip" = "$derniere" ]; then
+    : # Rien n'a bougé : inutile d'appeler DuckDNS.
+  else
+    # Le paramètre `ip=` vide demande à DuckDNS de détecter l'adresse
+    # lui-même. Le renvoyer explicitement évite un échec quand l'API est
+    # injoignable depuis le réseau, et rend le journal vérifiable.
+    reponse=$(curl -s --max-time 20 \
+      "https://www.duckdns.org/update?domains=${DUCKDNS_DOMAIN}&token=${DUCKDNS_TOKEN}&ip=${ip}")
+
+    if printf '%s' "$reponse" | grep -q '^OK'; then
+      journal "IP mise à jour : $derniere -> $ip"
+      printf '%s' "$ip" > "$DUCKDNS_MEMOIRE"
+      derniere="$ip"
+    else
+      # Un jeton expiré répond "KO", pas un code d'erreur HTTP : la seule façon
+      # de s'en apercevoir est de lire la réponse.
+      journal "DuckDNS a refusé la mise à jour : $reponse"
+    fi
+  fi
+
+  sleep "$DUCKDNS_PERIODE"
+done

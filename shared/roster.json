@@ -1,0 +1,292 @@
+{
+  "$comment": [
+    "Configuration PARTAGÉE entre le wiki et le bot Discord.",
+    "C'est le seul fichier à modifier à la main pour faire le lien entre les",
+    "rôles du serveur Discord et les pages du wiki.",
+    "",
+    "  - slug          : page du wiki correspondante (dossier src/app/wiki/<slug>)",
+    "  - discordUserId : identifiant utilisateur Discord. LAISSER VIDE au départ,",
+    "                   puis le remplir depuis /admin ou avec",
+    "                   `npm run sync:discord` une fois DISCORD_BOT_TOKEN et",
+    "                   DISCORD_GUILD_ID renseignés dans .env.",
+    "  - aliases       : variantes de nom rencontrées sur le serveur, utilisées",
+    "                   pour rattacher automatiquement un rôle à une page ;",
+    "                   comparer sans accents ni casse.",
+    "  - roles         : libellés de rôles Discord qui désignent cette personne.",
+    "",
+    "Aucune de ces valeurs n'est inventée par le wiki : les identifiants et les",
+    "rôles sont lus sur l'API Discord, les pages sont rédigées par la rédaction."
+  ],
+  "version": 1,
+  "guild": {
+    "invite": "https://discord.gg/gratianopolis",
+    "note": "Serveur officiel du IIIe Delphinat de Gratianopolis."
+  },
+  "personnages": [
+    {
+      "slug": "eitam",
+      "nom": "Eitam",
+      "discordUserId": "1377681054550196295",
+      "aliases": [
+        "eitam",
+        "eitamme",
+        "eitam.officiel",
+        "eitam.off"
+      ],
+      "roles": [
+        "Eitam",
+        "Créateur"
+      ],
+      "charge": "Créateur du wiki et du bot Discord",
+      "actif": true
+    },
+    {
+      "slug": "selios",
+      "nom": "Selios",
+      "discordUserId": "1223574265073504320",
+      "aliases": [
+        "selios",
+        "selio",
+        "kirai",
+        "kiraï",
+        "kronos_mapping",
+        "kronos mapping"
+      ],
+      "roles": [
+        "Selios",
+        "Dauphin Fondateur"
+      ],
+      "charge": "Dauphin fondateur (Ier Delphinat)",
+      "actif": true
+    },
+    {
+      "slug": "esto",
+      "nom": "Esto",
+      "discordUserId": "1470468669866774632",
+      "aliases": [
+        "esto",
+        "estoo"
+      ],
+      "roles": [
+        "Esto",
+        "Dauphin"
+      ],
+      "charge": "Dauphin (IIIe Delphinat)",
+      "actif": true
+    },
+    {
+      "slug": "bougre",
+      "nom": "Bougre",
+      "discordUserId": "1289875699422724191",
+      "aliases": [
+        "bougre",
+        "bougere",
+        "b0ugre",
+        "erguob"
+      ],
+      "roles": [
+        "Bougre",
+        "Junte Militaire"
+      ],
+      "charge": "Chef de la Junte Militaire",
+      "actif": true
+    },
+    {
+      "slug": "swaylo",
+      "nom": "Swaylo",
+      "discordUserId": "1455848916619890782",
+      "aliases": [
+        "swaylo",
+        "swailo",
+        "swayloic",
+        "swaylo pesto",
+        "swayloloic"
+      ],
+      "roles": [
+        "Swaylo",
+        "Empereur"
+      ],
+      "charge": "Empereur de l'Empire parlementaire de Norlot",
+      "actif": true
+    },
+    {
+      "slug": "baron",
+      "nom": "Baron",
+      "discordUserId": "1500148692789891174",
+      "aliases": [
+        "baron",
+        "baronn"
+      ],
+      "roles": [
+        "Baron"
+      ],
+      "charge": "Personnalité du IIe Delphinat",
+      "actif": true
+    },
+    {
+      "slug": "math",
+      "nom": "Math",
+      "discordUserId": "",
+      "aliases": [
+        "math",
+        "mathe"
+      ],
+      "roles": [
+        "Math"
+      ],
+      "charge": "Auteur du coup d'État contre la Junte Militaire",
+      "actif": true
+    },
+    {
+      "slug": "voytec",
+      "nom": "Voytec",
+      "discordUserId": "",
+      "aliases": [
+        "voytec",
+        "voytek"
+      ],
+      "roles": [
+        "Voytec"
+      ],
+      "charge": "Figure de la première Guerre Delphinal",
+      "actif": true
+    },
+    {
+      "slug": "capy",
+      "nom": "Capy",
+      "discordUserId": "1279176670561042522",
+      "aliases": [
+        "capy",
+        "capie"
+      ],
+      "roles": [
+        "Capy"
+      ],
+      "charge": "Figure de la première Guerre Delphinal",
+      "actif": true
+    },
+    {
+      "slug": "style",
+      "nom": "Style",
+      "discordUserId": "",
+      "aliases": [
+        "style",
+        "stylz"
+      ],
+      "roles": [
+        "Style"
+      ],
+      "charge": "Ancien ministre de la République de Gratianopolis",
+      "actif": true
+    },
+    {
+      "slug": "frenchserbian",
+      "nom": "Frenchserbian",
+      "discordUserId": "1178432722822238241",
+      "aliases": [
+        "frenchserbian",
+        "french serbian",
+        "frenchserbien"
+      ],
+      "roles": [
+        "Frenchserbian"
+      ],
+      "charge": "Ancien Premier Ministre (destitué)",
+      "actif": false
+    },
+    {
+      "slug": "stanislas",
+      "nom": "Stanislas",
+      "discordUserId": "",
+      "aliases": [
+        "stanislas",
+        "stanislasre"
+      ],
+      "roles": [
+        "Stanislas"
+      ],
+      "charge": "Roi de Neustrie",
+      "actif": false
+    }
+  ],
+  "roleMapping": [
+    {
+      "roleDiscord": "Dauphin",
+      "charge": "dauphin",
+      "articleSlug": "le-dauphin",
+      "libelle": "Dauphin"
+    },
+    {
+      "roleDiscord": "Régent",
+      "charge": "regent",
+      "articleSlug": "le-dauphin",
+      "libelle": "Régent"
+    },
+    {
+      "roleDiscord": "Conseil Delphinal",
+      "charge": "conseil",
+      "articleSlug": "le-conseil-delphinal",
+      "libelle": "Conseil Delphinal"
+    },
+    {
+      "roleDiscord": "Baillit",
+      "charge": "baillit",
+      "articleSlug": "les-baillits",
+      "libelle": "Baillit"
+    },
+    {
+      "roleDiscord": "Premier Ministre",
+      "charge": "premier-ministre",
+      "articleSlug": "le-gouvernement",
+      "libelle": "Premier Ministre"
+    },
+    {
+      "roleDiscord": "Ministre",
+      "charge": "ministre",
+      "articleSlug": "le-gouvernement",
+      "libelle": "Ministre"
+    },
+    {
+      "roleDiscord": "Représentant de l'Assemblée",
+      "charge": "representant",
+      "articleSlug": "lassemblee",
+      "libelle": "Représentant de l'Assemblée"
+    },
+    {
+      "roleDiscord": "Député",
+      "charge": "depute",
+      "articleSlug": "lassemblee",
+      "libelle": "Député"
+    }
+  ],
+  "historique": [
+    {
+      "id": "ier-delphinat",
+      "libelle": "Ier Delphinat",
+      "articleSlug": "ier-delphinat",
+      "periode": "Ier Delphinat",
+      "ordre": 1
+    },
+    {
+      "id": "junte-militaire",
+      "libelle": "Junte Militaire",
+      "articleSlug": "la-junte-militaire",
+      "periode": "Interrègne",
+      "ordre": 2
+    },
+    {
+      "id": "2e-delphinat",
+      "libelle": "IIe Delphinat",
+      "articleSlug": "2e-delphinat",
+      "periode": "IIe Delphinat",
+      "ordre": 3
+    },
+    {
+      "id": "3e-delphinat",
+      "libelle": "IIIe Delphinat",
+      "articleSlug": "histoire-du-delphinat",
+      "periode": "IIIe Delphinat",
+      "ordre": 4
+    }
+  ]
+}

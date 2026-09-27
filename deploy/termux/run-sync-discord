@@ -1,0 +1,74 @@
+#!/data/data/com.termux/files/usr/bin/bash
+# Synchronisation Discord, toutes les heures.
+#
+# Sur Vercel, l'horloge est fournie par `vercel.json`. Sur une tablette, rien ne
+# n'appelle la tâche : sans ce service, les portraits et les rôles resteraient
+# figés au moment de l'installation, et c'est exactement le défaut que la
+# planification avait servi à éviter.
+#
+# La route `/api/cron/discord` attend un en-tête `Authorization: Bearer`. Le
+# secret vient du fichier .env ; s'il manque, la route répond 503 et ce script le
+# signale une fois puis attend, au lieu de marteler une URL qui refusera.
+#
+# À installer dans $PREFIX/var/service/sync-discord/run.
+
+set -u
+
+: "${WIKI_DIR:=$HOME/wiki}"
+: "${WIKI_URL:=http://127.0.0.1:3000}"
+: "${WIKI_SYNC_PERIODE:=3600}"
+
+journal() {
+  printf '%s %s\n' "$(date -u '+%Y-%m-%dT%H:%M:%SZ')" "$*"
+}
+
+cd "$WIKI_DIR" 2>/dev/null || { journal "répertoire $WIKI_DIR introuvable"; }
+
+if [ -f .env ]; then
+  set -a
+  # shellcheck disable=SC1091
+  . ./.env
+  set +a
+fi
+
+if [ -z "${CRON_SECRET:-}" ]; then
+  journal "CRON_SECRET absent : la synchronisation automatique est désactivée."
+  journal "Générez-le avec : openssl rand -base64 24"
+  # On ne boucle pas : sans secret, aucune requête ne peut aboutir. Le service
+  # reste vivant pour que l'erreur reste visible dans le journal.
+  exit 1
+fi
+
+# La première passe attend un peu : au démarrage de la tablette, le réseau Wi-Fi
+# n'est pas toujours établi, et l'appel échouerait pour une raison qui se corrige
+# d'elle-même.
+journal "attente du réseau (20s)"
+sleep 20
+
+while true; do
+  code=$(curl -s -o /tmp/wiki-sync.json -w '%{http_code}' \
+    --max-time 120 \
+    -H "Authorization: Bearer ${CRON_SECRET}" \
+    "${WIKI_URL}/api/cron/discord")
+
+  case "$code" in
+    200)
+      journal "synchronisation réussie : $(head -c 200 /tmp/wiki-sync.json)"
+      ;;
+    503)
+      journal "la route refuse la tâche (503) : CRON_SECRET n'est pas défini côté application"
+      sleep 3600
+      continue
+      ;;
+    000)
+      journal "le wiki ne répond pas — réseau indisponible ou service arrêté"
+      ;;
+    *)
+      journal "échec (HTTP $code) : $(head -c 200 /tmp/wiki-sync.json)"
+      ;;
+  esac
+
+  # La période est indépendante de la durée de l'appel : on dort après
+  # l'avoir exécuté, pas avant.
+  sleep "$WIKI_SYNC_PERIODE"
+done

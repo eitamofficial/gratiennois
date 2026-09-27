@@ -1,0 +1,54 @@
+#!/data/data/com.termux/files/usr/bin/bash
+# Service Termux du wiki.
+#
+# À installer dans $PREFIX/var/service/wiki/run, puis `sv-enable wiki`.
+#
+# Deux particularités de Termux expliquent la forme de ce script. D'abord, un
+# service doit rester au premier plan : termux-services surveille le processus, et
+# un script qui rend la main est considéré comme terminé — le service s'éteindrait
+# aussitôt. Ensuite, il n'y a pas de systemd : c'est ce mécanisme qui relance un
+# service après un plantage. Sans la boucle ci-dessous, le premier hoquet de
+# réseau qui tue `next start` laisserait le wiki éteint jusqu'au prochain
+# redémarrage de la tablette.
+#
+# Variables lues dans l'environnement du service (voir env.exemple) :
+#   WIKI_DIR   répertoire du projet
+#   WIKI_PORT  port d'écoute local, que Caddy relaie
+
+set -u
+
+: "${WIKI_DIR:=$HOME/wiki}"
+: "${WIKI_PORT:=3000}"
+: "${WIKI_RETRY:=15}"
+
+journalier() {
+  printf '%s %s\n' "$(date -u '+%Y-%m-%dT%H:%M:%SZ')" "$*"
+}
+
+cd "$WIKI_DIR" || {
+  journalier "IMPOSSIBLE d'entrer dans $WIKI_DIR"
+  # Sortir en erreur ferait croire à un plantage du script lui-même, alors que le
+  # problème est ailleurs. La boucle ci-dessous reprend indéfiniment.
+  while true; do sleep 60; done
+}
+
+journalier "démarrage du wiki sur le port $WIKI_PORT"
+
+while true; do
+  # `next start` ne lit pas le fichier .env : sur Vercel c'est la plateforme qui
+  # fournit les variables, ici il faut les exporter nous-mêmes avant de lancer.
+  if [ -f .env ]; then
+    set -a
+    # shellcheck disable=SC1091
+    . ./.env
+    set +a
+    journalier "variables chargées depuis .env"
+  else
+    journalier "AUCUN fichier .env dans $WIKI_DIR — le wiki partira sans configuration"
+  fi
+
+  npm run start -- --port "$WIKI_PORT"
+  code=$?
+  journalier "le wiki s'est arrêté (code $code), nouvelle tentative dans ${WIKI_RETRY}s"
+  sleep "$WIKI_RETRY"
+done

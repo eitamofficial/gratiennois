@@ -1,0 +1,31 @@
+# Normalisation des fins de ligne.
+#
+# Ce fichier n'est pas une précaution théorique : sans lui, tout dépend du
+# réglage `core.autocrlf` de la machine qui commite. La valeur par défaut de Git
+# pour Windows est `true`, qui réécrit les fichiers en CRLF dans la copie de
+# travail. Les scripts de `deploy/termux/` seraient alors versionnés avec une
+# fin de ligne Windows, et la tablette refuserait de les exécuter — le shebang
+# serait suivi d'un retour chariot.
+#
+# La règle ci-dessous fixe le comportement quel que soit le poste : LF dans le
+# dépôt, LF dans la copie de travail.
+* text=auto eol=lf
+
+# Les scripts et configurations exécutés hors de Windows, en particulier sur
+# la tablette.
+deploy/termux/run-* text eol=lf
+*.sh text eol=lf
+Caddyfile text eol=lf
+Dockerfile text eol=lf
+
+# Les images et les documents ne sont pas du texte : les traiter comme tel les
+# corromprait, et Git pourrait tenter de normaliser leurs octets.
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.webp  binary
+*.ico   binary
+*.pdf   binary
+*.woff  binary
+*.woff2 binary

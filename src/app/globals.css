@@ -1,0 +1,470 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==========================================================================
+   Thèmes
+   --------------------------------------------------------------------------
+   Toutes les couleurs du site proviennent de ces variables. Le thème clair
+   est celui de `:root` ; la classe `.dark` posée sur <html> par le script de
+   thème (avant le premier rendu, donc sans flash) bascule sur la palette
+   « bleu nuit ». Les deux themes ont été vérifiés au contraste WCAG AA.
+   ========================================================================== */
+
+:root {
+  color-scheme: light;
+
+  /* Fonds et bordures — gamme parchemin */
+  --night-950: 246 243 236;
+  --night-900: 255 255 255;
+  --night-800: 250 248 242;
+  --night-700: 241 237 227;
+  --night-600: 217 209 192;
+  --night-500: 190 180 160;
+  --night-400: 122 132 150;
+
+  /* Textes — titres, corps, secondaire, discret */
+  --ink-100: 24 30 41;
+  --ink-200: 35 43 58;
+  --ink-300: 65 75 94;
+  --ink-400: 88 97 116;
+
+  /* Or — titres de section, accents, liens */
+  --gold-100: 255 251 235;
+  --gold-200: 118 90 18;
+  --gold-300: 126 96 19;
+  --gold-400: 132 101 20;
+  --gold-500: 132 101 19;
+  --gold-600: 116 89 16;
+  --gold-700: 96 73 12;
+
+  /* Bronze — mentions secondaires */
+  --bronze-300: 118 88 50;
+  --bronze-400: 132 101 57;
+  --bronze-500: 140 108 62;
+  --bronze-600: 108 82 46;
+
+  /* Couleurs d'état assombries pour rester lisibles sur fond clair */
+  --emerald-200: 3 88 55;
+  --emerald-300: 4 106 66;
+  --emerald-400: 4 118 74;
+  --sky-300: 7 89 133;
+  --sky-400: 9 100 150;
+  --red-300: 153 27 27;
+  --red-400: 185 28 28;
+  --amber-200: 133 87 12;
+  --amber-300: 146 64 14;
+  --amber-400: 161 84 20;
+  --violet-300: 109 40 217;
+  --violet-400: 124 58 237;
+
+  --shadow-card: 0 12px 32px -18px rgba(35, 28, 12, 0.45);
+  --shadow-glow-gold: 0 0 24px -6px rgba(140, 108, 20, 0.3);
+}
+
+/* La même déclaration, specificity égale à :root mais déclarée après :
+   elle l'emporte dès que <html> porte la classe `dark`. */
+.dark {
+  color-scheme: dark;
+
+  --night-950: 6 11 20;
+  --night-900: 10 19 34;
+  --night-800: 16 29 51;
+  --night-700: 24 39 65;
+  --night-600: 34 53 81;
+  --night-500: 47 68 104;
+  --night-400: 74 96 138;
+
+  --ink-100: 241 245 249;
+  --ink-200: 226 232 240;
+  --ink-300: 203 213 225;
+  --ink-400: 148 163 184;
+
+  --gold-100: 247 236 208;
+  --gold-200: 238 223 174;
+  --gold-300: 230 200 119;
+  --gold-400: 217 180 90;
+  --gold-500: 201 162 39;
+  --gold-600: 169 134 31;
+  --gold-700: 133 103 22;
+
+  --bronze-300: 216 185 138;
+  --bronze-400: 201 160 107;
+  --bronze-500: 176 141 87;
+  --bronze-600: 143 111 66;
+
+  /* Couleurs d'état : tons clairs de Tailwind, identiques à l'ancien rendu */
+  --emerald-200: 167 243 208;
+  --emerald-300: 110 231 183;
+  --emerald-400: 52 211 153;
+  --sky-300: 125 211 252;
+  --sky-400: 56 189 248;
+  --red-300: 252 165 165;
+  --red-400: 248 113 113;
+  --amber-200: 253 230 138;
+  --amber-300: 252 211 77;
+  --amber-400: 251 191 36;
+  --violet-300: 196 181 253;
+  --violet-400: 167 139 250;
+
+  --shadow-card: 0 10px 30px -12px rgba(0, 0, 0, 0.6);
+  --shadow-glow-gold: 0 0 24px -6px rgba(201, 162, 39, 0.35);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* Évite le saut de mise en page quand une ancre profonde est atteinte. */
+    scroll-padding-top: 6rem;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-night-950 text-slate-200 antialiased;
+    /* Un mot indébrable (URL, identifiant, nom de fichier) ne doit jamais
+       pousser la page hors du cadre : il se coupe plutôt que de déborder. */
+    overflow-wrap: break-word;
+    /* Évite que l'apparition de la barre de défilement décale toute la mise en
+       page horizontalement pendant le chargement. */
+    scrollbar-gutter: stable;
+  }
+
+  /* Titres courts : pas de mot seul sur la dernière ligne. Repli silencieux
+     sur les navigateurs qui ne savent pas encore équilibrer. */
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  ::selection {
+    @apply bg-gold-500/30 text-gold-100;
+  }
+
+  /* Lien d'évitement : visible au clavier uniquement. */
+  a:focus-visible,
+  button:focus-visible,
+  summary:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible,
+  [tabindex]:focus-visible {
+    @apply outline-none ring-2 ring-gold-500 ring-offset-2 ring-offset-night-950;
+  }
+
+  /* Respect des préférences de mouvement réduit */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Contenu Markdown
+   Le renderer produit des balises enrichies de classes Tailwind ; ces règles
+   couvrent ce qu'aucune classe ne peut garantir au niveau d'un bloc.
+   -------------------------------------------------------------------------- */
+.markdown {
+  /* `anywhere` (et non `break-word`) : c'est le seul mode qui **réduit la
+     taille intrinsèque** d'un bloc. Avec `break-word`, un mot indébrable reste
+     large et fait déborder la colonne, surtout dans une grille. La propriété
+     étant héritée, cela couvre les paragraphes, listes, tableaux et citations. */
+  overflow-wrap: anywhere;
+}
+
+/* Images éventuellement insérées plus tard : jamais plus larges que la colonne. */
+.markdown img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* --------------------------------------------------------------------------
+   Extrait d'article (résultats de recherche)
+   -------------------------------------------------------------------------- */
+
+/**
+ * Extrait d'article : même sérif que la prose, pour que le lecteur retrouve
+ * dans le résultat la texture du texte qu'il cherche. Le terme trouvé est
+ * surligné — c'est la seule information qui compte dans une liste de
+ * résultats, donc elle doit sauter aux yeux sans colorer tout le paragraphe.
+ */
+.excerpt {
+  font-family: var(--font-serif), Georgia, "Times New Roman", serif;
+  color: rgb(var(--ink-400));
+}
+
+.excerpt mark {
+  background: rgb(var(--gold-500) / 0.28);
+  color: rgb(var(--gold-100));
+  border-radius: 0.15rem;
+  padding-inline: 0.15rem;
+}
+
+/* --------------------------------------------------------------------------
+   Transitions de page
+   `template.tsx` rejoue cette animation à chaque navigation : le contenu
+   reste monté (donc pas de rechargement perçu côté client), mais l'effet
+   « page qui arrive » est visible. Neutralisé en mouvement réduit (ci-dessus).
+   -------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------------- */
+/* Corps de texte encyclopédique
+   -------------------------------------------------------------------------- */
+
+/**
+ * Texte d'un article, calqué sur la mise en page d'une encyclopédie imprimée :
+ *   - **sérif de labeur** pour la prose, sans empattements pour l'appareil
+ *     (titres, tableaux, encadrés) : c'est la convention des dictionnaires, et
+ *     l'œil repère immédiatement le changement de police entre le texte et son
+ *     appareil. C'est ce qui rend la page lisible d'un coup d'œil ;
+ *   - **longueur de ligne bornée** (≈ 70 caractères) : au-delà, l'œil perd la
+ *     ligne en revenant à gauche ;
+ *   - **interlignage large** (1,75) et **coupure des mots** à la française
+ *     (`lang="fr"` est sur <html>, condition de l'hyphenation) : sans elle, un
+ *     mot long en fin de ligne déborde ou laisse un trou béant ;
+ *   - `text-wrap: pretty` évite les lignes d'un seul mot en fin de paragraphe.
+ */
+.markdown {
+  font-family: var(--font-serif), Georgia, "Times New Roman", serif;
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  color: rgb(var(--ink-300));
+  hyphens: auto;
+  -webkit-hyphens: auto;
+}
+
+@supports (text-wrap: pretty) {
+  .markdown p {
+    text-wrap: pretty;
+  }
+}
+
+/* Chapeau : le premier paragraphe, qui résume l'article. L'encyclopédie le
+   présente en plus grand pour que le lecteur décide en une phrase s'il
+   continue. */
+.markdown > .lead {
+  font-size: 1.1875rem;
+  line-height: 1.7;
+  color: rgb(var(--ink-200));
+}
+
+/* Titre de rubrique : sans empattements, trait de séparation, un peu d'air
+   au-dessus pour que la section se détache du texte précédent. */
+.markdown h2 {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.011em;
+  color: rgb(var(--gold-200));
+  text-wrap: balance;
+}
+
+/* Sous-rubrique : plus petite, dorée, sans trait — elle se rattache à la
+   rubrique qui la précède. */
+.markdown h3 {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 1.1875rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: rgb(var(--gold-300));
+  text-wrap: balance;
+}
+
+/* L'ancre « § » d'une rubrique : discrète mais toujours visible (elle doit
+   rester atteignable au doigt et au clavier, pas seulement au survol souris). */
+.markdown .heading-anchor {
+  color: rgb(var(--bronze-400));
+  opacity: 0.55;
+}
+
+.markdown .heading-anchor:hover,
+.markdown .heading-anchor:focus-visible {
+  opacity: 1;
+  color: rgb(var(--gold-300));
+}
+
+/* -------------------------------------------------------------------------- */
+/* Liens : dorés vers un article existant, rouges vers un article à créer      */
+/* -------------------------------------------------------------------------- */
+
+.markdown a {
+  color: rgb(var(--gold-300));
+  text-decoration: underline;
+  text-decoration-color: rgb(var(--gold-500) / 0.4);
+  text-underline-offset: 0.18em;
+  text-decoration-thickness: 1px;
+}
+
+.markdown a:hover {
+  color: rgb(var(--gold-100));
+  text-decoration-color: rgb(var(--gold-400));
+}
+
+/** Lien rouge : convention des encyclopédies — la cible n'existe pas encore. */
+.markdown a.link-red,
+.markdown a.link-red:visited {
+  color: rgb(var(--red-300));
+  text-decoration-color: rgb(var(--red-400) / 0.45);
+}
+
+.markdown a.link-red:hover {
+  color: rgb(var(--red-400));
+}
+
+/* -------------------------------------------------------------------------- */
+/* Listes, citations et tableaux                                             */
+/* -------------------------------------------------------------------------- */
+
+.markdown ul,
+.markdown ol {
+  margin-block: 1.15rem;
+  padding-inline-start: 1.5rem;
+}
+
+.markdown li {
+  margin-block: 0.2rem;
+}
+
+/* Interlignage des blocs : l'encyclopédie aère, le « blog » colle les phrases. */
+.markdown p {
+  margin-block: 1.15rem;
+}
+
+.markdown > p:first-child,
+.markdown > .lead {
+  margin-top: 0;
+}
+
+.markdown h2 + p,
+.markdown h3 + p,
+.markdown h2 + ul,
+.markdown h2 + ol,
+.markdown h3 + ul,
+.markdown h3 + ol {
+  margin-top: 0.85rem;
+}
+
+.markdown li::marker {
+  color: rgb(var(--bronze-400));
+}
+
+/* Citation : filet à gauche, texte en retrait — jamais d'italique, qui
+   brouillerait la lecture d'un extrait de loi constitutionnelle. */
+.markdown blockquote {
+  font-style: normal;
+  border-inline-start: 4px solid rgb(var(--gold-500) / 0.6);
+  background: rgb(var(--night-800) / 0.6);
+  padding: 0.75rem 1rem;
+  color: rgb(var(--ink-200));
+}
+
+.markdown blockquote p {
+  margin-block: 0.35rem;
+}
+
+.markdown hr {
+  border: 0;
+  border-top: 1px solid rgb(var(--night-600));
+  margin-block: 2.5rem;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Code                                                                       */
+/* -------------------------------------------------------------------------- */
+
+.markdown code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.85em;
+  background: rgb(var(--night-700));
+  padding: 0.1rem 0.35rem;
+  border-radius: 0.25rem;
+  color: rgb(var(--bronze-300));
+}
+
+.markdown pre {
+  background: rgb(var(--night-950));
+  border: 1px solid rgb(var(--night-600));
+}
+
+.markdown pre code {
+  background: transparent;
+  padding: 0;
+  color: rgb(var(--ink-300));
+}
+
+/* -------------------------------------------------------------------------- */
+/* Tableaux : lignes fines, en-tête appuyé, alignement en haut des cellules  */
+/* -------------------------------------------------------------------------- */
+
+.markdown table {
+  border-collapse: collapse;
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+.markdown th,
+.markdown td {
+  border: 1px solid rgb(var(--night-600));
+  padding: 0.5rem 0.75rem;
+  vertical-align: top;
+}
+
+.markdown th {
+  background: rgb(var(--night-700) / 0.7);
+  font-weight: 600;
+  color: rgb(var(--gold-200));
+  text-align: left;
+}
+
+.markdown thead th {
+  border-bottom: 2px solid rgb(var(--night-500));
+}
+
+.page-transition {
+  animation: page-in 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes page-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 8px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* Champs de formulaire : la couleur de texte suit le thème (sinon Chrome
+   affiche du texte noir sur fond sombre en thème sombre). */
+input,
+textarea,
+select,
+option {
+  color-scheme: inherit;
+}
+
+/* Barre de défilement discrète, pilotée par le thème */
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: rgb(var(--night-600));
+  border-radius: 8px;
+  border: 2px solid rgb(var(--night-900));
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: rgb(var(--night-500));
+}

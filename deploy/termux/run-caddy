@@ -1,0 +1,62 @@
+#!/data/data/com.termux/files/usr/bin/bash
+# Service Termux pour Caddy, le reverse proxy.
+#
+# Caddy est un service comme les autres, pour deux raisons. La première est la
+# surveillance : sans elle, un proxy arrêté laisse le wiki inaccessible sans que
+# rien ne le signale. La seconde, plus importante, est que le Caddyfile fait
+# référence à `{$WIKI_DOMAINE}` : cette variable doit être présente dans
+# l'environnement de Caddy, faute de quoi il refuse de démarrer avec une erreur
+# peu parlante. Un service Termux lit son fichier `env` avant de lancer la
+# commande, ce qui règle le problème à la source.
+#
+# À installer dans $PREFIX/var/service/caddy/run.
+
+set -u
+
+: "${WIKI_DOMAINE:?WIKI_DOMAINE est obligatoire : Caddy ne peut pas démarrer sans domaine}"
+: "${WIKI_PORT:=3000}"
+: "${WIKI_CADDY_CONFIG:=$HOME/caddy/Caddyfile}"
+: "${WIKI_CADDY_LOG:=$PREFIX/var/service/caddy/caddy.log}"
+: "${WIKI_CADDY_ESCALADE:=10}"
+
+journal() {
+  printf '%s %s\n' "$(date -u '+%Y-%m-%dT%H:%M:%SZ')" "$*"
+}
+
+if [ ! -f "$WIKI_CADDY_CONFIG" ]; then
+  journal "Caddyfile introuvable : $WIKI_CADDY_CONFIG"
+  exit 1
+fi
+
+# Le port 80 est réservé au root sur la plupart des noyaux Android. Certains
+# l'ouvrent aux applications ordinaires, et dans ce cas Caddy démarre sans
+# élévation. On tente donc d'abord sans, et on ne repasse en root que si le
+# processus meurt aussitôt : on évite ainsi d'exécuter durablement un proxy avec
+# les pleins pouvoirs de l'appareil, pour rien.
+BINAIRE="$(command -v caddy || echo "$PREFIX/bin/caddy")"
+
+journal "démarrage de Caddy sur ${WIKI_DOMAINE}, relais vers 127.0.0.1:${WIKI_PORT}"
+journal "journal complet : $WIKI_CADDY_LOG"
+
+while true; do
+  "$BINAIRE" run --config "$WIKI_CADDY_CONFIG" >> "$WIKI_CADDY_LOG" 2>&1 &
+  caddy_pid=$!
+
+  # On lui laisse quelques secondes : un refus de liaison sur le port 80 est
+  # immédiat, un démarrage réussi ne l'est pas.
+  sleep "$WIKI_CADDY_ESCALADE"
+
+  if kill -0 "$caddy_pid" 2>/dev/null; then
+    wait "$caddy_pid"
+    journal "Caddy s'est arrêté (code $?), relance dans 10s"
+  else
+    wait "$caddy_pid" 2>/dev/null
+    journal "Caddy n'a pas tenu plus de ${WIKI_CADDY_ESCALADE}s — nouvel essai avec root"
+    # Le `PATH` de root ne contient pas celui de Termux : le chemin du binaire
+    # doit être donné en toutes lettres, sinon `caddy` est introuvable.
+    su -c "$BINAIRE run --config $WIKI_CADDY_CONFIG" >> "$WIKI_CADDY_LOG" 2>&1
+    journal "Caddy en root s'est arrêté, retour en privileges normaux dans 10s"
+  fi
+
+  sleep 10
+done

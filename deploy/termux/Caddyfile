@@ -1,0 +1,55 @@
+# Caddyfile — reverse proxy vers le wiki, avec HTTPS automatique.
+#
+# Caddy obtient et renouvelle seul le certificat Let's Encrypt, à condition que
+# le port 80 soit joignable depuis Internet. C'est la seule contrainte sérieuse de
+# l'installation : sans redirection du port 80 sur la box, il n'y a pas de
+# certificat, et donc pas de HTTPS.
+#
+# Le domaine vient de DuckDNS. Remplacez-le par le vôtre, et vérifiez que la
+# ligne ci-dessous correspond exactement à `SITE_URL` du fichier `.env` : c'est
+# cette URL qui part dans le sitemap et les partages sociaux.
+
+{$WIKI_DOMAINE} {
+	encode zstd gzip
+
+	# En-têtes ajoutés par Caddy, complétés ici.
+	header {
+		# Empêche un site tiers d'inclure le wiki dans un cadre, ce qui
+		# rendrait le clic-droit et la sélection de texte impossibles.
+		X-Frame-Options "SAMEORIGIN"
+		# Interdit au navigateur de deviner d'autres types que ceux annoncés.
+		X-Content-Type-Options "nosniff"
+		# Renvoi du site vers sa version en HTTPS, quoi qu'il arrive.
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		# Interdit d'utiliser le wiki comme source de requêtes à l'aveugle.
+		Referrer-Policy "strict-origin-when-cross-origin"
+		# Le wiki n'a besoin d'aucune caméra, d'aucun microphone, ni d'aucune
+		# localisation : autant ne pas les exposer.
+		Permissions-Policy "camera=(), microphone=(), geolocation=(), interest-cohort=()"
+	}
+
+	# Next.js rend ses propres fichiers. En mode production il étiquette lui-même
+	# ce qui est immuable ; on ne.force rien, ce qui casserait les pages
+	# rendues dynamiquement.
+	reverse_proxy 127.0.0.1:{$WIKI_PORT:3000} {
+		# La page d'accueil interroge la base à chaque visite. Sans ce délai
+		# d'attente, une base lente ferait expire la requête du navigateur
+		# alors que le serveur répond encore.
+		transport http {
+			read_timeout 60s
+			write_timeout 60s
+		}
+	}
+
+	# Journalisation : une ligne par requête, dans le journal de Termux.
+	log {
+		output file {$WIKI_LOG:-/data/data/com.termux/files/usr/var/log/caddy-wiki.log}
+		format console
+	}
+}
+
+# HTTP vers HTTPS. Caddy s'en charge tout seul, cette clause sert à ceux qui
+# tapent l'adresse sans le « s ».
+http://{$WIKI_DOMAINE} {
+	redir https://{host}{uri} permanent
+}

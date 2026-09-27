@@ -1,0 +1,17 @@
+{
+  "name": "gratianopolis-bot",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Bot Discord du IIIe Delphinat de Gratianopolis — synchronise rôles et identifiants avec le wiki",
+  "type": "module",
+  "engines": {
+    "node": ">=18.18.0"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "link": "node link.js"
+  },
+  "dependencies": {
+    "discord.js": "^14.16.3"
+  }
+}

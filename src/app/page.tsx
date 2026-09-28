@@ -116,6 +116,78 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* Programme du parti — résumé, la page complète fait foi.
+
+          L'accueil n'a pas vocation à être un tract : trois lignes, deux
+          paliers chiffrés, et un lien. Les chiffres y sont volontairement
+          vérifiables, parce qu'un engagement que l'on peut contrôler vaut
+          davantage qu'un discours. */}
+      <section
+        aria-labelledby="programme"
+        className="rounded-2xl border border-gold-500/30 bg-gradient-to-br from-night-800/80 to-night-900/80 p-6 sm:p-8"
+      >
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-bronze-400">
+              Parti Révolutionnaire Socialiste Gratiennois
+            </p>
+            <h2
+              id="programme"
+              className="mt-2 font-display text-2xl font-semibold text-gold-200"
+            >
+              Stabiliser le serveur, et le prouver
+            </h2>
+          </div>
+          <Link
+            href="/programme"
+            className="rounded-md border border-gold-500/50 px-4 py-2 text-sm font-medium text-gold-200 transition hover:bg-gold-500/10"
+          >
+            Le programme complet →
+          </Link>
+        </div>
+
+        <ul className="mt-5 grid gap-3 sm:grid-cols-2">
+          <li className="rounded-xl border border-night-600 bg-night-800/70 p-4">
+            <span className="font-display text-lg font-semibold text-gold-200">
+              14 boosts
+            </span>
+            <span className="ml-2 rounded-full border border-gold-500/40 px-2 py-0.5 text-xs text-gold-300">
+              Niveau 3
+            </span>
+            <p className="mt-2 text-sm leading-relaxed text-slate-300">
+              Stabiliser et préserver le serveur à ce palier, pour qu&apos;il
+              accueille une institution qui dure.
+            </p>
+          </li>
+          <li className="rounded-xl border border-night-600 bg-night-800/70 p-4">
+            <span className="font-display text-lg font-semibold text-gold-200">
+              28 boosts
+            </span>
+            <span className="ml-2 rounded-full border border-gold-500/40 px-2 py-0.5 text-xs text-gold-300">
+              Palier supérieur
+            </span>
+            <p className="mt-2 text-sm leading-relaxed text-slate-300">
+              Si le serveur évolue, trois mois d&apos;abonnement pris en charge,
+              sans contrepartie politique.
+            </p>
+          </li>
+        </ul>
+
+        <p className="mt-5 text-sm leading-relaxed text-slate-300">
+          Ces engagements sont adossés à du travail déjà livré :{" "}
+          <strong className="text-ink-100">ce wiki</strong> et{" "}
+          <strong className="text-ink-100">le bot Discord</strong> qui le
+          synchronise avec le serveur, tous deux en service. Voir la{" "}
+          <Link
+            href="/credits"
+            className="text-gold-300 underline-offset-4 hover:underline"
+          >
+            page crédits
+          </Link>
+          .
+        </p>
+      </section>
+
       {/* Accès rapides */}
       <section aria-labelledby="acces-rapides">
         <div className="mb-5 flex items-end justify-between">

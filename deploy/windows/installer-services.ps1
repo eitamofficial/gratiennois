@@ -28,7 +28,7 @@
 param(
   [switch]$Desinstaller,
   [string]$JetonDuckDNS = $env:DUCKDNS_TOKEN,
-  [string]$SousDomaine = $(if ($env:WIKI_DOMAINE) { $env:WIKI_DOMAINE } else { "wiki-gratiennois.duckdns.org" })
+  [string]$SousDomaine = $(if ($env:WIKI_SOUS_DOMAINE) { $env:WIKI_SOUS_DOMAINE } else { "wiki-gratiennois" })
 )
 
 $ErrorActionPreference = "Stop"

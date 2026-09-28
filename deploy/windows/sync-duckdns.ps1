@@ -19,17 +19,28 @@
 #
 # Renseigner le jeton une fois, puis exécuter :
 #
-#     $env:DUCKDNS_TOKEN = "votre-jeton"
-#     .\deploy\windows\sync-duckdns.ps1
+#     .\deploy\windows\sync-duckdns.ps1 -Domaine wiki-gratiennois.duckdns.org -Jeton "votre-jeton"
 #
 # Pour une surveillance continue, le planificateur de tâches l'exécute toutes
 # les dix minutes (voir README). Un tour par dix minutes suffit largement : le
 # préfixe de l'opérateur ne change pas au milieu d'une soirée.
+#
+# ## Pourquoi le jeton est passé en argument
+#
+# La tâche planifiée tourne sous le compte SYSTEM (voir installer-services.ps1).
+# Un `setx DUCKDNS_TOKEN "..."` écrit dans l'environnement de *votre* session :
+# SYSTEM ne le lit pas, et la tâche échouerait systématiquement sur
+# « DUCKDNS_TOKEN est obligatoire » sans rienlogger d'utile. Le jeton est donc
+# inscrit dans la commande de la tâche, lisible des seuls administrateurs — le
+# même cercle que celui qui peut déjà lire le fichier .env du projet.
+#
+# Pour une exécution manuelle, l'environnement reste pris en compte : les
+# valeurs ci-dessous ne servent que de repli.
 
 param(
-  [string]$Domaine = $env:WIKI_DOMAINE,
-  [string]$Jeton = $env:DUCKDNS_TOKEN,
-  [string]$Memoire = "$env:LOCALAPPDATA\WikiGratienois\duckdns-ipv6.txt"
+  [string]$Domaine = $(if ($env:WIKI_DOMAINE) { $env:WIKI_DOMAINE } else { [Environment]::GetEnvironmentVariable("WIKI_DOMAINE", "Machine") }),
+  [string]$Jeton = $(if ($env:DUCKDNS_TOKEN) { $env:DUCKDNS_TOKEN } else { [Environment]::GetEnvironmentVariable("DUCKDNS_TOKEN", "Machine") }),
+  [string]$Memoire = "$PSScriptRoot\duckdns-ipv6.txt"
 )
 
 $ErrorActionPreference = "Stop"

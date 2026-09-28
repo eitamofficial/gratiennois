@@ -33,6 +33,26 @@ cd /d "%PROJET%" || (
 set "WIKI_PORT=3000"
 if not defined WIKI_PORT set "WIKI_PORT=3000"
 
+REM --- Node est-il la ? --------------------------------------------------------
+REM La tache planifiee tourne sous SYSTEM, dont l'environnement est distinct de
+REM le votre. Node doit donc etre installe au niveau de la machine
+REM (C:\Program Files\nodejs), et non via nvm ou un gestionnaire de versions
+REM qui le place dans le profil : dans ce cas `npm` est introuvable et le
+REM script echoue sur un message incomprehensible, sans rien journaliser.
+where npm >nul 2>&1
+if errorlevel 1 (
+  echo [ERREUR] npm est introuvable dans l'environnement de cette tache.
+  echo.
+  echo Node doit etre installe pour tout le systeme, pas seulement pour votre
+  echo compte : reinstallez-le depuis https://nodejs.org en gardant l'option
+  echo "Add to PATH" cochee, puis relancez cette tache.
+  echo.
+  echo Journal : %SystemRoot%\System32\LogFiles\WMI\Operational
+  echo ^(Cherchez l'evenement "Error" du Planificateur de taches.^)
+  timeout /t 120 /nobreak > nul
+  exit /b 1
+)
+
 REM --- Fichiers necessaires au build -----------------------------------------
 REM `next start` sert la compilation presente dans .next. Si le PC a redemarre
 REM sans que le build ait eu lieu, le wiki refuserait de demarrer avec une

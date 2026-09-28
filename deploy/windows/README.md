@@ -125,9 +125,9 @@ uniquement IPv4 ne pourra pas joindre le site tant que ce n'est pas fait.
 ### Recaler DuckDNS sur la bonne adresse
 
 ```powershell
-$env:DUCKDNS_TOKEN = "votre-jeton"
-$env:WIKI_DOMAINE = "wiki-gratiennois"
-.\deploy\windows\sync-duckdns.ps1
+.\deploy\windows\sync-duckdns.ps1 `
+  -Domaine wiki-gratiennois.duckdns.org `
+  -Jeton "votre-jeton"
 ```
 
 Le script choisit l'adresse `Link`, ne signale à DuckDNS que lorsqu'elle a
@@ -184,20 +184,17 @@ Deux fenêtres laissées ouvertes ne constituent pas un hébergement : un
 redémarrage, une mise en veille ou un Ctrl+C suffisent à tout arrêter.
 `installer-services.ps1` enregistre trois tâches dans le Planificateur.
 
-**D'abord les variables**, prises par le Planificateur — elles ne sont pas
-héritées d'une session ouverte :
+Le jeton DuckDNS est passé **en argument** de l'installeur, qui l'inscrit dans
+la commande de la tâche. Puis, **en administrateur** :
 
 ```powershell
-setx DUCKDNS_TOKEN "votre-jeton"
-setx WIKI_DOMAINE  "wiki-gratiennois"
-setx WIKI_SCHEME   "http://"
+powershell -ExecutionPolicy Bypass -File .\deploy\windows\installer-services.ps1 `
+  -JetonDuckDNS "votre-jeton"
 ```
 
-Puis, **en administrateur** :
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\deploy\windows\installer-services.ps1
-```
+Le sous-domaine et le mode HTTP ont des valeurs par défaut correctes
+(`wiki-gratiennois.duckdns.org` et `http://`) : inutile de les ressaisir.
+L'installeur affiche un avertissement s'il n'a pas reçu de jeton.
 
 Cela crée les tâches, et ouvre aussi les ports 80 et 443 dans le pare-feu :
 
@@ -222,9 +219,20 @@ powershell -ExecutionPolicy Bypass -File .\deploy\windows\installer-services.ps1
 
 **Les tâches tournent sous `SYSTEM`, pas sous votre compte.** C'est délibéré :
 une tâche liée à un utilisateur n'hérite pas de son `PATH`, et le script
-échouerait sur un « node n'est pas reconnu » incompréhensible. En contrepartie,
-les variables ci-dessus doivent être définies **pour la machine** (`setx`), et
-prises en compte à la prochaine ouverture de session.
+échouerait sur un « node n'est pas reconnu » incompréhensible. Le site est
+ainsi servi dès le boot, avant même votre connexion.
+
+Cette décision a deux contreparties, toutes deux traitées dans les scripts :
+
+- **`setx` ne sert à rien ici.** Il écrit dans l'environnement de *votre*
+  session, que `SYSTEM` ne lit pas : la tâche DuckDNS échouerait à chaque tour
+  sur « `DUCKDNS_TOKEN` est obligatoire ». Le jeton est donc inscrit dans la
+  commande de la tâche, lisible des seuls administrateurs — le même cercle que
+  celui qui peut déjà lire votre `.env`.
+- **Node doit être installé pour toute la machine.** Un Node posé dans le
+  profil (via `nvm` ou un gestionnaire de versions) reste invisible de `SYSTEM`,
+  et le wiki ne démarre pas. Utilisez l'installateur de nodejs.org, avec
+  « Add to PATH » coché.
 
 `termux-services` n'existe pas sur Windows : c'est ce mécanisme qui joue le
 même rôle.

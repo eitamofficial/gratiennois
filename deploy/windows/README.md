@@ -126,13 +126,18 @@ uniquement IPv4 ne pourra pas joindre le site tant que ce n'est pas fait.
 
 ```powershell
 .\deploy\windows\sync-duckdns.ps1 `
-  -Domaine wiki-gratiennois.duckdns.org `
+  -Domaine wiki-gratiennois `
   -Jeton "votre-jeton"
 ```
 
 Le script choisit l'adresse `Link`, ne signale à DuckDNS que lorsqu'elle a
 changé, et **échoue bruyamment** si le jeton est refusé — une réponse `KO` ne
 produit aucune erreur HTTP, et sans ce test on croirait avoir réussi.
+
+Notez le `-Domaine wiki-gratiennois` : c'est le **sous-domaine seul**, sans le
+`.duckdns.org`, parce que c'est ce que l'API attend. Caddy, lui, reçoit le nom
+complet dans `WIKI_DOMAINE`. Voir la section 8 pour pourquoi ces deux noms ne
+doivent pas être confondus.
 
 Pour tenir dans la durée, faites-le exécuter toutes les dix minutes par le
 Planificateur de tâches (voir section 7).
@@ -233,6 +238,23 @@ Cette décision a deux contreparties, toutes deux traitées dans les scripts :
   profil (via `nvm` ou un gestionnaire de versions) reste invisible de `SYSTEM`,
   et le wiki ne démarre pas. Utilisez l'installateur de nodejs.org, avec
   « Add to PATH » coché.
+- **Caddy est cherché dans tous les profils.** Pour la même raison,
+  `demarrer-caddy.bat` ne regarde pas seulement `%LOCALAPPDATA%` — qui désigne
+  le profil `systemprofile` sous `SYSTEM`, où winget n'installe rien. Il
+  parcourt aussi `C:\Users\*`, sans quoi Caddy passe pour introuvable alors
+  qu'il est installé dans le vôtre.
+
+### Deux noms de domaine, à ne pas confondre
+
+| Nom | Valeur | Où |
+|---|---|---|
+| `WIKI_DOMAINE` | `wiki-gratiennois.duckdns.org` | Caddy — le nom d'hôte servi |
+| `WIKI_SOUS_DOMAINE` | `wiki-gratiennois` | l'API DuckDNS, via `-Domaine` |
+
+L'API DuckDNS attend le sous-domaine seul et refuserait le nom complet. Caddy,
+à l'inverse, doit déclarer le nom complet : donner le sous-domaine seul le
+ferait répondre par une **page vide** (200 sans un octet) sur le vrai domaine.
+D'où deux variables distinctes plutôt qu'une reuse.
 
 `termux-services` n'existe pas sur Windows : c'est ce mécanisme qui joue le
 même rôle.

@@ -14,23 +14,34 @@
 #
 # Ce script choisit donc explicitement l'adresse stable, et ne signale à
 # DuckDNS que lorsqu'elle a changé.
-#
-# ## Utilisation
+## ## Utilisation
 #
 # Renseigner le jeton une fois, puis exécuter :
 #
-#     .\deploy\windows\sync-duckdns.ps1 -Domaine wiki-gratiennois.duckdns.org -Jeton "votre-jeton"
+#     .\deploy\windows\sync-duckdns.ps1 -Domaine wiki-gratiennois -Jeton "votre-jeton"
 #
 # Pour une surveillance continue, le planificateur de tâches l'exécute toutes
 # les dix minutes (voir README). Un tour par dix minutes suffit largement : le
 # préfixe de l'opérateur ne change pas au milieu d'une soirée.
+#
+# ## Deux noms pour deux choses
+#
+# `$Domaine` est le **sous-domaine seul** (`wiki-gratiennois`), pas le nom
+# complet : l'API attend `domains=wiki-gratiennois` et refuserait
+# `wiki-gratiennois.duckdns.org`. C'est aussi ce que Caddy reçoit en
+# `WIKI_DOMAINE`, et qui doit lui être complet (`wiki-gratiennois.duckdns.org`)
+# pour répondre aux requêtes. D'où la variable distincte `WIKI_SOUS_DOMAINE`
+# pour celle-ci, alors que le Caddyfile lit `WIKI_DOMAINE`.
+#
+# Les confondre est le plus sûr moyen d'obtenir soit un refus de DuckDNS, soit
+# un Caddy qui renvoie une page vide.
 #
 # ## Pourquoi le jeton est passé en argument
 #
 # La tâche planifiée tourne sous le compte SYSTEM (voir installer-services.ps1).
 # Un `setx DUCKDNS_TOKEN "..."` écrit dans l'environnement de *votre* session :
 # SYSTEM ne le lit pas, et la tâche échouerait systématiquement sur
-# « DUCKDNS_TOKEN est obligatoire » sans rienlogger d'utile. Le jeton est donc
+# « DUCKDNS_TOKEN est obligatoire » sans rien logger d'utile. Le jeton est donc
 # inscrit dans la commande de la tâche, lisible des seuls administrateurs — le
 # même cercle que celui qui peut déjà lire le fichier .env du projet.
 #
@@ -38,8 +49,11 @@
 # valeurs ci-dessous ne servent que de repli.
 
 param(
-  [string]$Domaine = $(if ($env:WIKI_DOMAINE) { $env:WIKI_DOMAINE } else { [Environment]::GetEnvironmentVariable("WIKI_DOMAINE", "Machine") }),
-  [string]$Jeton = $(if ($env:DUCKDNS_TOKEN) { $env:DUCKDNS_TOKEN } else { [Environment]::GetEnvironmentVariable("DUCKDNS_TOKEN", "Machine") }),
+  [string]$Domaine = $(if ($env:WIKI_SOUS_DOMAINE) { $env:WIKI_SOUS_DOMAINE }
+                      elseif ([Environment]::GetEnvironmentVariable("WIKI_SOUS_DOMAINE", "Machine")) { [Environment]::GetEnvironmentVariable("WIKI_SOUS_DOMAINE", "Machine") }
+                      else { "wiki-gratiennois" }),
+  [string]$Jeton = $(if ($env:DUCKDNS_TOKEN) { $env:DUCKDNS_TOKEN }
+                     else { [Environment]::GetEnvironmentVariable("DUCKDNS_TOKEN", "Machine") }),
   [string]$Memoire = "$PSScriptRoot\duckdns-ipv6.txt"
 )
 
@@ -97,18 +111,50 @@ Write-Host "IPv6 : $connue  ->  $adresse"
 $url = "https://www.duckdns.org/update?domains=$Domaine&token=$Jeton&ipv6=$adresse&ip=&verbose=false"
 
 try {
-  $reponse = (Invoke-WebRequest -Uri $url -UseBasicParsing -TimeoutSec 30).Content.Trim()
+  $contenu = (Invoke-WebRequest -Uri $url -UseBasicParsing -TimeoutSec 30).Content
 } catch {
   throw "DuckDNS est injoignable : $($_.Exception.Message)"
 }
 
-# Un jeton expire ne provoque pas d'erreur HTTP : la reponse est simplement
-# « KO ». Sans ce test, on croireait avoir reussi.
-if ($reponse -ne "OK") {
-  throw "DuckDNS a refuse la mise a jour : '$reponse' (jeton expire ?)"
+# PowerShell 5.1 - celui de Windows 11, celui qu'execute la tache planifiee -
+# renvoie `Content` sous forme d'octets des que le type MIME n'est pas du texte
+# simple. `.Trim()` n'existe pas sur un tableau d'octets : le script echouait
+# apres avoir bien parle a DuckDNS, en annonçant a tort un reseau injoignable.
+# La conversion est donc explicite, et le message d'erreur ne parle plus que du
+# reseau quand c'est reellement le reseau qui a echoue.
+if ($contenu -is [byte[]]) { $reponse = [Text.Encoding]::UTF8.GetString($contenu).Trim() }
+else { $reponse = ([string]$contenu).Trim() }
+
+# DuckDNS ne repond jamais par un seul mot, meme avec `verbose=false`. Sur un
+# succes, la reponse tient en trois lignes :
+#
+#     OK
+#     2a01:cb1d:...:4d90
+#     NOCHANGE
+#
+# Comparer la reponse entiere a "OK" rejetait donc chaque succes, et le script
+# echouait toutes les dix minutes alors que tout allait bien. Seul le verdict -
+# la premiere ligne - distingue une reussite d'un refus.
+# `@(...)` n'est pas decoratif. Un refus de DuckDNS tient sur une seule ligne,
+# et PowerShell reduit alors le resultat du pipeline a une chaine scalaire :
+# `$lignes[0]` indexerait un *caractere*, et le verdict deviendrait "K" au lieu
+# de "KO" - donc jamais egal a "OK", et impossible a diagnostiquer ensuite.
+$lignes = @(($reponse -split "\r?\n") | ForEach-Object { $_.Trim() } | Where-Object { $_ })
+$verdict = $lignes[0]
+
+# Un jeton expire ne provoque aucune erreur HTTP : la reponse est simplement
+# « KO ». Sans ce test, on en déduirait à tort que l'adresse est à jour.
+if ($verdict -ne "OK") {
+  throw "DuckDNS a refuse la mise a jour : '$verdict' (jeton expire ?)"
 }
 
 New-Item -ItemType Directory -Force -Path (Split-Path $Memoire) | Out-Null
 Set-Content -Path $Memoire -Value $adresse -Encoding ascii
 
-Write-Host "DuckDNS a jour pour ${Domaine}.duckdns.org -> $adresse"
+# « NOCHANGE » signifie que DuckDNS portait deja cette adresse : c'est un
+# succes, et meme le cas le plus fréquent en exploitation normale.
+if ($lignes -contains "NOCHANGE") {
+  Write-Host "DuckDNS inchange pour ${Domaine}.duckdns.org -> $adresse"
+} else {
+  Write-Host "DuckDNS a jour pour ${Domaine}.duckdns.org -> $adresse"
+}

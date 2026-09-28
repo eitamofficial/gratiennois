@@ -2,32 +2,48 @@
 REM ============================================================================
 REM demarrer-caddy.bat - lance Caddy pour le wiki sur Windows.
 REM
-REM A LANCER DANS UNE FENETRE, de preference en "Executer en tant
-REM qu'administrateur" : le port 80 est reserve aux administrateurs sous
-REM Windows, et sans elevation Caddy refuse de demarrer.
-REM
-REM Fermer la fenetre arrete Caddy. Pour un demarrage automatique avec le
-REM systeme, voir "Au demarrage du PC" dans deploy/windows/README.md.
+REM A installer comme tache planifiee, demarrage automatique (voir
+REM installer-services.ps1). Peut aussi etre lance a la main dans une fenetre
+REM en administrateur, auquel cas Ctrl+C arrete Caddy.
 REM
 REM
 REM CE FICHIER EST EN ASCII PUR, SANS ACCENT, ET C'EST VOLONTAIRE.
 REM
-REM cmd.exe ne lit pas un fichier .bat en UTF-8 : il l'interprete dans la
-REM page de code du systeme (437 ou 1252). Un accent ecrit ici apparait
-REM comme "D-acute-marrage" a l'ecran. Les scripts de ce depot etant relus
-REM par des humains autant que par des machines, tous les accents ont ete
-REM retires plutot que d'encoder le fichier pour une page de code particuliere.
+REM cmd.exe ne lit pas un fichier .bat en UTF-8 : il l'interprete dans la page
+REM de code du systeme (437 ou 1252). Un accent ecrit ici apparait comme
+REM "D-acute-marrage" a l'ecran. Tous les accents ont ete retires plutot que
+REM d'encoder le fichier pour une page de code particuliere.
 REM ============================================================================
 
 setlocal
+
+REM --- Attendre avant de quitter ---------------------------------------------
+REM Un `pause` lit au clavier : lance en tache planifiee sous SYSTEM, il n'y a
+REM personne pour appuyer sur une touche. La tache reste "En cours
+REM d'execution" indefiniment, et rien n'indique pourquoi - c'est exactement
+REM ce qui est arrive ici, un port 80 muet sans le moindre message.
+REM
+REM Toute sortie passe donc par :attendre, une attente bornee. Lancee a la
+REM main, elle laisse 20 s pour lire le message ; sous SYSTEM, elle se debloque
+REM seule et la tache se termine proprement, ce qui permet a l'installeur de la
+REM relancer au prochain demarrage.
+goto :attendre
 
 REM --- Emplacement de Caddy -------------------------------------------------
 REM winget installe Caddy dans un dossier versionne sous WinGet\Packages, dont
 REM le chemin change a chaque mise a jour. On le cherche donc, plutot que de
 REM supposer qu'il est dans le PATH : un shell ouvert avant l'installation
 REM ne verrait pas la modification du PATH.
+REM
+REM La recherche porte sur TOUS les profils, et pas seulement `%LOCALAPPDATA%`.
+REM La tache planifiee tourne sous SYSTEM, dont LOCALAPPDATA designe le profil
+REM systeme, ou winget n'installe rien : sans ce passage sur C:\Users\*, Caddy
+REM parait introuvable alors qu'il est la, et le site ne demarre jamais.
 set "CADDY="
 where caddy >nul 2>&1 && set "CADDY=caddy"
+
+if not defined CADDY if exist "%ProgramFiles%\Caddy\caddy.exe" set "CADDY=%ProgramFiles%\Caddy\caddy.exe"
+if not defined CADDY if exist "%ProgramData%\Caddy\caddy.exe" set "CADDY=%ProgramData%\Caddy\caddy.exe"
 
 if not defined CADDY (
   for /f "delims=" %%i in ('dir /b /s "%LOCALAPPDATA%\Microsoft\WinGet\Packages\CaddyServer.Caddy*" 2^>nul') do (
@@ -36,12 +52,22 @@ if not defined CADDY (
 )
 
 if not defined CADDY (
+  for /f "delims=" %%u in ('dir /b /ad "%SystemDrive%\Users" 2^>nul') do (
+    for /f "delims=" %%i in ('dir /b /s "%SystemDrive%\Users\%%u\AppData\Local\Microsoft\WinGet\Packages\CaddyServer.Caddy*" 2^>nul') do (
+      if exist "%%i\caddy.exe" set "CADDY=%%i\caddy.exe"
+    )
+  )
+)
+
+if not defined CADDY (
   echo [ERREUR] Caddy est introuvable.
+  echo.
+  echo Cherche dans le PATH, %ProgramFiles%\Caddy, %ProgramData%\Caddy, et
+  echo tous les profils sous %SystemDrive%\Users pour le dossier winget.
   echo.
   echo Installez-le avec :
   echo     winget install --id CaddyServer.Caddy --exact
   echo.
-  pause
   exit /b 1
 )
 
@@ -66,6 +92,10 @@ REM souvent par la meme fenetre qu'on croyait avoir fermee.
 REM
 REM Caddy ne distingue pas "port occupe" de "configuration invalide" dans sa
 REM sortie : mieux vaut le dire ici, avant de lancer.
+REM
+REM Le filtre est sur ":80 " et non sur ":80" : il distingue le port 80 de
+REM ports voisins comme 8080 ou 8000, qu'un filtre trop large declarerait
+REM occupes a tort.
 set "PORT_LIBRE=oui"
 for /f "tokens=5" %%p in ('netstat -ano -p TCP ^| findstr "LISTENING" ^| findstr ":80 "') do (
   if not "%%p"=="" set "PORT_LIBRE=non"
@@ -75,23 +105,21 @@ if "%PORT_LIBRE%"=="non" (
   echo.
   echo Un autre programme ecoute deja dessus. Identifiez-le :
   echo     netstat -ano ^| findstr ":80 " ^| findstr LISTENING
-  echo Puis arretez-le, ou changez le port dans le Caddyfile.
+  echo Puis arretez-le, ou changez de port.
   echo.
   echo Si c'est un Caddy que vous avez laisse ouvert, fermez sa fenetre.
   echo.
-  pause
   exit /b 1
 )
 
 REM --- Validation avant de lancer -------------------------------------------
 REM Une erreur de syntaxe ne se voit pas au premier ecran : Caddy demarre
 REM normalement, puis echoue plus tard. On valide donc d'abord, pour avoir un
-REM refus immediat et lisible.
+REM refus immediet et lisible.
 "%CADDY%" validate --config "%~dp0Caddyfile" --adapter caddyfile
 if errorlevel 1 (
   echo.
   echo [ERREUR] La configuration est invalide. Caddy ne demarre pas.
-  pause
   exit /b 1
 )
 
@@ -117,10 +145,17 @@ echo Journal : deploy\windows\caddy.log
 echo.
 
 "%CADDY%" run --config "%~dp0Caddyfile" --adapter caddyfile >> "%~dp0caddy.log" 2>&1
-set "CODE=%ERRORLEVEL%"
 
 echo.
-echo Caddy s'est arrete (code %CODE%).
+echo Caddy s'est arrete (code %ERRORLEVEL%).
 echo Si le site ne repondait pas, regardez :
 echo     type deploy\windows\caddy.log
-pause
+exit /b %ERRORLEVEL%
+
+REM ============================================================================
+:attendre
+REM Voir au debut du fichier pourquoi un `pause` ne convient pas ici. Vingt
+REM secondes : assez pour lire a la main, assez court pour ne pas retenir
+REM une tache planifiee en attente indefiniment.
+timeout /t 20 /nobreak > nul
+exit /b 0

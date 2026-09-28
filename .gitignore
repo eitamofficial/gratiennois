@@ -28,6 +28,11 @@ bot/node_modules/
 # Compilations temporaires des scripts de vérification
 .tmp-check-*/
 
+# Journaux des reverse proxies locaux (Windows et Termux)
+deploy/windows/caddy.log
+deploy/termux/*.log
+*.log
+
 # Divers
 .DS_Store
 .neon

@@ -133,7 +133,31 @@ système, sans dépendre d'une session ouverte :
 
 ---
 
+## Où aller maintenant, et quoi attendre
+
+Le wiki est servi sur **trois adresses**, dès que les deux programmes tournent :
+
+| Adresse | Quand elle répond |
+|---|---|
+| `http://localhost:3000` | le wiki tourne, sans Caddy |
+| `http://localhost` | Caddy tourne aussi |
+| `http://wiki-gratiennois.duckdns.org` | **seulement** après la redirection de port sur la box |
+
+La dernière ligne est la source d'une confusion fréquente. Le nom DuckDNS pointe
+vers l'adresse publique de votre box ; tant que celle-ci ne redirige pas le port
+80 vers ce PC, le nom ne mène nulle part — **y compris depuis ce PC**. Ce n'est
+pas une panne : le site répond dès que la redirection existe.
+
+C'est aussi pourquoi le Caddyfile déclare `localhost` et `127.0.0.1` à côté du
+domaine. Caddy n'accepte que le premier nom d'hôte qu'il connaît et renvoie une
+**page vide** pour les autres : taper `http://localhost` dans le navigateur
+donnait un écran blanc, indiscernable d'un site inaccessible.
+
 ## Dépannage
+
+**Le wiki s'est arrêté, ou Caddy avec lui** — les deux tournent au premier plan
+et meurent avec leur fenêtre. C'est ce qu'a montré le premier essai : le journal
+`caddy.log` se terminait par `^C`. Relancez les deux.
 
 **Caddy démarre puis s'arrête aussitôt, sans explication** — c'est le symptôme
 le plus courant, et presque toujours un **port déjà occupé** : un Caddy laissé
@@ -156,14 +180,18 @@ taskkill /PID <le-numéro> /F
 À l'inverse, si `npm start` est refusé **et** que le site répond, c'est que le
 wiki tourne déjà : ne lancez pas de second exemplaire.
 
-**`curl` échoue avec « Failed to connect » sur le sous-domaine** — la redirection
-de port n'est pas faite. Testez en local, sans quitter la machine :
+**Le sous-domaine ne répond pas, mais `localhost` oui** — c'est l'état normal
+avant la redirection de port. Le test qui le prouve :
 
 ```powershell
-curl -i http://127.0.0.1/api/health -H "Host: wiki-gratiennois.duckdns.org"
+curl -i http://localhost/api/health -H "Host: wiki-gratiennois.duckdns.org"
 ```
 
-`200 OK` = Caddy et le wiki fonctionnent, seul le réseau manque.
+`200 OK` = tout fonctionne, seul le réseau manque.
+
+**Une page blanche s'affiche** — Caddy ne sert que les noms d'hôte déclarés. Sur
+un autre nom, il répond `200` avec **zéro octet**, ce qui donne un écran vide.
+Utilisez `http://localhost`.
 
 **Caddy ne démarre pas, ou n'écoute pas sur 80** — élévation. Ouvrez le script
 en administrateur.

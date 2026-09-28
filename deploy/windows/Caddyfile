@@ -21,7 +21,15 @@
 #
 #   setx WIKI_SCHEME http://
 
-{$WIKI_SCHEME:http://}{$WIKI_DOMAINE:localhost} {
+# Le domaine public, plus `localhost` et l'adresse de boucle.
+#
+# Servir les trois n'est pas un détail : Caddy n'accepte que le premier nom
+# d'hôte déclaré et renvoie une **page vide** pour tous les autres — un code
+# 200 sans le moindre octet. Taper `http://localhost` dans le navigateur donne
+# donc un écran blanc, ce qui se confond exactement avec un site inaccessible.
+# Déclarer aussi les adresses locales rend le test immédiat sur la machine,
+# sans toucher au DNS ni attendre la redirection de port.
+{$WIKI_SCHEME:http://}{$WIKI_DOMAINE:localhost}, http://localhost, http://127.0.0.1 {
 	encode zstd gzip
 
 	# Aucun en-tête de sécurité ici : l'application les pose elle-même, dans
@@ -48,3 +56,9 @@
 # Pour que Let's Encrypt valide le domaine, le port 80 doit être joignable
 # depuis Internet — donc redirigé sur la box vers ce PC, avec une IP fixe
 # attribuée par le DHCP. C'est la seule étape qui ne dépende pas de la machine.
+#
+# Tant qu'elle n'est pas faite, `http://wiki-gratiennois.duckdns.org` reste
+# injoignable, y compris depuis cette machine : le nom pointe vers l'adresse
+# publique de la box, qui ne sait pas encore revenir ici. Ce n'est pas une
+# panne — le domaine répond dès que la redirection existe. Pour vérifier en
+# attendant, utilisez `http://localhost`.

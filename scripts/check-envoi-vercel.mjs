@@ -90,6 +90,10 @@ console.log(`${transmis.length} fichier(s) seraient transmis a Vercel.\n`);
 const INTERDITS = [
   /^\.env$/,
   /^\.env\.(?!example$)/,
+  // Un `.env` dans un sous-dossier (bot, delphinabot) est aussi un secret :
+  // les motifs du dessus ne sont ancrés qu'à la racine.
+  /(^|\/)\.env$/,
+  /(^|\/)\.env\.(?!example$)/,
   /^\.neon$/,
   /^data\//,
   /^public\/avatars\//,

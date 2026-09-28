@@ -90,7 +90,7 @@ const refus = [
   ["un mot approchant", "esheps"],
   ["un préfixe incomplet", "eshe"],
   ["le nom de l'artiste", "shakira"],
-  ["une page de contenu", "d 如何où vient le nom"],
+  ["une page de contenu", "d'où vient le nom"],
   ["rien du tout", "bonjour"],
   ["vide", ""],
 ];

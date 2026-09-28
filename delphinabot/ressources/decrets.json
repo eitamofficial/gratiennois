@@ -1,0 +1,38 @@
+{
+  "modeles": [
+    "Article {numero} : il est interdit de {interdit} sous peine de {peine}.",
+    "Décret du {date} : à compter de ce jour, {interdit} est considéré comme un service public.",
+    "Arrêté : toute personne pratiquant {interdit} devra désormais porter le {objet}.",
+    "Loi numero {numero} — {interdit} devient obligatoire les jours impairs.",
+    "Ordonnance : {interdit} est encouragé, et le port du {objet} devient obligatoire.",
+    "Le Conseil note que {interdit} n'a jamais été interdit, et le déclare donc obligatoire."
+  ],
+  "interdits": [
+    "poser la question suivante avant que celle-ci ne soit posée",
+    "lire les décrets à voix haute après minuit",
+    "utiliser « en attendant » comme formule d'ouverture",
+    "confondre le deuxième et le troisième Delphinat",
+    "ranger un article du wiki par ordre alphabétique",
+    "appeler le bot par un diminutif",
+    "demander si les ducats ont cours",
+    "réciter la Constitution en chantant",
+    "utiliser un point-virgule dans un message de moins de dix mots",
+    "créer un salon pour dire qu'on ne crée pas de salon"
+  ],
+  "peines": [
+    "confiscation de dix ducats",
+    "une heure de lecture du règlement",
+    "service d'accueil des nouveaux membres",
+    "rédaction d'un article manquant",
+    "un café imaginaire, mais obligatoire",
+    "exclusion temporaire de la salle des honneurs"
+  ],
+  "objets": [
+    "un bonnet de membre",
+    "un ruban bleu",
+    "une plume et du papier",
+    "un sceau de cire",
+    "une écuelle d'eau claire",
+    "un registre des doléances"
+  ]
+}

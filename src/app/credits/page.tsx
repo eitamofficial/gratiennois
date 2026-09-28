@@ -62,12 +62,20 @@ export default async function CreditsPage() {
                 {CREDITS.author.role}
               </p>
               <p className="mt-3 text-ink-300">{CREDITS.author.description}</p>
-              <Link
-                href={`/wiki/${CREDITS.author.articleSlug}`}
-                className="mt-4 inline-block rounded-md border border-gold-500/40 px-4 py-2.5 text-sm font-medium text-gold-200 transition hover:bg-gold-500/10"
-              >
-                Lire sa fiche
-              </Link>
+              <div className="mt-4 flex flex-wrap gap-3">
+                <Link
+                  href={`/wiki/${CREDITS.author.articleSlug}`}
+                  className="inline-block rounded-md border border-gold-500/40 px-4 py-2.5 text-sm font-medium text-gold-200 transition hover:bg-gold-500/10"
+                >
+                  Lire sa fiche
+                </Link>
+                <Link
+                  href="/bot"
+                  className="inline-block rounded-md border border-gold-500/40 px-4 py-2.5 text-sm font-medium text-gold-200 transition hover:bg-gold-500/10"
+                >
+                  Voir DelphinaBot
+                </Link>
+              </div>
             </div>
           </div>
         </section>
@@ -163,10 +171,10 @@ export default async function CreditsPage() {
           </h2>
           <ul className="mt-4 flex flex-wrap gap-2">
             {CREDITS.stack.map((item) => (
-              <li
-                key={item}
-                className="rounded-full border border-night-500 bg-night-900/60 px-3 py-1.5 text-sm text-ink-200"
-              >
+            <li
+              key={item}
+              className="rounded-full border border-night-500 bg-night-900/60 px-3 py-1.5 text-sm text-ink-200"
+            >
                 {item}
               </li>
             ))}

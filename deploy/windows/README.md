@@ -261,6 +261,92 @@ même rôle.
 
 ---
 
+## 9. DelphinaBot
+
+Le bot Discord du Delphinat vit dans [`delphinabot/`](../../delphinabot/) et
+tourne sur cette machine, comme le wiki. C'est le même pari : un bot de cette
+taille n'a besoin d'aucun cluster, et il répond aussi vite en local.
+
+### Ce qui n'est pas fait pour vous
+
+Aucune tâche n'est installée sans que vous le demandiez, et le dossier
+`delphinabot/` peut ne pas exister du tout sur une copie fraîche du dépôt. Le
+lancer à l'aveugle ne produirait qu'un journal d'erreurs toutes les vingt
+secondes.
+
+Avant la première fois :
+
+```powershell
+cd .\delphinabot
+npm install
+npm run build
+```
+
+Puis **`delphinabot\.env`**, qui n'est jamais versionné et n'existe pas tout
+seul. Copiez `.env.example` et renseignez au minimum :
+
+| Variable | Rôle |
+|---|---|
+| `DISCORD_BOT_TOKEN` | le jeton du bot, dans le portail développeur |
+| `DISCORD_CLIENT_ID` | pour `npm run deploy` (enregistrement des 57 commandes) |
+| `DATABASE_URL` | la même base Neon que le wiki, ou une seconde base dédiée |
+
+Le bot partage la base du wiki mais jamais ses tables : tout est préfixé
+`delphinabot_`. Partager `DATABASE_URL` est donc sans risque, et évite de
+payer une seconde base pour quelques tables.
+
+### Les deux intentions à cocher
+
+Dans le portail développeur, section **Bot → Privileged Gateway Intents** :
+
+- **Presence Intent** : nécessaire pour savoir qui a quitté un salon vocal et
+  stopper la musique abandonnée ;
+- **Server Members Intent** : nécessaire pour l'anti-raid, qui compte les
+  arrivées sur une fenêtre glissante.
+
+Sans le second, le bot démarre mais l'anti-raid ne compte rien et le laisse
+croire que tout va bien — c'est le pire des deux mondes, car la protection
+semble active. L'avertissement au démarrage vise exactement ce cas.
+
+### La musique a des dépendances système
+
+yt-dlp et FFmpeg ne sont pas des dépendances npm : ce sont des programmes, et
+ils doivent être dans le `PATH` **de la machine**, pas seulement de votre
+session — pour la même raison que Node plus haut. C'est la seule chose que le
+`PATH` de `SYSTEM` oblige à vérifier.
+
+```powershell
+winget install --id Gyan.FFmpeg --exact
+winget install --id yt-dlp.yt-dlp --exact
+```
+
+Sans eux, tout le bot fonctionne, et seule la musique manque. La commande de
+lecture le dit quand elle échoue, plutôt que de ne rien laisser deviner.
+
+### Lancer et installer la tâche
+
+```powershell
+.\deploy\windows\demarrer-delphinabot.bat
+```
+
+En **administrateur**, pour qu'elle survive au redémarrage :
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\deploy\windows\installer-services.ps1 `
+  -JetonDuckDNS "votre-jeton" -DelphinaBot
+```
+
+Le paramètre `-DelphinaBot` ajoute la quatrième tâche, `Wiki DelphinaBot`. Sans
+lui, les trois tâches d'origine sont créées ou modifiées normalement : le wiki ne
+dépend pas du bot.
+
+`demarrer-delphinabot.bat` est sans accent, comme les autres `.bat`, et sa fin
+de script passe par `goto :attendre` plutôt que par `pause`. Un `pause` dans une
+tâche planifiée est un blocage définitif : la fenêtre attend une touche que
+personne ne tapera jamais, et le bot ne redémarre plus après un plantage.
+
+---
+
 ## Où aller maintenant, et quoi attendre
 
 Le wiki est servi sur **trois adresses**, dès que les deux programmes tournent :

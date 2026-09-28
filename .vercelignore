@@ -52,6 +52,21 @@ next-env.d.ts
 # --- Dépendances -------------------------------------------------------------
 node_modules/
 bot/node_modules/
+delphinabot/node_modules/
+
+# --- Artefacts des bots Discord ---------------------------------------------
+# Ni le site ni Vercel n'exécutent ces deux bots : ils tournent sur la machine
+# d'accueil, via les tâches planifiées de `deploy/windows`. Leurs dossiers de
+# travail sont donc de purs artefacts de compilation.
+#
+# `delphinabot/.env` est bien plus qu'un artefact : il contient le jeton du bot.
+# C'est le motif le plus important de ce fichier, et il est listé explicitement
+# plutôt que compté sur un `*.env` — parce qu'un motif trop général, le jour où
+# quelqu'un ajoute un `.env` ailleurs, redeviendrait une faille silencieuse.
+bot/dist/
+delphinabot/dist/
+bot/.env
+delphinabot/.env
 
 # --- Divers -----------------------------------------------------------------
 # Trace de session Neon : elle contient des jetons d'accès.

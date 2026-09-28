@@ -1,10 +1,18 @@
 # Installe les services du wiki dans le Planificateur de taches.
 #
-# Trois taches, parce que les trois rôles ont des rythmes différents :
+# Trois taches par défaut, parce que les trois rôles ont des rythmes
+# différents :
 #
 #   Wiki Gratienois  — le wiki, au démarrage, relancé s'il tombe
 #   Wiki Caddy       — le reverse proxy, au démarrage
 #   Wiki DuckDNS     — l'adresse IPv6, toutes les 10 minutes
+#
+# Et une quatrième, facultative :
+#
+#   Wiki DelphinaBot — le bot Discord, au démarrage, relancé s'il tombe.
+#                     Créée seulement avec -DelphinaBot, et seulement si le
+#                     dossier delphinabot existe : une tâche qui démarre un bot
+#                     absent ne fait que remplir le journal d'erreurs.
 #
 # Ce n'est pas « termux-services pour Windows » : le Planificateur ne relance
 # pas un script qui a rendu la main, et c'est `demarrer-wiki.bat` qui s'en
@@ -21,12 +29,17 @@
 # échouera à chaque tour. Il peut aussi être lu dans `$env:DUCKDNS_TOKEN` si
 # vous l'avez défini avant.
 #
+# Pour ajouter aussi le bot Discord :
+#
+#     powershell -ExecutionPolicy Bypass -File .\deploy\windows\installer-services.ps1 -JetonDuckDNS "votre-jeton" -DelphinaBot
+#
 # Pour retirer :
 #
 #     powershell -ExecutionPolicy Bypass -File .\deploy\windows\installer-services.ps1 -Desinstaller
 
 param(
   [switch]$Desinstaller,
+  [switch]$DelphinaBot,
   [string]$JetonDuckDNS = $env:DUCKDNS_TOKEN,
   [string]$SousDomaine = $(if ($env:WIKI_SOUS_DOMAINE) { $env:WIKI_SOUS_DOMAINE } else { "wiki-gratiennois" })
 )
@@ -37,7 +50,9 @@ $racine = (Resolve-Path "$PSScriptRoot\..\..").Path
 $fenetre = "$PSScriptRoot"
 
 function Taches {
-  "Wiki Gratienois", "Wiki Caddy", "Wiki DuckDNS"
+  $liste = @("Wiki Gratienois", "Wiki Caddy", "Wiki DuckDNS")
+  if ($DelphinaBot) { $liste += "Wiki DelphinaBot" }
+  return $liste
 }
 
 # `schtasks /Delete` signale sur stderr qu'il n'a rien trouvé, et
@@ -127,6 +142,24 @@ Creer -Nom "Wiki Caddy" `
 Creer -Nom "Wiki DuckDNS" `
   -Commande ("powershell -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File `"$fenetre\sync-duckdns.ps1`" -Domaine `"$SousDomaine`"" + $(if ($JetonDuckDNS) { " -Jeton `"$JetonDuckDNS`"" } else { "" })) `
   -RepeterMinutes 10
+
+# --- Tache du bot (facultative) ---------------------------------------------
+# Le bot est un service comme les autres : il doit survivre au redemarrage du
+# PC, et le Planificateur ne relance pas un script qui a rendu la main. C'est
+# `demarrer-delphinabot.bat` qui boucle, exactement comme pour le wiki.
+if ($DelphinaBot) {
+  if (Test-Path "$racine\delphinabot\package.json") {
+    Creer -Nom "Wiki DelphinaBot" `
+      -Commande "`"$fenetre\demarrer-delphinabot.bat`""
+    Write-Host ""
+    Write-Host "  [A FAIRE] Avant de demarrer la tache, compilez le bot une fois :"
+    Write-Host "      cd delphinabot ; npm install ; npm run build"
+    Write-Host "  et renseignez delphinabot\.env (jeton, identifiant, base)."
+  }
+  else {
+    Write-Host "  [A FAIRE] Dossier delphinabot absent : tache du bot non creee."
+  }
+}
 
 # --- Pare-feu ---------------------------------------------------------------
 # Caddy ecoute le port 80 mais Windows le bloque par defaut. Sans cette regle,

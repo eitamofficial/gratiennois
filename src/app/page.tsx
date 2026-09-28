@@ -186,6 +186,18 @@ export default async function HomePage() {
           </Link>
           .
         </p>
+
+        <p className="mt-3 text-sm leading-relaxed text-slate-300">
+          À cela s&apos;ajoute{" "}
+          <Link
+            href="/bot"
+            className="text-gold-300 underline-offset-4 hover:underline"
+          >
+            DelphinaBot
+          </Link>
+          , le bot du Delphinat : modération, anti-raid, divertissement,
+          économie et musique, entièrement en français.
+        </p>
       </section>
 
       {/* Accès rapides */}

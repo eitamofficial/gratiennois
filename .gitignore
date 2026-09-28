@@ -22,8 +22,11 @@ public/avatars/
 # produit à l'exécution. Les versionner gonflerait le dépôt à chaque envoi.
 data/uploads/
 
-# Dépendances du bot Discord (le site ne les utilise pas)
+# Dépendances des bots Discord (le site ne les utilise pas)
 bot/node_modules/
+bot/dist/
+delphinabot/node_modules/
+delphinabot/dist/
 
 # Compilations temporaires des scripts de vérification
 .tmp-check-*/

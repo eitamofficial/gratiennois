@@ -10,7 +10,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "check": "npm run check:diff && npm run check:analysis && npm run check:text && npm run check:markdown && npm run check:envoi",
+    "check": "npm run check:diff && npm run check:analysis && npm run check:text && npm run check:markdown && npm run check:caracteres && npm run check:envoi",
     "check:diff": "node scripts/check-diff.mjs",
     "check:envoi": "node scripts/check-envoi-vercel.mjs",
     "check:analysis": "node scripts/check-analysis.mjs",
@@ -32,6 +32,7 @@
     "check:deploy:strict": "node scripts/check-deploy.mjs --strict",
     "check:deploy:rapport": "node scripts/check-deploy.mjs --rapport",
     "check:markdown": "node scripts/check-markdown.mjs",
+    "check:caracteres": "node scripts/check-caracteres.mjs",
     "check:oeuf": "node scripts/check-oeuf.mjs",
     "check:oeuf:navigateur": "node scripts/check-oeuf-navigateur.mjs"
   },

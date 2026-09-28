@@ -1,0 +1,35 @@
+{
+  "boutique": {
+    "devise": "ducat",
+    "articles": [
+      {
+        "id": "reconciliation",
+        "nom": "Réconciliation",
+        "prix": 100,
+        "description": "Retire un avertissement de votre dossier de modération.",
+        "emojie": "🕊️"
+      },
+      {
+        "id": "message-epingle",
+        "nom": "Message épinglé",
+        "prix": 60,
+        "description": "Le bot épingle dans ce salon le message que vous désignez.",
+        "emojie": "📌"
+      },
+      {
+        "id": "decret",
+        "nom": "Décret personnalisé",
+        "prix": 40,
+        "description": "Le bot publie un décret signé de votre nom dans le salon d'accueil.",
+        "emojie": "📜"
+      },
+      {
+        "id": "membre-verifie",
+        "nom": "Membre vérifié",
+        "prix": 200,
+        "description": "Vous attribue le rôle de vérification, si le serveur l'a configuré.",
+        "emojie": "🎖️"
+      }
+    ]
+  }
+}

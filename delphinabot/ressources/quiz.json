@@ -1,0 +1,119 @@
+{
+  "questions": [
+    {
+      "question": "Comment s'appelle le texte qui organise le IIIe Delphinat de Gratianopolis ?",
+      "reponses": [
+        "La Constitution en vigueur",
+        "Le Pacte de Germigny",
+        "La Charte du.vector",
+        "Le Statut du Concordat"
+      ],
+      "reponse": 0
+    },
+    {
+      "question": "Quelle est la monnaie du Delphinat ?",
+      "reponses": ["Le ducat", "Le sou", "La livre", "L'écu"],
+      "reponse": 0
+    },
+    {
+      "question": "Que signifie le nom « Gratianopolis » ?",
+      "reponses": [
+        "La ville de Gratien",
+        "La cité des lois",
+        "Le palais du Régent",
+        "Le port de mer"
+      ],
+      "reponse": 0
+    },
+    {
+      "question": "Quel est le rôle de ce wiki ?",
+      "reponses": ["Une encyclopédie", "Un forum", "Un blog", "Une gazette"],
+      "reponse": 0
+    },
+    {
+      "question": "Que fait le bot quand un membre inonde un salon de messages ?",
+      "reponses": [
+        "Il le met en sourdine temporaire",
+        "Il lui écrit un avertissement",
+        "Il verrouille le salon",
+        "Il bloque son compte"
+      ],
+      "reponse": 0
+    },
+    {
+      "question": "Que fait DelphinaBot lorsqu'il détecte une arrivée massive de membres ?",
+      "reponses": [
+        "Il déclenche le mode verrouillé",
+        "Il supprime le salon d'accueil",
+        "Il banni tout le monde",
+        "Il ferme le serveur"
+      ],
+      "reponse": 0
+    },
+    {
+      "question": "Quel est le rôle de l'équipe de modération ?",
+      "reponses": [
+        "Faire respecter les règles du serveur",
+        "Écrire les articles du wiki",
+        "Gérer l'hébergement du site",
+        "Administrer la base de données"
+      ],
+      "reponse": 0
+    },
+    {
+      "question": "Où peut-on déposer ses ducats à l'abri du vol et de la taxation ?",
+      "reponses": ["En banque", "Dans un coffre", "Sur le wiki", "Nulle part"],
+      "reponse": 0
+    },
+    {
+      "question": "Quelle commande demande la validation d'un lien de rôle ?",
+      "reponses": ["/lien", "/audit", "/verrouiller", "/purger"],
+      "reponse": 0
+    },
+    {
+      "question": "Que fait le bot si un membre s'attribue le nom de l'administration ?",
+      "reponses": [
+        "Il retire le rôle usurpé",
+        "Il ignore l'usurpation",
+        "Il accorde le rôle demandé",
+        "Il verrouille le serveur"
+      ],
+      "reponse": 0
+    },
+    {
+      "question": "Quelle commande affiche l'historique des sanctions d'un membre ?",
+      "reponses": ["/historique", "/solde", "/file", "/boucle"],
+      "reponse": 0
+    },
+    {
+      "question": "Quel est l'intérêt du mode verrouillé ?",
+      "reponses": [
+        "Bloquer temporairement l'arrivée de nouveaux membres",
+        "Masquer le salon d'accueil",
+        "Supprimer l'historique",
+        "Mettre le wiki hors ligne"
+      ],
+      "reponse": 0
+    },
+    {
+      "question": "Que se passe-t-il quand un membre cumule quatre avertissements ?",
+      "reponses": [
+        "La modération reçoit une alerte d'escalade",
+        "L'avertissement ne vaut plus rien",
+        "Le membre est banni sur-le-champ",
+        "Le salon est fermé pour lui"
+      ],
+      "reponse": 0
+    },
+    {
+      "question": "Quel principe guide le traitement des sanctions ?",
+      "reponses": [
+        "Une sanction est levée, jamais effacée",
+        "Les sanctions s'effacent après un mois",
+        "Seul le propriétaire peut en créer",
+        "Aucune sanction n'est enregistrée"
+      ],
+      "reponse": 0
+    }
+  ]
+}

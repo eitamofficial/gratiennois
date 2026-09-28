@@ -74,6 +74,96 @@ export const CREDITS = {
   ],
 } as const;
 
+/**
+ * DelphinaBot, le bot Discord du Delphinat.
+ *
+ * Cette page est la référence publique que Discord exige : le portail
+ * développeur demande quatre adresses — point de terminaison des
+ * interactions, vérification des liens de rôles, conditions d'utilisation et
+ * politique de confidentialité. Les écrire ici, et une seule fois, évite
+ * d'avoir quatre versions d'une même information qui divergent.
+ *
+ * Les adresses sont des **chemins** : la page les rend en adresses complètes
+ * avec `siteUrl()`, qui déduit le domaine de l'environnement. C'est ce qui
+ * permet à la même page d'être juste en local, sur le domaine définitif et
+ * sur un déploiement Vercel, sans la réécrire à chaque fois.
+ */
+export const DELPHINABOT = {
+  nom: "DelphinaBot",
+  resume:
+    "Bot Discord du IIIe Delphinat de Gratianopolis : sécurité, modération, anti-raid, divertissement, économie et musique. Entièrement francophone, écrit en TypeScript, hébergé sur le même serveur que ce wiki.",
+  dossier: "delphinabot",
+  /** Les quatre emplacements du portail développeur Discord. */
+  adresses: [
+    {
+      cle: "endpoint-interactions",
+      titre: "Point de terminaison des interactions",
+      chemin: "/bot",
+      explication:
+        "DelphinaBot reste connecté en permanence à la passerelle Discord et reçoit donc les interactions par ce canal : le champ reste volontairement vide dans le portail. Cette page est la référence qui explique ce choix, et où le retrouver si vous assumez l administration du bot.",
+    },
+    {
+      cle: "liens-de-roles",
+      titre: "URL de vérification des liens de rôles",
+      chemin: "/bot/liens",
+      explication:
+        "Adresse donnée aux membres pour rattacher leur compte Discord à une page du wiki. La validation est faite par la modération, jamais automatiquement.",
+    },
+    {
+      cle: "conditions",
+      titre: "Conditions d'utilisation",
+      chemin: "/bot/conditions",
+      explication:
+        "Ce qu'un membre peut attendre du bot, et ce à quoi il s'engage en l'utilisant.",
+    },
+    {
+      cle: "confidentialite",
+      titre: "Politique de confidentialité",
+      chemin: "/bot/confidentialite",
+      explication:
+        "Quelles données le bot conserve, combien de temps, et ce qu'il ne fait pas — il ne lit aucun message privé et n'enregistre aucun contenu.",
+    },
+  ],
+  modules: [
+    {
+      nom: "Sécurité",
+      resume:
+        "Réglages par serveur, audit des permissions dangereuses, détection d'usurpation de nom, liens de rôles vérifiés avec le wiki.",
+    },
+    {
+      nom: "Modération",
+      resume:
+        "Avertissement, délai, sourdine, exclusion, bannissement, révocation, purge, ralentissement, signalements et dossier de sanctions par membre.",
+    },
+    {
+      nom: "Anti-raid",
+      resume:
+        "Détection d'une arrivée massive, verrouillage immédiat du serveur, mise en quarantaine et alerte dans un salon dédié.",
+    },
+    {
+      nom: "Divertissement",
+      resume:
+        "Quiz jouable, dés, citations, décrets, tirages au sort, niveaux et classement d'expérience.",
+    },
+    {
+      nom: "Économie",
+      resume:
+        "Ducats, métier, récompense quotidienne, épargne à l'abri du vol, transferts atomiques, marché et taxation.",
+    },
+    {
+      nom: "Musique",
+      resume:
+        "Lecture dans les salons vocaux, file d'attente, volume et boucle, à partir de yt-dlp et FFmpeg installés sur la machine.",
+    },
+  ],
+  principes: [
+    "Le bot n'écrit jamais un article du wiki : il signale des changements de rôles, et le wiki décide.",
+    "Il n'exclut ni ne banni seul : au-delà de trois sanctions, c'est une alerte à la modération, pas une décision.",
+    "Il ne conserve aucun contenu de message : seulement un identifiant, un motif et un extrait de quatre cents caractères pour les signalements.",
+    "Les sanctions sont levées, jamais effacées : le dossier reste consultable, ce qui est la seule mémoire fiable en cas de contestation.",
+  ],
+} as const;
+
 export interface CategoryInfo {
   label: string;
   icon: string;

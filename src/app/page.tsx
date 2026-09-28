@@ -81,6 +81,41 @@ export default async function HomePage() {
         </p>
       </section>
 
+      {/* Hébergement temporaire — à retirer quand le site aura une adresse définitive.
+
+          Ce bandeau n'est pas décoratif : le site tourne aujourd'hui sur un
+          ordinateur personnel, branché chez l'un des membres, et non chez un
+          hébergeur. Toute coupure d'électricité, de connexion ou de
+          redémarrage le met hors service. Le dire aux visiteurs évite qu'ils
+          n'y voient une panne du wiki. */}
+      <section
+        aria-labelledby="hebergement-temporaire"
+        className="rounded-2xl border border-bronze-500/30 bg-night-800/60 px-5 py-5 sm:px-6"
+      >
+        <h2
+          id="hebergement-temporaire"
+          className="flex items-center gap-2 font-display text-sm font-semibold uppercase tracking-widest text-bronze-400"
+        >
+          <span aria-hidden>⚙️</span>
+          Hébergement temporaire
+        </h2>
+        <div className="mt-3 space-y-2 text-sm leading-relaxed text-slate-300">
+          <p>
+            Ce wiki est hébergé, pour l&apos;instant, sur un <strong>ordinateur
+            personnel</strong> — et non dans un datacenter. Il fonctionne
+            tant que cet ordinateur est allumé, branché et connecté à
+            Internet&nbsp;; une coupure d&apos;électricité, un reboot ou une
+            perte de connexion le met momentanément hors service.
+          </p>
+          <p>
+            L&apos;adresse <code className="text-gold-300">{SITE.name}</code> et son
+            certificat HTTPS sont fournis par DuckDNS et Let&apos;s Encrypt, ce
+            qui est provisoire. Un hébergement définitif remplacera
+            progressivement cette installation.
+          </p>
+        </div>
+      </section>
+
       {/* Accès rapides */}
       <section aria-labelledby="acces-rapides">
         <div className="mb-5 flex items-end justify-between">

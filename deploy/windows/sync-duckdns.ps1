@@ -54,7 +54,8 @@ param(
                       else { "wiki-gratiennois" }),
   [string]$Jeton = $(if ($env:DUCKDNS_TOKEN) { $env:DUCKDNS_TOKEN }
                      else { [Environment]::GetEnvironmentVariable("DUCKDNS_TOKEN", "Machine") }),
-  [string]$Memoire = "$PSScriptRoot\duckdns-ipv6.txt"
+  [string]$Memoire = "$PSScriptRoot\duckdns-ipv6.txt",
+  [switch]$PublierIpv6
 )
 
 $ErrorActionPreference = "Stop"
@@ -64,6 +65,14 @@ if (-not $Jeton)   { throw "DUCKDNS_TOKEN est obligatoire (voir https://www.duck
 
 # --- L'adresse IPv6 stable ---------------------------------------------------
 #
+# Ce bloc n'est utile qu'avec `-PublierIpv6`. Par defaut on ne publie QUE
+# l'IPv4, et le script demande a DuckDNS de retirer l'enregistrement `AAAA`.
+# Raison : la redirection de port fonctionne, et l'IPv4 a ete verifie depuis
+# plusieurs points dans le monde ; mais un telephone en 4G prefere l'IPv6 et
+# n'atteignait pas le site. Sans `AAAA`, il n'a plus d'autre chemin que
+# l'IPv4. Republier l'IPv6 n'a de sens que si le reseau mobile la rendait
+# injoignable - auquel cas c'est ce chemin-la qu'il faut reparer.
+#
 # On retient l'adresse annoncée par la box (PrefixOrigin = RouterAdvertisement)
 # dont le suffixe vient de la carte réseau (SuffixOrigin = Link). C'est celle
 # qui survit aux redémarrages et aux reconnexions.
@@ -71,20 +80,25 @@ if (-not $Jeton)   { throw "DUCKDNS_TOKEN est obligatoire (voir https://www.duck
 # `TempAddressPreference` vaut « Preferred » quand Windows préfère l'adresse
 # confidentielle, et « Disabled » quand on a désactivé cette préférence. Dans
 # le premier cas, on écarte l'adresse `Random` malgré tout.
-$stable = Get-NetIPAddress -AddressFamily IPv6 -ErrorAction SilentlyContinue |
-  Where-Object {
-    $_.PrefixOrigin -eq "RouterAdvertisement" -and
-    $_.SuffixOrigin -eq "Link" -and
-    $_.AddressState -eq "Preferred" -and
-    $_.IPAddress -notlike "fe80:*"
-  } |
-  Select-Object -First 1
+$stable = $null
+if ($PublierIpv6) {
+  $stable = Get-NetIPAddress -AddressFamily IPv6 -ErrorAction SilentlyContinue |
+    Where-Object {
+      $_.PrefixOrigin -eq "RouterAdvertisement" -and
+      $_.SuffixOrigin -eq "Link" -and
+      $_.AddressState -eq "Preferred" -and
+      $_.IPAddress -notlike "fe80:*"
+    } |
+    Select-Object -First 1
 
-if (-not $stable) {
-  throw "Aucune adresse IPv6 stable trouvee. Le PC est-il connecte en IPv6 ?"
+  if (-not $stable) {
+    throw "Aucune adresse IPv6 stable trouvee. Le PC est-il connecte en IPv6 ?"
+  }
 }
 
-$adresse = $stable.IPAddress
+# Ce que l'on veut retrouver dans l'etat enregistre. La valeur sert de temoin :
+# tant qu'elle ne change pas, l'API n'est pas rappelee.
+$signature = if ($PublierIpv6) { $stable.IPAddress } else { "ipv4-seule" }
 
 # --- Faut-il appeler DuckDNS ? ----------------------------------------------
 #
@@ -95,20 +109,33 @@ if (Test-Path $Memoire) {
   $connue = (Get-Content $Memoire -Raw -ErrorAction SilentlyContinue).Trim()
 }
 
-if ($connue -eq $adresse) {
-  Write-Host "IPv6 inchangee : $adresse"
+if ($connue -eq $signature) {
+  Write-Host "Deja a jour : $signature"
   exit 0
 }
 
-Write-Host "IPv6 : $connue  ->  $adresse"
+Write-Host "Etat : $connue  ->  $signature"
 
 # --- Mise a jour -------------------------------------------------------------
 #
 # `ip=` vide demande a DuckDNS de detecter l'adresse IPv4 lui-meme : on ne la
-# controle pas (celle de la box), et laissons faire. `ipv6=` fixe notre adresse
-# stable. Le parametre `verbose=false` evite d'inscrire un message en clair
-# dans la reponse, que l'on journalise ensuite.
-$url = "https://www.duckdns.org/update?domains=$Domaine&token=$Jeton&ipv6=$adresse&ip=&verbose=false"
+# controle pas (celle de la box), et laissons faire. Le parametre `verbose=false`
+# evite d'inscrire un message en clair dans la reponse, que l'on journalise
+# ensuite.
+#
+# Deux formes selon le mode. `ipv6=` epingle l'adresse de la machine ; laisse
+# vide, il retire l'enregistrement AAAA, pour que les visiteurs n'aient plus que
+# le chemin IPv4 a emprunter.
+#
+# NE PAS utiliser `clear=true` pour cela : chez DuckDNS, il efface l'IPv4 ET
+# l'IPv6, et le domaine cesse d'exister - le site devient injoignable pour
+# tout le monde, pas seulement pour les telephones. C'etait le defaut, ici.
+# `ipv6=none` est refuse par l'API ; seule la valeur vide convient.
+if ($PublierIpv6) {
+  $url = "https://www.duckdns.org/update?domains=$Domaine&token=$Jeton&ipv6=$($stable.IPAddress)&ip=&verbose=false"
+} else {
+  $url = "https://www.duckdns.org/update?domains=$Domaine&token=$Jeton&ipv6=&ip=&verbose=false"
+}
 
 try {
   $contenu = (Invoke-WebRequest -Uri $url -UseBasicParsing -TimeoutSec 30).Content
@@ -149,12 +176,16 @@ if ($verdict -ne "OK") {
 }
 
 New-Item -ItemType Directory -Force -Path (Split-Path $Memoire) | Out-Null
-Set-Content -Path $Memoire -Value $adresse -Encoding ascii
+Set-Content -Path $Memoire -Value $signature -Encoding ascii
 
-# « NOCHANGE » signifie que DuckDNS portait deja cette adresse : c'est un
-# succes, et meme le cas le plus fréquent en exploitation normale.
+# « NOCHANGE » signifie que DuckDNS portait deja cet etat : c'est un succes, et
+# meme le cas le plus frequent en exploitation normale.
 if ($lignes -contains "NOCHANGE") {
-  Write-Host "DuckDNS inchange pour ${Domaine}.duckdns.org -> $adresse"
+  Write-Host "DuckDNS inchange pour ${Domaine}.duckdns.org"
 } else {
-  Write-Host "DuckDNS a jour pour ${Domaine}.duckdns.org -> $adresse"
+  if ($PublierIpv6) {
+    Write-Host "DuckDNS a jour pour ${Domaine}.duckdns.org -> $($stable.IPAddress) (IPv4 + IPv6)"
+  } else {
+    Write-Host "DuckDNS a jour pour ${Domaine}.duckdns.org (IPv4 seule, AAAA retire)"
+  }
 }

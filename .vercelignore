@@ -1,0 +1,68 @@
+# Fichiers exclus des téléversements Vercel.
+#
+# ## Pourquoi ce fichier existe
+#
+# `.gitignore` protège Git. Il ne protège **rien** de Vercel.
+#
+# Vercel ne consulte pas `.gitignore` : tout ce qui se trouve dans le dossier
+# du projet est téléversé, y compris un `.env` qui contient le mot de passe de la
+# base de données, les secrets de session et les mots de passe d'édition. La
+# trace est visible dans le journal de build, sous la forme
+#
+#     - Environments: .env
+#
+# que Next.js n'affiche que lorsqu'il a trouvé un fichier d'environnement sur
+# le disque. Le fichier était donc bien arrivé sur Vercel.
+#
+# Un secret téléversé est un secret à considérer comme divulgué, même effacé
+# ensuite : il a transité par l'infrastructure d'un tiers. Seul le changement de
+# valeur chez le fournisseur referme la faille — retirer le fichier ne suffit
+# pas.
+#
+# C'est aussi pourquoi les secrets se définissent dans Vercel → Settings →
+# Environment Variables, et non dans un fichier du dépôt.
+
+# --- Secrets -----------------------------------------------------------------
+# `.env` local : DATABASE_URL (mot de passe), AUTH_SECRET, CRON_SECRET,
+# DISCORD_BOT_TOKEN, WIKI_USERS (mots de passe hachés), GEMINI_API_KEY.
+.env
+.env.*
+!.env.example
+
+# --- Contenu local -----------------------------------------------------------
+# Le magasin JSON et les téléversements produits à l'exécution. Sur Vercel, le
+# contenu vient de PostgreSQL : ces fichiers n'ont rien à y faire et
+#andraient écrasé ce que la base contient.
+data/
+
+# Portraits Discord mis en cache : données personnelles, régénérables.
+# `public/avatars/*` plutôt que `public/avatars/` : le chemin du répertoire
+# seul est ignoré par certains moteurs de motif, alors que le motif appliqué à
+# son contenu est toujours pris en compte. Le dossier doit rester dans le dépôt
+# (il est créé au premier build), seule son contenu est exclu.
+public/avatars/*
+
+# --- Artefacts de construction ----------------------------------------------
+# Régénérés par le build. Les téléverser ne fait que ralentir le déploiement.
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
+
+# --- Dépendances -------------------------------------------------------------
+node_modules/
+bot/node_modules/
+
+# --- Divers -----------------------------------------------------------------
+# Trace de session Neon : elle contient des jetons d'accès.
+.neon
+.vercel
+.DS_Store
+*.log
+
+# Identifiants d'outils locaux, jamais utiles au site.
+.freebuff/
+
+# Fichiers de travail temporaires.
+.tmp-*
+

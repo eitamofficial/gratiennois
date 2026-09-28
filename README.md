@@ -589,6 +589,7 @@ Rattachement en ligne de commande, avec la même prudence : `npm run link:roster
 | `npm run check:theme` | Vérifie que la palette bascule entre les deux thèmes et qu'aucune erreur d'hydratation n'apparaît |
 | `npm run check:discord` | Diagnostic de la configuration Discord (token, intent, rôles) |
 | `npm run check:db` | Diagnostic PostgreSQL (connexion, tables, écriture) |
+| `npm run check:envoi` | **Simule le téléversement Vercel** d'après `.vercelignore` et échoue si un secret, `data/` ou un artefact de build y figure. `git check-ignore` ne convient pas : il ne lit que `.gitignore` |
 | `npm run check:deploy` | **Contrôle de préparation au déploiement** : variables d'environnement, secrets, base, tâches planifiées, cohérence du contenu. `VERCEL=1 npm run check:deploy` force le mode plateforme éphémère. `--strict` fait échouer sur les avertissements. `--rapport` (`check:deploy:rapport`) affiche sans bloquer : c'est ce que fait `vercel.json`, pour qu'une variable manquante ne fasse pas échouer le build en taisant la raison |
 | `npm run link:roster` | Compare `shared/roster.json` aux pseudos réels du serveur et **propose** le rattachement de chaque fiche. `--write` pour écrire ; aucune ambiguïté n'est résolue à votre place |
 | `npm run cache:avatars` | Télécharge les portraits des fiches dans `public/avatars/` (User-Agent requis par le CDN Discord), **chacun dans son format réel** (PNG, JPEG, GIF ou WebP). `--dry` pour n'écrire rien |
@@ -716,7 +717,36 @@ Sur le plan Hobby, Vercel limite les tâches à une exécution par jour : l'heur
 
 - **`data/`** — le contenu vit en base. Rien à versionner, et c'est ce qui évite d'embarquer du contenu périmé dans le dépôt.
 - **`public/avatars/`** — les portraits en cache sont des données personnelles, régénérables par `npm run cache:avatars`. Sur Vercel, les portraits viennent **en direct** de l'API Discord ; le cache n'est qu'un repli local, utile hors ligne.
-- **`.env`** — jamais versionné. Tout passe par les variables d'environnement de Vercel.
+- **`.env`** — jamais versionné, **et jamais téléversé** : voir ci-dessous.
+
+### `.vercelignore` : `.gitignore` ne protège pas de Vercel
+
+`.gitignore` ne governs que Git. **Vercel ne le consulte pas** : tout ce qui se
+trouve dans le dossier du projet est téléversé, y compris un `.env` contenant le
+mot de passe de la base, les secrets de session et les mots de passe d'édition.
+
+La trace est dans le journal de build, et elle est explicite :
+
+```
+- Environments: .env
+```
+
+Next.js n'affiche cette ligne que s'il a trouvé un fichier d'environnement sur le
+disque de build — son code n'exécute cet affichage que si la liste des fichiers
+chargés est non vide. Un build sans `.env` n'affiche rien.
+
+C'est ce qui rend `.vercelignore` indispensable : il exclut `.env`, `data/`,
+`public/avatars/*`, `.neon`, les artefacts de build et les dépendances. Les
+secrets se définissent dans *Vercel → Settings → Environment Variables*, jamais
+dans un fichier du dépôt.
+
+**Un secret téléversé est un secret à considérer comme divulgué.** L'effacer
+ensuite ne referme rien : il a transité par l'infrastructure d'un tiers. Seul le
+changement de valeur **chez le fournisseur** referme la faille — pour une base
+Neon, cela passe par *Settings → Roles → Reset password*.
+
+`npm run check:envoi` rejoue la simulation de téléversement et échoue si un
+secret réapparaît dans la liste. Il fait partie de `npm run check`.
 
 ### Si vous préférez ne pas utiliser PostgreSQL
 

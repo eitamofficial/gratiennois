@@ -15,13 +15,21 @@
 #
 # Dans une fenêtre PowerShell **en administrateur**, depuis la racine du projet :
 #
-#     powershell -ExecutionPolicy Bypass -File .\deploy\windows\installer-services.ps1
+#     powershell -ExecutionPolicy Bypass -File .\deploy\windows\installer-services.ps1 -JetonDuckDNS "votre-jeton"
+#
+# Le jeton DuckDNS est facultatif : sans lui, la tâche est quand même créée mais
+# échouera à chaque tour. Il peut aussi être lu dans `$env:DUCKDNS_TOKEN` si
+# vous l'avez défini avant.
 #
 # Pour retirer :
 #
 #     powershell -ExecutionPolicy Bypass -File .\deploy\windows\installer-services.ps1 -Desinstaller
 
-param([switch]$Desinstaller)
+param(
+  [switch]$Desinstaller,
+  [string]$JetonDuckDNS = $env:DUCKDNS_TOKEN,
+  [string]$SousDomaine = $(if ($env:WIKI_DOMAINE) { $env:WIKI_DOMAINE } else { "wiki-gratiennois.duckdns.org" })
+)
 
 $ErrorActionPreference = "Stop"
 
@@ -48,6 +56,13 @@ $estAdmin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIde
 
 if (-not $estAdmin) {
   throw "Ouvrez PowerShell en administrateur : le port 80 l'exige, et les taches doivent s'executer avec les memes privileges."
+}
+
+# Le jeton est ecrit tel quel dans la ligne de commande de la tache, entre
+# guillemets. Un guillemet dedans la tronquerait, et l'echec serait invisible
+# jusqu'a la premiere execution, dix minutes plus tard. On le refuse ici.
+if ($JetonDuckDNS -and $JetonDuckDNS.Contains('"')) {
+  throw "Le jeton DuckDNS contient un guillemet, ce qui casserait la commande de la tache. Copiez-le depuis duckdns.org sans guillemets."
 }
 
 Write-Host "Racine du projet : $racine"
@@ -85,7 +100,7 @@ Creer -Nom "Wiki Caddy" `
   -Commande "`"$fenetre\demarrer-caddy.bat`""
 
 Creer -Nom "Wiki DuckDNS" `
-  -Commande "powershell -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File `"$fenetre\sync-duckdns.ps1`"" `
+  -Commande ("powershell -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File `"$fenetre\sync-duckdns.ps1`" -Domaine `"$SousDomaine`"" + $(if ($JetonDuckDNS) { " -Jeton `"$JetonDuckDNS`"" } else { "" })) `
   -RepeterMinutes 10
 
 # --- Pare-feu ---------------------------------------------------------------
@@ -106,6 +121,13 @@ Write-Host "Termine. Pour demarrer immediatement :"
 Write-Host "    Start-ScheduledTask -TaskName 'Wiki Gratienois'"
 Write-Host "    Start-ScheduledTask -TaskName 'Wiki Caddy'"
 Write-Host ""
-Write-Host "Ne demarrez la tache DuckDNS qu'apres avoir defini DUCKDNS_TOKEN :"
-Write-Host '    setx DUCKDNS_TOKEN "votre-jeton"'
-Write-Host '    setx WIKI_DOMAINE "wiki-gratienmois"'
+if ($JetonDuckDNS) {
+  Write-Host "Tache DuckDNS : jeton inscrit pour $SousDomaine."
+} else {
+  Write-Host "[A FAIRE] La tache DuckDNS n'a pas de jeton : elle echouera a chaque tour."
+  Write-Host "Relancez l'installeur avec :"
+  Write-Host '    powershell -ExecutionPolicy Bypass -File .\deploy\windows\installer-services.ps1 -JetonDuckDNS "votre-jeton"'
+}
+Write-Host ""
+Write-Host "Si le site ne repond pas, regardez le journal des taches :"
+Write-Host "    Get-ScheduledTaskInfo -TaskName 'Wiki Gratienois'"

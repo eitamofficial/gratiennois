@@ -33,6 +33,9 @@ deploy/windows/caddy.log
 deploy/termux/*.log
 *.log
 
+# Dernière adresse IPv6 annoncée à DuckDNS (relève de sync-duckdns.ps1)
+deploy/windows/duckdns-ipv6.txt
+
 # Divers
 .DS_Store
 .neon

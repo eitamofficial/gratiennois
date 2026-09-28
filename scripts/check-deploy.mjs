@@ -29,6 +29,22 @@ const STRICT = process.argv.includes("--strict");
 // poste de développement — masquant un blocage réel.
 const ONLY_ENV = process.argv.some((a) => a === "--env" || a.startsWith("--env="));
 const VERBOSE = process.argv.includes("--verbose");
+// `--rapport` affiche le contrôle sans bloquer.
+//
+// Ce mode existe parce que `vercel.json` enchaîne ce script avant le build :
+// une variable manquante faisait échouer le déploiement, et le journal Vercel
+// s'arrêtait sur la ligne de commande — sans jamais laisser voir la raison. Un
+// garde-fou muet est pire qu'absent : on croyait à une panne du build, alors
+// que le code était sain et que seule la configuration manquait.
+//
+// En mode rapport, le diagnostic reste dans le journal de build — c'est
+// souvent le seul endroit où on le cherchera — et le site se déploie. Les
+// variables se définissent ensuite dans Settings → Environment Variables, sans
+// redéclencher un build. `npm run check:deploy` reste bloquant, et c'est
+// volontairement le mode par défaut en local : sur une machine de
+// développement, un secret manquant est une faute qu'il vaut mieux voir tout
+// de suite.
+const RAPPORT = process.argv.includes("--rapport");
 
 /** Charge `.env` (et `.env.production` s'il existe) sans dépendance externe. */
 function loadEnv() {
@@ -316,8 +332,18 @@ afficher("Avertissements", warnings);
 
 console.log("");
 if (problems.length > 0) {
-  console.log(`✗ ${problems.length} problème(s) bloquant(s) : le déploiement échouerait ou perdrait des données.`);
-  process.exit(1);
+  if (RAPPORT) {
+    console.log(
+      `⚠ ${problems.length} problème(s) à corriger dans Settings → Environment Variables.\n` +
+        `  Le build se poursuit (--rapport). Définissez ces variables pour que le wiki\n` +
+        `  soit pleinement fonctionnel ; en leur absence, certaines parties resteront\n` +
+        `  inopérantes — l'espace d'édition ne peut pas être authentifié sans\n` +
+        `  AUTH_SECRET, et la synchronisation Discord échoue sans CRON_SECRET.`,
+    );
+  } else {
+    console.log(`✗ ${problems.length} problème(s) bloquant(s) : le déploiement échouerait ou perdrait des données.`);
+    process.exit(1);
+  }
 }
 if (warnings.length > 0 && STRICT) {
   console.log(`✗ ${warnings.length} avertissement(s) et --strict est actif.`);

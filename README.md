@@ -589,7 +589,7 @@ Rattachement en ligne de commande, avec la même prudence : `npm run link:roster
 | `npm run check:theme` | Vérifie que la palette bascule entre les deux thèmes et qu'aucune erreur d'hydratation n'apparaît |
 | `npm run check:discord` | Diagnostic de la configuration Discord (token, intent, rôles) |
 | `npm run check:db` | Diagnostic PostgreSQL (connexion, tables, écriture) |
-| `npm run check:deploy` | **Contrôle de préparation au déploiement** : variables d'environnement, secrets, base, tâches planifiées, cohérence du contenu. `VERCEL=1 npm run check:deploy` force le mode plateforme éphémère. `--strict` fait échouer sur les avertissements |
+| `npm run check:deploy` | **Contrôle de préparation au déploiement** : variables d'environnement, secrets, base, tâches planifiées, cohérence du contenu. `VERCEL=1 npm run check:deploy` force le mode plateforme éphémère. `--strict` fait échouer sur les avertissements. `--rapport` (`check:deploy:rapport`) affiche sans bloquer : c'est ce que fait `vercel.json`, pour qu'une variable manquante ne fasse pas échouer le build en taisant la raison |
 | `npm run link:roster` | Compare `shared/roster.json` aux pseudos réels du serveur et **propose** le rattachement de chaque fiche. `--write` pour écrire ; aucune ambiguïté n'est résolue à votre place |
 | `npm run cache:avatars` | Télécharge les portraits des fiches dans `public/avatars/` (User-Agent requis par le CDN Discord), **chacun dans son format réel** (PNG, JPEG, GIF ou WebP). `--dry` pour n'écrire rien |
 | `npm run backfill` | Crée la révision « Création » des articles qui n'ont pas d'historique |
@@ -657,7 +657,7 @@ Conséquence, sans ambiguïté : **sans `DATABASE_URL`, le déploiement fonction
 
 Le wiki détecte cette situation et la refuse explicitement :
 
-- `npm run check:deploy` **échoue** si `DATABASE_URL` manque sur une plateforme Vercel ;
+- `npm run check:deploy` **signale** `DATABASE_URL` manquante sur une plateforme Vercel (`/api/health` répond 503 tant qu'elle l'est) ;
 - le magasin JSON **lève une erreur explicite** s'il tentait d'écrire dans un tel environnement, plutôt que de laisser croire que l'enregistrement a réussi ;
 - `/api/health` répond **503** avec la liste des problèmes : un moniteur de disponibilité le voit immédiatement.
 
@@ -688,7 +688,11 @@ npm run check            # diff, analyse, texte
 npm run check:deploy     # variables d'environnement, base, cron
 ```
 
-`vercel.json` enchaîne le contrôle et le build : `node scripts/check-deploy.mjs --env && npm run build`. Un déploiement mal configuré **échoue au build** plutôt que de produire un site en ligne et vide.
+`vercel.json` enchaîne le contrôle et le build : `node scripts/check-deploy.mjs --env --rapport && npm run build`.
+
+Le drapeau `--rapport` est délibéré. Sans lui, une seule variable manquante faisait échouer le déploiement, et le journal Vercel s'arrêtait sur la ligne de commande **sans jamais montrer la raison** : on croyait à une panne du build, alors que le code était sain. En mode rapport, le diagnostic reste écrit dans le journal — c'est souvent le seul endroit où on le cherche — et le site se déploie. Les variables se définissent ensuite dans *Settings → Environment Variables*, sans redéclencher un build.
+
+En local, `npm run check:deploy` reste **bloquant** : sur une machine de développement, un secret manquant est une faute qu'il vaut mieux voir tout de suite. `npm run check:deploy:rapport` reproduit le comportement de la plateforme.
 
 **4. Premier contenu.** La base est vide au premier déploiement : connectez-vous en Dauphin sur `/admin` et lancez *Installer / mettre à niveau*. Les articles sont idempotents — le bouton ne duplique rien et ne réécrit pas vos retouches.
 

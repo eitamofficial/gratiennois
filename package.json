@@ -29,6 +29,7 @@
     "ai:analyse": "node scripts/ai-analyse.mjs",
     "check:deploy": "node scripts/check-deploy.mjs",
     "check:deploy:strict": "node scripts/check-deploy.mjs --strict",
+    "check:deploy:rapport": "node scripts/check-deploy.mjs --rapport",
     "check:markdown": "node scripts/check-markdown.mjs",
     "check:oeuf": "node scripts/check-oeuf.mjs",
     "check:oeuf:navigateur": "node scripts/check-oeuf-navigateur.mjs"

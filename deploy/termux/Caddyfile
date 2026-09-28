@@ -1,35 +1,52 @@
-# Caddyfile — reverse proxy vers le wiki, avec HTTPS automatique.
+# Caddyfile — reverse proxy vers le wiki.
 #
-# Caddy obtient et renouvelle seul le certificat Let's Encrypt, à condition que
-# le port 80 soit joignable depuis Internet. C'est la seule contrainte sérieuse de
-# l'installation : sans redirection du port 80 sur la box, il n'y a pas de
-# certificat, et donc pas de HTTPS.
+# ## Deux modes, un seul interrupteur
 #
-# Le domaine vient de DuckDNS. Remplacez-le par le vôtre, et vérifiez que la
-# ligne ci-dessous correspond exactement à `SITE_URL` du fichier `.env` : c'est
-# cette URL qui part dans le sitemap et les partages sociaux.
+# Tout dépend de `WIKI_SCHEME`, dans le fichier `env` du service caddy :
+#
+#   WIKI_SCHEME=http://    → HTTP simple sur le port 80. Aucun certificat
+#                            demandé, aucune redirection. C'est le mode de
+#                            départ, et il fonctionne sans ouvrir quoi que ce
+#                            d'autre que le port 80.
+#   WIKI_SCHEME=https://   → HTTPS automatique, avec le certificat obtenu et
+#                            renouvelé par Caddy, et une redirection permanente
+#                            du HTTP vers le HTTPS.
+#
+# Le préfixe `http://` est ce qui désactive le HTTPS automatique : Caddy
+# renonce alors à demander un certificat, ce qu'il fait dès qu'un nom de domaine
+# est présent dans la configuration. Sans lui, Caddy redirige *systématiquement*
+# le HTTP vers le HTTPS — même quand aucun certificat n'a pu être obtenu. Le
+# wiki devient alors injoignable sur les deux ports : c'est ce qui arrive quand
+# on veut vérifier l'installation avant d'avoir réglé la redirection de port.
+#
+# Passer de l'un à l'autre ne demande qu'une ligne dans `env` et un
+# `sv restart caddy`.
+#
+# ## Le domaine
+#
+# Le domaine vient de DuckDNS. Il doit correspondre exactement au `SITE_URL`
+# du `.env` du projet : c'est cette URL qui part dans le sitemap, les
+# métadonnées OpenGraph et les partages sociaux.
 
-{$WIKI_DOMAINE} {
+{$WIKI_SCHEME:https://}{$WIKI_DOMAINE} {
 	encode zstd gzip
 
-	# En-têtes ajoutés par Caddy, complétés ici.
-	header {
-		# Empêche un site tiers d'inclure le wiki dans un cadre, ce qui
-		# rendrait le clic-droit et la sélection de texte impossibles.
-		X-Frame-Options "SAMEORIGIN"
-		# Interdit au navigateur de deviner d'autres types que ceux annoncés.
-		X-Content-Type-Options "nosniff"
-		# Renvoi du site vers sa version en HTTPS, quoi qu'il arrive.
-		Strict-Transport-Security "max-age=31536000; includeSubDomains"
-		# Interdit d'utiliser le wiki comme source de requêtes à l'aveugle.
-		Referrer-Policy "strict-origin-when-cross-origin"
-		# Le wiki n'a besoin d'aucune caméra, d'aucun microphone, ni d'aucune
-		# localisation : autant ne pas les exposer.
-		Permissions-Policy "camera=(), microphone=(), geolocation=(), interest-cohort=()"
-	}
+	# Les en-têtes de sécurité ne sont pas posés ici, mais par l'application
+	# elle-même, dans `src/middleware.ts`. Deux raisons :
+	#
+	#   - la CSP doit savoir si la requête est en HTTPS, seule information qui
+	#     permet de décider d'envoyer `upgrade-insecure-requests`. L'envoyer en
+	#     HTTP casse le site : le navigateur redemande le CSS et le JS en HTTPS
+	#     vers un port qui ne parle pas TLS, et la page s'affiche sans styles ;
+	#   - Caddy s'en servirait pour écraser `X-Frame-Options`, que l'application
+	#     met à `DENY` avec une CSP `frame-ancestors 'none'` : le proxy
+	#     l'affaiblirait en `SAMEORIGIN` sans raison.
+	#
+	# Aucun en-tête n'est donc redéclaré ici : une seule source de vérité, et
+	# pas deux endroits à faire diverger.
 
 	# Next.js rend ses propres fichiers. En mode production il étiquette lui-même
-	# ce qui est immuable ; on ne.force rien, ce qui casserait les pages
+	# ce qui est immuable ; on ne force rien, ce qui casserait les pages
 	# rendues dynamiquement.
 	reverse_proxy 127.0.0.1:{$WIKI_PORT:3000} {
 		# La page d'accueil interroge la base à chaque visite. Sans ce délai
@@ -48,8 +65,21 @@
 	}
 }
 
-# HTTP vers HTTPS. Caddy s'en charge tout seul, cette clause sert à ceux qui
-# tapent l'adresse sans le « s ».
-http://{$WIKI_DOMAINE} {
-	redir https://{host}{uri} permanent
-}
+# En mode `https://`, Caddy crée lui-même la redirection du port 80 vers le
+# 443 : rien à écrire. La clause qui suit ne servirait qu'à la dupliquer — et
+# elle fait exactement ce qu'on ne veut pas en mode `http://`, où le wiki doit
+# rester joignable en clair. D'où son absence.
+#
+# Quand vous passez en HTTPS, ce qui doit fonctionner, dans l'ordre :
+#
+#   1. le port 80 est redirigé sur la box vers la tablette. C'est lui qui rend
+#      possible la validation du domaine par Let's Encrypt, et c'est la seule
+#      étape qui ne dépende pas de la tablette ;
+#   2. `sv restart caddy`, avec WIKI_SCHEME=https:// dans le `env` du service ;
+#   3. Caddy obtient le certificat. Comptez une minute, et surveillez :
+#
+#      tail -f $PREFIX/var/service/caddy/caddy.log
+#
+# Tant que le point 1 n'est pas fait, le certificat échoue et Caddy continue
+# de rediriger : le wiki reste alors inaccessible. C'est normal, et c'est
+# précisément pour cela que le mode HTTP existe.

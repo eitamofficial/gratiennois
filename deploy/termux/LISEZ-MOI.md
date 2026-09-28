@@ -100,52 +100,100 @@ sv-enable caddy
 sv up wiki          # les autres démarrent au prochain démarrage
 ```
 
-## 5. Caddy
+## 5. Caddy, en HTTP d'abord
 
 ```bash
 mkdir -p ~/caddy
 cp deploy/termux/Caddyfile ~/caddy/Caddyfile
 ```
 
-Remplacez `monwiki.duckdns.org` par votre domaine.
+Remplacez `monwiki.duckdns.org` par votre domaine, et vérifiez que le fichier
+`$PREFIX/var/service/caddy/env` contient :
+
+```
+WIKI_DOMAINE=monwiki.duckdns.org
+WIKI_SCHEME=http://
+```
+
+**Le mode `http://` est le point de départ, et il n'exige rien sur votre box.**
+Le wiki répond en HTTP simple, sur le port 80. C'est volontairement le premier
+mode : vous pouvez vérifier que tout fonctionne avant de vous battre avec la
+redirection de port.
+
+Le mode par défaut du fichier `env` est `http://`. Ne le passez pas en `https://`
+tout de suite.
 
 Caddy tourne comme les autres services, et ce n'est pas un détail de confort :
-le Caddyfile fait référence à `{$WIKI_DOMAINE}`, que Caddy ne lit que depuis son
-propre environnement. Lancé à la main, il refuserait de démarrer. Le service
-charge le fichier `env` avant de le lancer, ce qui règle le problème.
+le Caddyfile fait référence à `{$WIKI_DOMAINE}` et `{$WIKI_SCHEME}`, que Caddy
+ne lit que depuis son propre environnement. Lancé à la main, il refuserait de
+démarrer. Le service charge le fichier `env` avant de le lancer, ce qui règle le
+problème.
 
 ```bash
 sv up caddy
 tail -f $PREFIX/var/service/caddy/caddy.log
 ```
 
-**Le port 80 pose problème sur Android.** Caddy en a besoin pour obtenir un
-certificat, et les ports inférieurs à 1024 sont réservés au root. Beaucoup de
-noyaux Android les ouvrent pourtant aux applications ordinaires.
+Vérifiez que le wiki répond bien en HTTP, sans redirection :
 
-Le service gère les deux cas : il tente d'abord sans élévation, et si le
-processus meurt en quelques secondes, il se relance en root tout seul. Vous n'avez
-rien à décider, mais c'est utile à savoir pour lire les journaux — un démarrage
-qui bascule sur root se voit dans `caddy.log`.
+```bash
+curl -i http://monwiki.duckdns.org/api/health
+```
+
+Une ligne `HTTP/1.1 200 OK` : tout va bien. Un `301` ou un `308` vers `https://`
+signifie que `WIKI_SCHEME` est encore à `https://` dans le `env` du service —
+repassez-le à `http://`, puis `sv restart caddy`.
+
+**Le port 80 pose problème sur Android.** Les ports inférieurs à 1024 sont
+réservés au root. Beaucoup de noyaux Android les ouvrent pourtant aux
+applications ordinaires. Le service gère les deux cas : il tente d'abord sans
+élévation, et si le processus meurt en quelques secondes, il se relance en root
+tout seul. Vous n'avez rien à décider, mais un démarrage qui bascule sur root se
+voit dans `caddy.log`.
 
 
 ## 6. La redirection de port, côté box
 
-C'est l'étape qu'on oublie, et sans elle rien ne fonctionne.
+C'est l'étape qu'on oublie, et sans elle le site n'est visible de l'extérieur
+que sur votre Wi-Fi. Elle ne concerne que la box : la tablette n'y touche pas.
 
 Dans l'interface de votre box, redirigez :
 
 | Port externe | Port interne | Protocole |
 |---|---|---|
 | 80 | 80 (tablette) | TCP |
-| 443 | 443 (tablette) | TCP |
 
 L'adresse interne est celle de la tablette sur le Wi-Fi. **Donnez-lui une IP
 fixe** dans les réglages DHCP de la box, sinon elle changera et la redirection
 pointera dans le vide.
 
 Testez depuis l'extérieur, pas depuis le Wi-Fi — depuis le réseau local, le test
-ne prouve rien.
+ne prouve rien. Un téléphone en 4G est lideal.
+
+Une fois le port 80 redirigé, le wiki est en ligne en HTTP. Passez alors au
+HTTPS, à l'étape 6 bis.
+
+
+## 6 bis. Le HTTPS
+
+Le port 80 ouvert, Let's Encrypt peut valider le domaine. Basculez le service :
+
+```bash
+# dans $PREFIX/var/service/caddy/env
+WIKI_SCHEME=https://
+
+sv restart caddy
+tail -f $PREFIX/var/service/caddy/caddy.log
+```
+
+Caddy obtient le certificat, le renouvelle tout seul, et redirige désormais le
+HTTP vers le HTTPS. Comptez une minute. Il ne reste qu'à ouvrir le port 443
+dans la box, par la même procédure que le 80.
+
+Si le journal indique un échec d'obtention de certificat, le port 80 n'est en
+réalité pas joignable. Revenez en arrière avec `WIKI_SCHEME=http://` : le wiki
+redevient accessible, ce qui permet de ne jamais rester bloqué sur un problème
+de certificat.
 
 ## 7. Que la tablette reste éveillée
 
@@ -187,11 +235,11 @@ Applications → Termux → « Lancer au démarrage »).
 ## Vérifier que tout fonctionne
 
 ```bash
-# Le wiki répond-il en local ?
+# Le wiki répond-il en local, sur la tablette ?
 curl -s -o /dev/null -w '%{http_code}\n' http://127.0.0.1:3000/api/health
 
-# Caddy relaie-t-il correctement ?
-curl -s -o /dev/null -w '%{http_code}\n' https://monwiki.duckdns.org/api/health
+# Le sous-domaine répond-il ? Depuis l'extérieur, en 4G de préférence.
+curl -i http://monwiki.duckdns.org/api/health
 
 # L'état des services ?
 sv status wiki sync-discord duckdns
@@ -219,7 +267,12 @@ contiendraient alors rien.
 
 **« Caddy n'obtient pas de certificat »** — le port 80 n'atteint pas la
 tablette. Vérifiez la redirection de port, et que le port 80 est bien joignable
-depuis l'extérieur.
+depuis l'extérieur. En attendant, repassez `WIKI_SCHEME=http://` dans le `env` du
+service caddy : le wiki redevient accessible en clair.
+
+**Le site redirige vers `https://` alors que rien n'est configuré** —
+`WIKI_SCHEME` est encore à `https://` dans le `env` du service caddy. Le mode
+HTTP est le point de départ normal ; le HTTPS demande le port 80 ouvert.
 
 **Le site est en ligne mais vide** — la base n'a pas été amorcée. Connectez-vous
 en Dauphin et lancez « Installer / mettre à niveau » dans `/admin`.

@@ -141,7 +141,7 @@ Le format est déduit des **octets du fichier** et non de son nom : un fichier r
 - **Audit de rendu automatisé** (`npm run check:render`) : le site est mesuré dans un vrai moteur (Edge en headless, piloté par le protocole DevTools, sans dépendance) en **390 × 844 px** et **1440 × 900 px**. L'audit vérifie le débordement horizontal et le **zoom automatique** du navigateur (qui rendait les contrôles mobile aveugles), les éléments hors cadre, les **images rognées ou étirées**, le **texte coupé** par `overflow: hidden`, les troncatures « … », les **contrôles qui se recouvrent**, les **sauts de mise en page** après chargement des images, les contrastes WCAG AA, les tailles de police, les cibles tactiles (24 px normatifs, 40 px confortable), les `alt` manquants, le nombre de `<h1>`, les sauts de niveaux de titres **et les erreurs de console** (avertissements React, divergences d'hydratation). `THEME=light` / `THEME=dark` force le thème audité. Résultat actuel : **100 vues (50 pages, mobile + desktop), 0 problème dans les deux thèmes**.
 - **Diagnostic ponctuel** (`node scripts/dump-rects.mjs <page> <sélecteur…>`) : affiche rectangles, styles, alignement et ancêtres rognants d'un élément, pour trancher entre un vrai bug et un faux positif.
 - **Vérification du thème** (`npm run check:theme`) : relève les couleurs réellement calculées dans les deux thèmes et confirme l'absence d'erreur d'hydratation.
-- **Sécurité** : voir la table ci-dessous.
+- **Sécurité — en-têtes appliqués selon le protocole réel.** La CSP, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy` et `nosniff` sont posés par `src/middleware.ts`, qui est le seul endroit à connaître le protocole de la requête — `headers()` de `next.config.mjs` étant évalué à la construction, sans accès à la requête. Ce détail a une conséquence très concrète : la directive `upgrade-insecure-requests` ordonne au navigateur de rejouer le CSS et le JS en HTTPS. Chrome n'exempte de cette règle que les origines « potentiellement fiables » (`localhost`, `127.0.0.1`, les `.local`) — **pas** une adresse IP privée. Sans condition, un wiki servi sur `http://192.168.1.22:3000` s'affichait entièrement **sans feuille de style** : le navigateur demandait `https://192.168.1.22:3000/…` vers un port qui ne parle pas TLS. HSTS et `upgrade-insecure-requests` ne partent donc qu'en HTTPS, où ils ont un sens, et `X-Forwarded-Proto` est pris en compte pour rester correct derrière Caddy, qui termine le TLS en amont. La table des en-têtes est plus bas.
 - **Stockage** interchangeable JSON / PostgreSQL, bascule par `DATABASE_URL` seule (colonnes `infobox` ajoutées automatiquement, `ALTER TABLE … IF NOT EXISTS`).
 - **Drapeau** : `flag.png` (3200 × 2000) décliné par `npm run assets` en **version web au ratio réel** (640 × 400), en icônes **carrées opaques** (fond bleu nuit, liseré or, drapeau entier et centré) et en image OpenGraph. Aucune déclinaison ne rogne le drapeau.
 - **SEO / PWA** : `sitemap.xml`, `robots.txt`, `manifest.webmanifest`, OpenGraph, icônes 192/512, rendu 100 % dynamique (contenu toujours frais).
@@ -414,7 +414,7 @@ curl -s http://localhost:3000/api/health | jq
 | Chaque droit est adossé à un extrait de la Constitution | `ROLE_INFO` dans `src/lib/types.ts` |
 | **Anti-CSRF** : contrôle de l'origine + `Content-Type: application/json` exigé + corps ≤ 512 Ko | `middleware.ts`, `src/lib/request-security.ts` |
 | **Limitation de débit** : 10 tentatives / IP et 5 / compte par 15 min sur la connexion, 60 requêtes/min sur la recherche | `src/lib/rate-limit.ts` |
-| En-têtes : CSP, `X-Frame-Options: DENY`, `nosniff`, `Referrer-Policy`, `Permissions-Policy`, HSTS en production | `next.config.mjs` |
+| En-têtes : CSP, `X-Frame-Options: DENY`, `nosniff`, `Referrer-Policy`, `Permissions-Policy`. **HSTS et `upgrade-insecure-requests` ne sont émis qu'en HTTPS** : `headers()` de `next.config.mjs` est évalué à la construction et ignore le protocole, ce qui cassait le rendu sur une IP privée | `src/lib/security-headers.ts`, `src/middleware.ts` |
 | Markdown rendu en **échappant tout le HTML** (liste blanche de balises) | `src/components/MarkdownRenderer.tsx` |
 | Une image téléversée est identifiée par ses **octets**, jamais par son nom ni par son `Content-Type` : un fichier renommé `.png` qui contient du HTML ou un SVG est refusé, et un fichier tronqué aussi | `src/lib/images.ts` |
 | Un nom de fichier servi par `/media/` est validé **en entier** (`^[a-z0-9]{1,12}-[a-f0-9]{12}\.(png\|jpg\|gif\|webp)$`) : aucune remontée de chemin n'est possible | `src/app/media/[name]/route.ts` |
@@ -733,12 +733,48 @@ Ce qu'il faut savoir avant de choisir cette voie :
   ni CDN, ni reprise sur panne, ni supervision ;
 - **Le stockage JSON suffit**, et c'est même préférable : rien à exploiter, et
   une sauvegarde se réduit à copier `data/`. Vérifié dans cette configuration :
-  `durable: true`, 60 articles, toutes les pages servies ;
+  `durable: true`, 60 articles, toutes les pages servies. PostgreSQL reste
+  possible — `DATABASE_URL` fonctionne aussi bien sur une tablette ;
 - **Le port 80 doit être joignable** depuis Internet, sans quoi Let's Encrypt ne
   peut pas répondre et il n'y a pas de certificat. Cela suppose une redirection
   de port sur la box, et une IP fixe pour la tablette ;
 - **Caddy doit s'exécuter dans l'environnement** où se trouve `WIKI_DOMAINE` : le
   Caddyfile ne lit pas le fichier `env` du projet. D'où un service dédié.
+
+### Le mode HTTP d'abord
+
+Un seul réglage décide si le site est accessible : `WIKI_SCHEME`, dans le `env`
+du service `caddy`.
+
+| `WIKI_SCHEME` | Effet |
+|---|---|
+| `http://` | HTTP simple sur le port 80. Aucun certificat demandé, aucune redirection. **C'est le mode de départ.** |
+| `https://` | HTTPS automatique, certificat obtenu et renouvelé par Caddy, redirection du HTTP vers le HTTPS. |
+
+Le point de départ est `http://` pour une raison précise. Dès qu'un nom de
+domaine figure dans la configuration, Caddy active le HTTPS automatique **et**
+redirige le HTTP vers le HTTPS. Or le certificat ne peut être obtenu que si le
+port 80 est joignable. Tant que la redirection de port n'est pas faite sur la
+box, le navigateur est renvoyé vers un HTTPS inexistant : le site paraît mort,
+alors que la box n'est simplement pas encore configurée. En `http://`, ce renvoi
+n'a pas lieu et le wiki répond — on peut donc tout vérifier avant de toucher à la
+box.
+
+```bash
+# dans $PREFIX/var/service/caddy/env
+WIKI_DOMAINE=exemple.duckdns.org
+WIKI_SCHEME=http://
+
+sv restart caddy
+curl -i http://exemple.duckdns.org/api/health
+```
+
+Une ligne `200 OK` : tout va bien. Un `301` ou un `308` vers `https://` signifie
+que `WIKI_SCHEME` est resté à `https://`.
+
+Une fois le port 80 redirigé sur la box et le site joignable de l'extérieur, on
+passe à `https://` et on `sv restart caddy` : Caddy obtient le certificat seul.
+Si l'obtention échoue, on rebascule en `http://` et le site redevient accessible.
 
 Quatre services Termux sont fournis :
 
@@ -789,5 +825,3 @@ Le nom de l'auteur et la liste des contributions sont centralisés dans `CREDITS
 ---
 
 *Wiki du IIIe Delphinat de Gratianopolis — discord.gg/gratianopolis* ⚜️
-#   g r a t i e n n o i s  
- 

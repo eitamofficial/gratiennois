@@ -1,0 +1,50 @@
+# Caddyfile — reverse proxy vers le wiki, sur Windows.
+#
+# Mêmes principes que `deploy/termux/Caddyfile`, avec les différences qui
+# tiennent à la machine : où sont les journaux, comment on démarre le service.
+#
+# ## Deux modes, un seul interrupteur
+#
+#   WIKI_SCHEME=http://    → HTTP simple sur le port 80. Aucun certificat
+#                            demandé, aucune redirection. C'est le mode de
+#                            départ : le wiki répond sans rien ouvrir d'autre.
+#   WIKI_SCHEME=https://   → HTTPS automatique, certificat obtenu et renouvelé
+#                            par Caddy, redirection du HTTP vers le HTTPS.
+#
+# Le préfixe `http://` désactive le HTTPS automatique. Sans lui, Caddy redirige
+# systématiquement le HTTP vers le HTTPS — même quand aucun certificat n'a pu
+# être obtenu, faute de port 80 joignable. Le site devient alors injoignable sur
+# les deux ports, sans que rien n'indique que c'est la box qui est en cause.
+#
+# Sur cette machine, la variable se lit dans l'environnement du service
+# (`voir demarrer-caddy.bat`), ou se règle pour la session avec :
+#
+#   setx WIKI_SCHEME http://
+
+{$WIKI_SCHEME:http://}{$WIKI_DOMAINE:localhost} {
+	encode zstd gzip
+
+	# Aucun en-tête de sécurité ici : l'application les pose elle-même, dans
+	# `src/middleware.ts`, en ajustant la CSP au protocole réel. Voir
+	# `src/lib/security-headers.ts` pour pourquoi cette distinction compte.
+
+	# Next.js rend ses propres fichiers et les étiquette lui-même ; on ne force
+	# rien, ce qui casserait les pages rendues dynamiquement.
+	reverse_proxy 127.0.0.1:{$WIKI_PORT:3000} {
+		# La page d'accueil interroge la base à chaque visite. Sans ce délai,
+		# une base lente ferait expire la requête du navigateur alors que le
+		# serveur répond encore.
+		transport http {
+			read_timeout 60s
+			write_timeout 60s
+		}
+	}
+}
+
+# En mode `https://`, Caddy crée lui-même la redirection du port 80 vers le
+# 443. Rien à écrire ici : la dédupliquer ne servirait qu'à la rendre active en
+# mode `http://`, où le wiki doit rester joignable en clair.
+#
+# Pour que Let's Encrypt valide le domaine, le port 80 doit être joignable
+# depuis Internet — donc redirigé sur la box vers ce PC, avec une IP fixe
+# attribuée par le DHCP. C'est la seule étape qui ne dépende pas de la machine.

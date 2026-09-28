@@ -58,6 +58,9 @@ bot/node_modules/
 .neon
 .vercel
 .DS_Store
+
+# Journaux des reverse proxies locaux. `*.log` couvre déjà ceux de
+# `deploy/windows` et `deploy/termux`, sans avoir à les nommer un par un.
 *.log
 
 # Identifiants d'outils locaux, jamais utiles au site.

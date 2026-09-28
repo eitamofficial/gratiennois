@@ -23,11 +23,13 @@ REM personne pour appuyer sur une touche. La tache reste "En cours
 REM d'execution" indefiniment, et rien n'indique pourquoi - c'est exactement
 REM ce qui est arrive ici, un port 80 muet sans le moindre message.
 REM
-REM Toute sortie passe donc par :attendre, une attente bornee. Lancee a la
-REM main, elle laisse 20 s pour lire le message ; sous SYSTEM, elle se debloque
-REM seule et la tache se termine proprement, ce qui permet a l'installeur de la
+REM Toute sortie d'ERREUR passe donc par `goto :attendre`, une attente bornee.
+REM Lancee a la main, elle laisse 20 s pour lire le message ; sous SYSTEM, elle
+REM se debloque seule et la tache se termine proprement, ce qui permet de la
 REM relancer au prochain demarrage.
-goto :attendre
+REM
+REM Ne surtout PAS mettre ce `goto` ici : il sauterait tout le script, et Caddy
+REM ne demarrerait jamais.
 
 REM --- Emplacement de Caddy -------------------------------------------------
 REM winget installe Caddy dans un dossier versionne sous WinGet\Packages, dont
@@ -68,7 +70,7 @@ if not defined CADDY (
   echo Installez-le avec :
   echo     winget install --id CaddyServer.Caddy --exact
   echo.
-  exit /b 1
+  goto :attendre
 )
 
 REM --- Configuration ---------------------------------------------------------
@@ -109,7 +111,7 @@ if "%PORT_LIBRE%"=="non" (
   echo.
   echo Si c'est un Caddy que vous avez laisse ouvert, fermez sa fenetre.
   echo.
-  exit /b 1
+  goto :attendre
 )
 
 REM --- Validation avant de lancer -------------------------------------------
@@ -120,7 +122,7 @@ REM refus immediet et lisible.
 if errorlevel 1 (
   echo.
   echo [ERREUR] La configuration est invalide. Caddy ne demarre pas.
-  exit /b 1
+  goto :attendre
 )
 
 REM --- Le wiki est-il lance ? ------------------------------------------------

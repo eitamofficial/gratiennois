@@ -61,10 +61,17 @@ Le script :
 
 1. trouve Caddy, même si le `PATH` n'a pas été rechargé ;
 2. renseigne `WIKI_DOMAINE` et `WIKI_SCHEME` s'ils manquent ;
-3. **valide le Caddyfile avant de lancer** — une erreur de syntaxe devient un
+3. **refuse de démarrer si le port 80 est déjà occupé**, en indiquant comment
+   trouver le coupable — sans ce contrôle, Caddy démarre puis s'arrête aussitôt,
+   sans jamais dire pourquoi ;
+4. **valide le Caddyfile avant de lancer** — une erreur de syntaxe devient un
    message lisible au lieu d'un démarrage qui s'effondre plus tard ;
-4. vérifie que le wiki répond sur le port 3000, et vous prévient sinon : Caddy
+5. vérifie que le wiki répond sur le port 3000, et vous prévient sinon : Caddy
    démarrerait sans erreur et toutes les pages répondraient 502.
+
+Le fichier est **volontairement sans accent**. `cmd.exe` n'interprète pas un
+`.bat` en UTF-8 mais dans la page de code du système : un accent y apparaît
+`D-├-marrage` à l'écran. C'est une contrainte de Windows, pas une préférence.
 
 ## 4. Le pare-feu
 
@@ -128,6 +135,27 @@ système, sans dépendre d'une session ouverte :
 
 ## Dépannage
 
+**Caddy démarre puis s'arrête aussitôt, sans explication** — c'est le symptôme
+le plus courant, et presque toujours un **port déjà occupé** : un Caddy laissé
+ouvert par une fenêtre qu'on croyait fermée. `demarrer-caddy.bat` le détecte
+maintenant et le dit explicitement. Sinon :
+
+```powershell
+netstat -ano | findstr ":80 " | findstr LISTENING
+taskkill /PID <le-numéro> /F
+```
+
+**`npm start` échoue avec `EADDRINUSE` sur le port 3000** — un wiki tourne déjà,
+souvent laissé par une session précédente :
+
+```powershell
+netstat -ano | findstr ":3000 " | findstr LISTENING
+taskkill /PID <le-numéro> /F
+```
+
+À l'inverse, si `npm start` est refusé **et** que le site répond, c'est que le
+wiki tourne déjà : ne lancez pas de second exemplaire.
+
 **`curl` échoue avec « Failed to connect » sur le sous-domaine** — la redirection
 de port n'est pas faite. Testez en local, sans quitter la machine :
 
@@ -147,7 +175,14 @@ npm run build
 npm run start
 ```
 
+Le lanceur vous prévient dans ce cas, avant même de lancer Caddy.
+
 **Le site redirige vers `https://` alors que rien n'est configuré** —
 `WIKI_SCHEME` est resté sur `https://`. Remettez `http://`.
+
+**Les accents s'affichent mal (`D-├-marrage`)** — un problème antique de
+`cmd.exe`, qui n'interprète pas un `.bat` en UTF-8. Le script de ce dépôt est
+délibérément **sans accent** pour l'éviter. Si vous en ajoutez, la page de code
+de la console.Sendez la sortie dans un fichier, ou lisez le journal.
 
 **Le journal** : `deploy\windows\caddy.log`.

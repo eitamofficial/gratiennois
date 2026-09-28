@@ -14,6 +14,7 @@
 # Les scripts et configurations exécutés hors de Windows, en particulier sur
 # la tablette.
 deploy/termux/run-* text eol=lf
+deploy/windows/demarrer-caddy.bat text eol=lf
 *.sh text eol=lf
 Caddyfile text eol=lf
 Dockerfile text eol=lf

@@ -40,11 +40,27 @@ function Taches {
   "Wiki Gratienois", "Wiki Caddy", "Wiki DuckDNS"
 }
 
+# `schtasks /Delete` signale sur stderr qu'il n'a rien trouvé, et
+# `$ErrorActionPreference = "Stop"` transforme toute sortie d'erreur d'un
+# programme natif en exception. Sans ce garde-fou, l'installeur s'arrete sur la
+# toute première tâche absente — donc systématiquement, à la première
+# installation, avant d'avoir rien créé. Le bruit est attendu : seul le code de
+# sortie compte.
+function Supprimer-Tache {
+  param([string]$Nom)
+
+  $precedent = $ErrorActionPreference
+  $ErrorActionPreference = "Continue"
+  schtasks /Delete /TN $Nom /F 2>&1 | Out-Null
+  $supprimee = ($LASTEXITCODE -eq 0)
+  $ErrorActionPreference = $precedent
+  return $supprimee
+}
+
 # --- Desinstallation --------------------------------------------------------
 if ($Desinstaller) {
   foreach ($t in Taches) {
-    schtasks /Delete /TN $t /F 2>&1 | Out-Null
-    if ($LASTEXITCODE -eq 0) { Write-Host "Supprimee : $t" }
+    if (Supprimer-Tache $t) { Write-Host "Supprimee : $t" }
   }
   Write-Host "Termine."
   exit 0
@@ -72,19 +88,28 @@ Write-Host ""
 # On repart d'une installation propre : une tache existante avec des reglages
 # de l'ancienne version serait conservee telle quelle par /Create, qui echoue
 # silencieusement si le nom est deja pris.
-foreach ($t in Taches) { schtasks /Delete /TN $t /F 2>&1 | Out-Null }
+foreach ($t in Taches) { Supprimer-Tache $t | Out-Null }
 
 # --- Taches ----------------------------------------------------------------
 function Creer {
-  param($Nom, $Commande, $Declencheur, $RepeterMinutes)
+  param($Nom, $Commande, $RepeterMinutes)
 
-  if ($RepeterMinutes) {
-    schtasks /Create /TN $Nom /SC MINUTE /MO $RepeterMinutes /RU SYSTEM /RL HIGHEST /F /TR $Commande | Out-Null
-  } else {
-    schtasks /Create /TN $Nom /SC ONSTART /RU SYSTEM /RL HIGHEST /F /TR $Commande | Out-Null
+  $arguments = @("/Create", "/TN", $Nom, "/TR", $Commande, "/RU", "SYSTEM", "/RL", "HIGHEST", "/F")
+  if ($RepeterMinutes) { $arguments += @("/SC", "MINUTE", "/MO", $RepeterMinutes) }
+  else                 { $arguments += @("/SC", "ONSTART") }
+
+  $precedent = $ErrorActionPreference
+  $ErrorActionPreference = "Continue"
+  $sortie = & schtasks @arguments 2>&1
+  $code = $LASTEXITCODE
+  $ErrorActionPreference = $precedent
+
+  if ($code -ne 0) {
+    # Le message de schtasks est en anglais et volumineux : on le donne tel
+    # quel, plutot qu'un « echec » qui ne dirait rien. C'est presque toujours
+    # un nom de tache deja pris, ou un guillemet dans /TR.
+    throw "Echec de la creation de la tache '$Nom' :`n$($sortie -join "`n")"
   }
-
-  if ($LASTEXITCODE -ne 0) { throw "Echec de la creation de la tache '$Nom'." }
   Write-Host "  creee : $Nom"
 }
 

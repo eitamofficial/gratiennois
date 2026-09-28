@@ -1,41 +1,21 @@
 /** @type {import('next').NextConfig} */
-const isProduction = process.env.NODE_ENV === "production";
 
-const contentSecurityPolicy = [
-  "default-src 'self'",
-  // Next.js injecte des styles et un script inline (le script de thème, exécuté
-  // avant le premier rendu) : 'unsafe-inline' est nécessaire pour les deux, mais
-  // le contenu des articles est toujours rendu échappé par React, jamais injecté
-  // en HTML brut.
-  "script-src 'self' 'unsafe-inline'",
-  "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob: https://cdn.discordapp.com",
-  "font-src 'self' data:",
-  "connect-src 'self'",
-  "frame-src 'self'",
-  "object-src 'none'",
-  "base-uri 'self'",
-  "form-action 'self'",
-  "frame-ancestors 'none'",
-  "upgrade-insecure-requests",
-].join("; ");
-
-const securityHeaders = [
-  { key: "Content-Security-Policy", value: contentSecurityPolicy },
-  { key: "X-Content-Type-Options", value: "nosniff" },
-  { key: "X-Frame-Options", value: "DENY" },
-  { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-  { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), interest-cohort=()" },
-  { key: "X-DNS-Prefetch-Control", value: "off" },
-  ...(isProduction ? [{ key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains" }] : []),
-];
+// Les en-têtes de sécurité (CSP, HSTS, X-Frame-Options…) ne sont PAS posés
+// ici. `headers()` est évalué à la construction, sans accès à la requête : il
+// ne peut donc pas savoir si le visiteur est en HTTPS. Or émettre
+// `upgrade-insecure-requests` sur une origine HTTP (l'adresse IP de la
+// tablette sur le réseau local, par exemple) ordonne au navigateur de
+// rejouer le CSS et le JS en HTTPS vers un port sans TLS : la page arrive
+// entièrement dénuée de styles. Les en-têtes sont donc appliqués dans
+// `src/middleware.ts`, qui connaît le protocole réel — voir
+// `src/lib/security-headers.ts`.
+//
+// Le reverse proxy Caddy ajoute de son côté X-Frame-Options, HSTS et
+// Referrer-Policy ; `deploy/termux/Caddyfile`.
 
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
-  async headers() {
-    return [{ source: "/:path*", headers: securityHeaders }];
-  },
 };
 
 export default nextConfig;

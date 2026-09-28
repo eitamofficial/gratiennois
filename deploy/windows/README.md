@@ -53,9 +53,14 @@ reverse_proxy 127.0.0.1:3000 {
 
 ## 3. Démarrer
 
+Pour un essai immédiat, deux fenêtres :
+
 ```powershell
+.\deploy\windows\demarrer-wiki.bat
 .\deploy\windows\demarrer-caddy.bat
 ```
+
+Pour un hébergement durable, sautez directement à la section 8.
 
 Le script :
 
@@ -69,21 +74,23 @@ Le script :
 5. vérifie que le wiki répond sur le port 3000, et vous prévient sinon : Caddy
    démarrerait sans erreur et toutes les pages répondraient 502.
 
-Le fichier est **volontairement sans accent**. `cmd.exe` n'interprète pas un
-`.bat` en UTF-8 mais dans la page de code du système : un accent y apparaît
-`D-├-marrage` à l'écran. C'est une contrainte de Windows, pas une préférence.
+Les deux scripts `.bat` sont **volontairement sans accent**. `cmd.exe`
+n'interprète pas un `.bat` en UTF-8 mais dans la page de code du système : un
+accent y apparaît `D-├-marrage` à l'écran. C'est une contrainte de Windows, pas
+une préférence.
 
 ## 4. Le pare-feu
 
-Par défaut, Windows bloque les connexions entrantes sur le port 80. En PowerShell
-**en administrateur** :
+Par défaut, Windows bloque les connexions entrantes sur le port 80. C'est
+**fait automatiquement** par `installer-services.ps1` (section 8). Le faire à la
+main reste possible :
 
 ```powershell
-New-NetFirewallRule -DisplayName "Wiki Caddy HTTP" -Direction Inbound -Protocol TCP -LocalPort 80 -Action Allow
-New-NetFirewallRule -DisplayName "Wiki Caddy HTTPS" -Direction Inbound -Protocol TCP -LocalPort 443 -Action Allow
+New-NetFirewallRule -DisplayName "Wiki Caddy TCP 80" -Direction Inbound -Protocol TCP -LocalPort 80 -Action Allow
+New-NetFirewallRule -DisplayName "Wiki Caddy TCP 443" -Direction Inbound -Protocol TCP -LocalPort 443 -Action Allow
 ```
 
-Pour vérifier ce qui est ouvert :
+Pour vérifier :
 
 ```powershell
 Get-NetFirewallRule -DisplayName "Wiki Caddy*" | Format-Table DisplayName, Enabled, Direction
@@ -148,37 +155,79 @@ setx WIKI_SCHEME https://
 Caddy obtient le certificat, le renouvelle, et redirige le HTTP vers le HTTPS.
 Si l'obtention échoue, repassez à `http://` : le site redevient accessible.
 
-## 7. Au démarrage du PC
+## 7. La box (Livebox)
 
-Caddy lancé dans une fenêtre s'arrête avec elle. Pour qu'il démarre avec le
-système, sans dépendre d'une session ouverte :
+L'IPv6 rend le site joignable sans rien configurer sur la box. Deux choses
+restent utiles.
 
-1. Ouvrir **Planificateur de tâches** ;
-2. **Créer une tâche** — déclenchement « Au démarrage », action
-   `C:\chemin\vers\projet\deploy\windows\demarrer-caddy.bat` ;
-3. **Cocher « Exécuter avec des privilèges élevés »** — indispensable pour le
-   port 80 ;
-4. Dans **Paramètres**, décocher « Arrêter la tâche si elle s'exécute plus de
-   3 jours ».
+**L'IPv4.** Un visiteur sans IPv6 ne peut pas joindre le site tant que le port
+80 n'est pas redirigé. Dans l'interface de la Livebox : *Les Plus* (ou
+*Paramètres avancés*) → **Redirection de ports / NAT**, puis :
 
-Puis une deuxième tâche pour l'adresse DuckDNS : déclenchement « Répétition
-toutes les 10 minutes », action
+| Nom | Port externe | Port interne | Adresse interne |
+|---|---|---|---|
+| Wiki | 80 | 80 | l'IP fixe du PC |
 
-```
-powershell -NoProfile -ExecutionPolicy Bypass -File "C:\chemin\vers\projet\deploy\windows\sync-duckdns.ps1"
-```
+Le mot de passe d'administration est sur l'étiquette de la box. Le PC doit avoir
+une **IP fixe**, réservée dans le DHCP de la Livebox — sinon la redirection
+pointera dans le vide au prochain renouvellement.
 
-Les variables `DUCKDNS_TOKEN` et `WIKI_DOMAINE` ne sont pas hereditees par le
-Planificateur. Definissez-les une fois pour la machine :
+**Le HTTPS.** Let's Encrypt valide le domaine en interrogeant le port 80 depuis
+Internet. L'enregistrement `A` pointe vers la box : sans redirection, la
+validation IPv4 échoue et le certificat n'est pas délivré. La redirection
+ci-dessus est donc **nécessaire au HTTPS**, même si l'IPv6 suffit pour
+consulter le site.
+
+## 8. Rendre l'hébergement durable
+
+Deux fenêtres laissées ouvertes ne constituent pas un hébergement : un
+redémarrage, une mise en veille ou un Ctrl+C suffisent à tout arrêter.
+`installer-services.ps1` enregistre trois tâches dans le Planificateur.
+
+**D'abord les variables**, prises par le Planificateur — elles ne sont pas
+héritées d'une session ouverte :
 
 ```powershell
 setx DUCKDNS_TOKEN "votre-jeton"
-setx WIKI_DOMAINE "wiki-gratiennois"
+setx WIKI_DOMAINE  "wiki-gratiennois"
+setx WIKI_SCHEME   "http://"
 ```
 
-Elles ne seront lues qu'apres une nouvelle ouverture de session.
+Puis, **en administrateur** :
 
-`termux-services` n'existe pas ici : c'est ce mécanisme qui joue le même rôle.
+```powershell
+powershell -ExecutionPolicy Bypass -File .\deploy\windows\installer-services.ps1
+```
+
+Cela crée les tâches, et ouvre aussi les ports 80 et 443 dans le pare-feu :
+
+| Tâche | Déclenchement | Rôle |
+|---|---|---|
+| `Wiki Gratienois` | au démarrage | le wiki, relancé s'il tombe |
+| `Wiki Caddy` | au démarrage | le reverse proxy |
+| `Wiki DuckDNS` | toutes les 10 min | épingle l'adresse IPv6 stable |
+
+Démarrage immédiat :
+
+```powershell
+Start-ScheduledTask -TaskName "Wiki Gratienois"
+Start-ScheduledTask -TaskName "Wiki Caddy"
+```
+
+Pour tout retirer :
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\deploy\windows\installer-services.ps1 -Desinstaller
+```
+
+**Les tâches tournent sous `SYSTEM`, pas sous votre compte.** C'est délibéré :
+une tâche liée à un utilisateur n'hérite pas de son `PATH`, et le script
+échouerait sur un « node n'est pas reconnu » incompréhensible. En contrepartie,
+les variables ci-dessus doivent être définies **pour la machine** (`setx`), et
+prises en compte à la prochaine ouverture de session.
+
+`termux-services` n'existe pas sur Windows : c'est ce mécanisme qui joue le
+même rôle.
 
 ---
 

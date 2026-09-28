@@ -77,8 +77,23 @@ REM --- Configuration ---------------------------------------------------------
 REM Le domaine est lu ici et non dans le fichier : Caddy ne lit un Caddyfile
 REM qu'avec son propre environnement, et sous Windows il n'y a pas de
 REM "fichier env par service" comme sous Termux.
+REM
+REM `Machine` est la portee de la variable, pas l'environnement du processus. La
+REM tache planifiee tourne sous SYSTEM : un `setx WIKI_SCHEME https://` ecrit
+REM dans l'environnement de VOTRE session, que SYSTEM ne voit pas - le passage
+REM en HTTPS serait ignore sans le moindre avertissement. Lire la portee
+REM machine rend la valeur effective quelle que soit la maniere dont le script
+REM est lance, et evite de dependre du cache d'environnement du Planificateur.
+REM
+REM On passe par PowerShell plutot que par `reg query` : celui-ci renvoie
+REM l'en-tete de cle puis la valeur, et un `for /f` mal regle capture l'une ou
+REM l'autre au hasard.
+if not defined WIKI_SCHEME (
+  for /f "usebackq delims=" %%v in (`powershell -NoProfile -Command "[Environment]::GetEnvironmentVariable('WIKI_SCHEME','Machine')"`) do set "WIKI_SCHEME=%%v"
+)
+if not defined WIKI_SCHEME set "WIKI_SCHEME=http://"
+
 if not defined WIKI_DOMAINE set "WIKI_DOMAINE=wiki-gratiennois.duckdns.org"
-if not defined WIKI_SCHEME  set "WIKI_SCHEME=http://"
 if not defined WIKI_PORT    set "WIKI_PORT=3000"
 
 echo Caddy    : %CADDY%

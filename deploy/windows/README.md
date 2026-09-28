@@ -92,11 +92,43 @@ Get-NetFirewallRule -DisplayName "Wiki Caddy*" | Format-Table DisplayName, Enabl
 ## 5. Le sous-domaine
 
 Sur <https://www.duckdns.org>, créez `wiki-gratiennois` et notez le jeton.
-L'IP publique doit pointer vers votre box, qui doit rediriger les ports 80 et
-443 vers ce PC. **Donnez-lui une IP fixe** dans le DHCP de la box.
 
-Tant que ce n'est pas fait, `WIKI_SCHEME=http://` sert le site localement, et
-rien n'est joignable de l'extérieur — c'est normal et ce n'est pas une panne.
+### L'IPv6 évite toute redirection de port
+
+Une machine connectée en IPv6 reçoit **deux adresses publiques**. Sur celle-ci :
+
+| Adresse | Origine du suffixe | Comportement |
+|---|---|---|
+| `2a01:…:1578:885b:c7fc:4d90` | `Link` (dérivée de la carte réseau) | **stable**, survit aux redémarrages |
+| `2a01:…:bc2c:42e6:1ec9:ff9d` | `Random` (protège la vie privée) | **change** régulièrement |
+
+**Vérifiez lequel DuckDNS a enregistré.** Si c'est l'adresse `Random`, le nom
+pointe vers une adresse abandonnée : le site devient injoignable de l'extérieur
+sans que rien ne semble cassé, et le retour à la normale dépend d'une rotation
+aléatoire. C'est une panne silencieuse, difficile à croire.
+
+En IPv6, **aucune redirection de port n'est nécessaire** : la machine est
+joignable directement. Vérifié de l'extérieur, le sous-domaine répond sur
+`http://wiki-gratiennois.duckdns.org/` sans que la Livebox soit touchée.
+
+Si l'IPv4 doit aussi fonctionner, il faut en plus rediriger le port 80 sur la
+box, avec une **IP fixe** pour ce PC dans le DHCP. En revanche, un visiteur
+uniquement IPv4 ne pourra pas joindre le site tant que ce n'est pas fait.
+
+### Recaler DuckDNS sur la bonne adresse
+
+```powershell
+$env:DUCKDNS_TOKEN = "votre-jeton"
+$env:WIKI_DOMAINE = "wiki-gratiennois"
+.\deploy\windows\sync-duckdns.ps1
+```
+
+Le script choisit l'adresse `Link`, ne signale à DuckDNS que lorsqu'elle a
+changé, et **échoue bruyamment** si le jeton est refusé — une réponse `KO` ne
+produit aucune erreur HTTP, et sans ce test on croirait avoir réussi.
+
+Pour tenir dans la durée, faites-le exécuter toutes les dix minutes par le
+Planificateur de tâches (voir section 7).
 
 ## 6. Le HTTPS
 
@@ -129,6 +161,23 @@ système, sans dépendre d'une session ouverte :
 4. Dans **Paramètres**, décocher « Arrêter la tâche si elle s'exécute plus de
    3 jours ».
 
+Puis une deuxième tâche pour l'adresse DuckDNS : déclenchement « Répétition
+toutes les 10 minutes », action
+
+```
+powershell -NoProfile -ExecutionPolicy Bypass -File "C:\chemin\vers\projet\deploy\windows\sync-duckdns.ps1"
+```
+
+Les variables `DUCKDNS_TOKEN` et `WIKI_DOMAINE` ne sont pas hereditees par le
+Planificateur. Definissez-les une fois pour la machine :
+
+```powershell
+setx DUCKDNS_TOKEN "votre-jeton"
+setx WIKI_DOMAINE "wiki-gratiennois"
+```
+
+Elles ne seront lues qu'apres une nouvelle ouverture de session.
+
 `termux-services` n'existe pas ici : c'est ce mécanisme qui joue le même rôle.
 
 ---
@@ -141,12 +190,13 @@ Le wiki est servi sur **trois adresses**, dès que les deux programmes tournent 
 |---|---|
 | `http://localhost:3000` | le wiki tourne, sans Caddy |
 | `http://localhost` | Caddy tourne aussi |
-| `http://wiki-gratiennois.duckdns.org` | **seulement** après la redirection de port sur la box |
+| `http://wiki-gratiennois.duckdns.org` | dès que les deux tournent **et** que DuckDNS pointe sur l'adresse IPv6 stable |
 
-La dernière ligne est la source d'une confusion fréquente. Le nom DuckDNS pointe
-vers l'adresse publique de votre box ; tant que celle-ci ne redirige pas le port
-80 vers ce PC, le nom ne mène nulle part — **y compris depuis ce PC**. Ce n'est
-pas une panne : le site répond dès que la redirection existe.
+La dernière ligne est la source de deux confusions. D'abord, le nom peut mener
+nulle part alors que tout fonctionne localement : DuckDNS enregistre par défaut
+l'adresse IPv6 **temporaire** de la machine, qui change sans prévenir (section 5).
+Ensuite, depuis ce PC, le nom ne répond qu'en IPv6 : en IPv4 il partirait vers
+la box, qui ne sait pas encore revenir ici.
 
 C'est aussi pourquoi le Caddyfile déclare `localhost` et `127.0.0.1` à côté du
 domaine. Caddy n'accepte que le premier nom d'hôte qu'il connaît et renvoie une
@@ -180,14 +230,21 @@ taskkill /PID <le-numéro> /F
 À l'inverse, si `npm start` est refusé **et** que le site répond, c'est que le
 wiki tourne déjà : ne lancez pas de second exemplaire.
 
-**Le sous-domaine ne répond pas, mais `localhost` oui** — c'est l'état normal
-avant la redirection de port. Le test qui le prouve :
+**Le sous-domaine ne répond pas, mais `localhost` oui** — c'est presque toujours
+DuckDNS pointant sur l'adresse IPv6 **temporaire** au lieu de la stable. Le
+constat :
 
 ```powershell
-curl -i http://localhost/api/health -H "Host: wiki-gratiennois.duckdns.org"
+Get-NetIPAddress -AddressFamily IPv6 |
+  Select-Object IPAddress, PrefixOrigin, SuffixOrigin
+nslookup wiki-gratiennois.duckdns.org
 ```
 
-`200 OK` = tout fonctionne, seul le réseau manque.
+L'adresse enregistrée côté DuckDNS doit correspondre à celle dont
+`SuffixOrigin` vaut `Link`. Sinon, lancez `sync-duckdns.ps1`.
+
+**Le site ne répond qu'en IPv4** — il manque la redirection de port sur la box,
+et le visiteur n'a pas d'IPv6. Voir la section 5.
 
 **Une page blanche s'affiche** — Caddy ne sert que les noms d'hôte déclarés. Sur
 un autre nom, il répond `200` avec **zéro octet**, ce qui donne un écran vide.

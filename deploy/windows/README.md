@@ -208,6 +208,7 @@ Cela crée les tâches, et ouvre aussi les ports 80 et 443 dans le pare-feu :
 | `Wiki Gratienois` | au démarrage | le wiki, relancé s'il tombe |
 | `Wiki Caddy` | au démarrage | le reverse proxy |
 | `Wiki DuckDNS` | toutes les 10 min | épingle l'adresse IPv6 stable |
+| `Wiki DelphinaBot` | au démarrage | le bot, seulement avec `-DelphinaBot` |
 
 Démarrage immédiat :
 
@@ -310,18 +311,27 @@ semble active. L'avertissement au démarrage vise exactement ce cas.
 
 ### La musique a des dépendances système
 
-yt-dlp et FFmpeg ne sont pas des dépendances npm : ce sont des programmes, et
-ils doivent être dans le `PATH` **de la machine**, pas seulement de votre
-session — pour la même raison que Node plus haut. C'est la seule chose que le
-`PATH` de `SYSTEM` oblige à vérifier.
+yt-dlp et FFmpeg ne sont pas des dépendances npm : ce sont des programmes,
+qu'il faut installer à part.
 
 ```powershell
 winget install --id Gyan.FFmpeg --exact
 winget install --id yt-dlp.yt-dlp --exact
 ```
 
-Sans eux, tout le bot fonctionne, et seule la musique manque. La commande de
-lecture le dit quand elle échoue, plutôt que de ne rien laisser deviner.
+**winget les installe dans le `PATH` de votre compte, jamais dans celui de la
+machine.** C'est le piège : la tâche tourne sous `SYSTEM`, qui ne lit que le
+`PATH` machine, et le bot démarrerait sans voir ffmpeg. Tout fonctionnerait, et
+seule la musique manquerait — sans qu'aucune erreur ne désigne la cause.
+
+C'est pourquoi `demarrer-delphinabot.bat` ne se fie pas au `PATH` : il cherche
+les deux exécutables dans tous les profils sous `C:\Users\*` et exporte les
+chemins absolus dans `CHEMIN_FFMPEG` et `CHEMIN_YTDLP`, que le bot lit ensuite.
+Le `.env` ne peut pas les écraser : `chargerEnv()` (`src/env.ts`) ne remplace
+jamais une variable déjà présente dans l'environnement.
+
+Le journal de démarrage affiche les deux chemins, et un avertissement si l'un
+des deux manque. Sans eux, le bot fonctionne et seule la musique échoue.
 
 ### Lancer et installer la tâche
 

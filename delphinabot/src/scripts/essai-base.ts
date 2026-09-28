@@ -12,7 +12,6 @@
  */
 
 import { connexion, fermerBase, initierSchema, requete, transaction } from "../db/index.js";
-import { lireConfiguration } from "../config.js";
 import { chargerEnvironnement } from "../env.js";
 import { enregistrerReglages, lireReglages } from "../db/serveur.js";
 import {
@@ -57,8 +56,18 @@ async function nettoyer(): Promise<void> {
 }
 
 async function main(): Promise<void> {
-  const configuration = lireConfiguration();
-  connexion(configuration.databaseUrl);
+  // Seul DATABASE_URL est lu ici, et non lireConfiguration() : cet essai ne
+  // touche qu'a la base, et exiger un jeton Discord pour la Dissertation
+  // empoisonnerait la premiere verification de l'installation. Le message
+  // d'erreur d'un bot a moitie configure est le pire moment pour apprendre que
+  // sa base fonctionne.
+  const databaseUrl = process.env.DATABASE_URL?.trim();
+  if (!databaseUrl) {
+    throw new Error(
+      "DATABASE_URL est absente. Renseignez-la dans delphinabot/.env, puis relancez.",
+    );
+  }
+  connexion(databaseUrl);
   await initierSchema();
 
   await nettoyer();

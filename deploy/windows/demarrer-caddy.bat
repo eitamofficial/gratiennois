@@ -161,13 +161,27 @@ echo Demarrage. Ctrl+C pour arreter.
 echo Journal : deploy\windows\caddy.log
 echo.
 
+REM --- Boucle de relance -----------------------------------------------------
+REM Le Planificateur de taches ne relance pas un script qui a rendu la main :
+REM si Caddy s'arrete, la tache se termine et le site reste muet jusqu'au
+REM prochain redemarrage du PC. `demarrer-wiki.bat` a deja cette boucle pour
+REM le wiki ; Caddy en a besoin autant.
+REM
+REM L'attente n'est pas fixe : les premieres tentatives rapprochees donnent
+REM au reseau le temps de s'etablir, et evitent qu'un plantage repete sature
+REM le disque de journaux. Elle est plafonnee a deux minutes.
+set /a "ATTENTE=5"
+:boucle
+echo.
+echo [INFO] Demarrage de Caddy (mode %WIKI_SCHEME% sur %WIKI_DOMAINE%).
 "%CADDY%" run --config "%~dp0Caddyfile" --adapter caddyfile >> "%~dp0caddy.log" 2>&1
+set "CODE=%ERRORLEVEL%"
 
 echo.
-echo Caddy s'est arrete (code %ERRORLEVEL%).
-echo Si le site ne repondait pas, regardez :
-echo     type deploy\windows\caddy.log
-exit /b %ERRORLEVEL%
+echo [INFO] Caddy s'est arrete (code %CODE%). Nouvelle tentative dans %ATTENTE%s.
+timeout /t %ATTENTE% /nobreak > nul
+if %ATTENTE% lss 120 set /a "ATTENTE+=5"
+goto :boucle
 
 REM ============================================================================
 :attendre

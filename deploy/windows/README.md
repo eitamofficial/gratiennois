@@ -379,6 +379,23 @@ Le rôle du bot doit se trouver **au-dessus** des quatre rôles qu'il attribue :
 Discord refuse qu'un rôle soit accordé par un rôle situé en dessous, et refuse
 en silence. C'est la première chose à vérifier si `/sourdine` ne fait rien.
 
+### Qui peut administrer le bot
+
+`PROPRIETAIRES_IDS` liste les membres autorisés à tout, y compris `/configurer`,
+`/audit` et `/verrouiller`. Le niveau *propriétaire* est le plus élevé de la
+échelle du bot — au-dessus de l'administration, elle-même au-dessus de la
+modération. C'est la seule voie d'accès qui ne passe pas par un rôle Discord :
+un propriétaire peut donc administrer le bot sans qu'aucun rôle ne soit créé
+pour lui, et sans que la Constitution ait à le prévoir.
+
+C'est aussi la seule liste qui n'est pas révocable depuis Discord : retirer un
+propriétaire demande de modifier le `.env` et de redémarrer le bot. Les
+identifiants y sont séparés par des virgules.
+
+Le créateur du wiki et du bot y figure. Son identifiant n'est pas devinable
+depuis le serveur sans le chercher : `/aide` ne le liste pas, et le bot ne
+publie nulle part la liste de ses proprietaires.
+
 Le bot partage la base du wiki mais jamais ses tables : tout est préfixé
 `delphinabot_`. Partager `DATABASE_URL` est donc sans risque, et évite de
 payer une seconde base pour quelques tables.

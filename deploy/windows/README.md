@@ -344,6 +344,41 @@ rôles ordinaires, à régler dans le bot par `/configurer roles sourdine` et
 `/configurer roles dj`. Laisser ces deux variables vides est correct et sans
 risque.
 
+### L'état du serveur qui fonctionne
+
+Le bot a besoin de cinq rôles et de cinq salons de service. Sans eux, il
+démarre quand même, mais `/sourdine` et la quarantaine ne peuvent rien faire et
+le bot n'a nulle part où prévenir — c'est ce que `/audit` signale, et ce
+qu'il faut corriger en premier.
+
+Cette disposition est celle du serveur du Delphinat, et elle est reproductible :
+
+| Rôle | Emploi dans le bot | Rattachement |
+|---|---|---|
+| `🐬\|Conseil Delphinal` | administration (`/audit`, `/configurer`, `/verrouiller`) | « ils disposent du droit d'administration du serveur » |
+| `🎗\|Baillit` | modération (toutes les sanctions) | « Ce sont les modérateurs, ils assurent une surveillance permanente » |
+| `🔇\|Sourdine` | `/sourdine`, `/delai` | rôle ordinaire |
+| `🚧\|Quarantaine` | isolement des nouveaux membres, verrouillage | rôle ordinaire |
+| `✅\|Verifié` | membre validé par `/valider-lien` | rôle ordinaire |
+| `👤\|Membre` | attribution automatique à l'arrivée | rôle ordinaire |
+
+| Salon | Emploi |
+|---|---|
+| `⚙️\|DelphinaBot/journal` | trace des événements |
+| `⚙️\|DelphinaBot/alertes` | alertes de sécurité et d'escalade |
+| `⚙️\|DelphinaBot/accueil` | arrivée des membres |
+| `⚙️\|DelphinaBot/signalements` | file des signalements |
+| `⚙️\|DelphinaBot/sanctions` | dossiers de sanctions |
+
+Quatre de ces cinq salons sont réservés : `@everyone` y perd le droit de les
+voir, le bot, le Baillit et le Conseil le gardent. Seul l'accueil est public —
+c'est le seul endroit où un membre ordinaire doit pouvoir écrire, sinon le bot
+accueillerait des gens dans un salon muet.
+
+Le rôle du bot doit se trouver **au-dessus** des quatre rôles qu'il attribue :
+Discord refuse qu'un rôle soit accordé par un rôle situé en dessous, et refuse
+en silence. C'est la première chose à vérifier si `/sourdine` ne fait rien.
+
 Le bot partage la base du wiki mais jamais ses tables : tout est préfixé
 `delphinabot_`. Partager `DATABASE_URL` est donc sans risque, et évite de
 payer une seconde base pour quelques tables.

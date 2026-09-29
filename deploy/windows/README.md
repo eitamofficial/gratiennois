@@ -217,6 +217,22 @@ Start-ScheduledTask -TaskName "Wiki Gratienois"
 Start-ScheduledTask -TaskName "Wiki Caddy"
 ```
 
+Redémarrage complet — **en administrateur** :
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\deploy\windows\redemarrer-wiki.ps1
+```
+
+`next start` sert la compilation présente dans `.next` et ne la recharge pas à
+ chaud : après un `npm run build`, le wiki en ligne ne connaît la nouvelle page
+ qu'une fois la tâche relancée. Le script arrête puis relance `Wiki Gratienois`
+ et `Wiki Caddy`, attend que le port 3000 réponde réellement, et nomme la cause
+ la plus probable d'un échec. `-SansCaddy` laisse Caddy tranquille, `-DelphinaBot`
+ ajoute le bot.
+
+L'élévation n'est pas un formalisme : les tâches tournent sous `SYSTEM`, et sans
+elle `taskkill` se fait refuser et `Get-ScheduledTask` ne renvoie rien.
+
 Pour tout retirer :
 
 ```powershell

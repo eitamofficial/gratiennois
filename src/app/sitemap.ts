@@ -28,6 +28,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.4,
     },
     { url: `${baseUrl}/programme`, changeFrequency: "monthly", priority: 0.7 },
+    {
+      url: `${baseUrl}/manifeste-psrg`,
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
     ...CATEGORY_LIST.map((category) => ({
       url: `${baseUrl}/wiki/categorie/${category.id}`,
       changeFrequency: "weekly" as const,

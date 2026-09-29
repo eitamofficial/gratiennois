@@ -78,6 +78,18 @@ export default function Sidebar() {
             </li>
             <li>
               <Link
+                href="/manifeste-psrg"
+                className={`block rounded-md px-3 py-2 text-sm transition ${
+                  pathname.startsWith("/manifeste-psrg")
+                    ? "bg-night-700 font-medium text-gold-200"
+                    : "text-slate-300 hover:bg-night-800 hover:text-gold-200"
+                }`}
+              >
+                ☭ Manifeste du PSRG
+              </Link>
+            </li>
+            <li>
+              <Link
                 href="/institutions"
                 className={`block rounded-md px-3 py-2 text-sm transition ${
                   pathname === "/institutions"

@@ -129,7 +129,7 @@ export default async function HomePage() {
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-bronze-400">
-              Parti Révolutionnaire Socialiste Gratiennois
+              Parti Socialiste Révolutionnaire Gratiennois
             </p>
             <h2
               id="programme"
@@ -196,7 +196,15 @@ export default async function HomePage() {
             DelphinaBot
           </Link>
           , le bot du Delphinat : modération, anti-raid, divertissement,
-          économie et musique, entièrement en français.
+          économie et musique, entièrement en français. Sa doctrine est
+          exposée dans le{" "}
+          <Link
+            href="/manifeste-psrg"
+            className="text-gold-300 underline-offset-4 hover:underline"
+          >
+            manifeste du PSRG
+          </Link>
+          , dont chaque mesure est une commande ou un réglage vérifiable.
         </p>
       </section>
 

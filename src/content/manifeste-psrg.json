@@ -1,0 +1,600 @@
+{
+  "meta": {
+    "titre": "Manifeste du Parti Socialiste Révolutionnaire Gratiennois",
+    "sigle": "PSRG",
+    "sousTitre": "Doctrine, décisions et protocole d'application du premier parti du IIIe Delphinat de Gratianopolis",
+    "edition": "Édition 1",
+    "reference": "Manifeste-PSRG.pdf",
+    "resume": "Le manifeste du Parti Socialiste Révolutionnaire Gratiennois : socialisme d'État, souveraineté absolue, affirmation nationale et rejet du pacifisme, unité et ordre. Chaque décision est assortie de son mécanisme Discord et de l'outil qui l'applique."
+  },
+
+  "identite": [
+    { "label": "Nom complet", "valeur": "Parti Socialiste Révolutionnaire Gratiennois" },
+    { "label": "Sigle", "valeur": "PSRG" },
+    { "label": "Statut", "valeur": "Premier parti du régime du IIIe Delphinat de Gratianopolis" },
+    { "label": "Position politique", "valeur": "Pro-Esto" },
+    { "label": "Nature", "valeur": "Parti de gouvernement — il exercise le pouvoir, il ne le conteste pas" },
+    { "label": "Champ d'application", "valeur": "Le serveur Discord du Delphinat et l'encyclopédie qui l'atteste" },
+    { "label": "Outillage", "valeur": "DelphinaBot, 57 commandes, un seul processus et une seule base de données" },
+    { "label": "Autorité de référence", "valeur": "La Constitution du IIIe Delphinat, texte fondateur créé par Esto le 26/09/26" },
+    { "label": "Document de coalition", "valeur": "Programme de financement des boosts et d'outillage du wiki" }
+  ],
+
+  "avertissement": "Ce manifeste ne contient aucune mesure qui ne serait pas exécutable sur le serveur Discord du Delphinat par l'un des trois acteurs connus : le bot, l'équipe de modération, ou le membre lui-même. Toute disposition qu'il énonce est une disposition d'outillage — un réglage, une commande, une permission, une cadence de contrôle. Lorsqu'une décision relève d'un arbitrage politique qui n'a pas d'ancrage technique, elle est déclarée comme telle et renvoyée aux charges constitutionnelles plutôt que présentée comme acquise.",
+
+  "sections": [
+    {
+      "numero": "Préambule",
+      "titre": "L'objectif du parti",
+      "chapeau": "Le IIIe Delphinat de Gratianopolis n'est pas une société à discuter. C'est un État à gouverner. Le PSRG est le parti qui l'a compris et qui assume cette charge : transformer le Delphinat en une puissance socialiste souveraine, forte et respectée, capable de s'imposer par la force de sa discipline et de la volonté politique.",
+      "paragraphes": [
+        "Un parti d'État ne se discute pas ; il exécute. Sa doctrine se juge à ce que les machines acceptent, ce que les hommes appliquent et ce que le pays tient. C'est pourquoi chaque article de ce manifeste est rédigé sous la forme d'une décision outillée : une intention, un mécanisme, un opérateur, un outil. Une disposition qui n'a pas d'outil n'est pas une disposition, c'est un souhait — et le PSRG n'en inscrit pas.",
+        "Le Delphinat dispose aujourd'hui d'une Constitution, d'un règlement, d'une hiérarchie institutionnelle et d'une encyclopédie publique. Il dispose surtout d'un bot francophone, écrit pour lui, qui tient en un seul processus et une seule base de données. C'est l'instrument réel du pouvoir dans une micronation : non pas le discours, mais la règle appliquée sans exception et sans corruption."
+      ],
+      "mesures": [
+        {
+          "intitule": "Le parti tient un document, pas une promesse",
+          "decision": "Toute ligne du manifeste doit correspondre à une commande, un réglage ou une permission réellement existants sur le serveur.",
+          "mecanisme": "Rédaction contraignante : la colonne « Outil » de chaque mesure cite la commande exacte. Une mesure sans outil cité est retirée du texte.",
+          "operateur": "Le parti",
+          "outil": "Les 57 commandes de DelphinaBot, inventaire reproduit en annexe I"
+        },
+        {
+          "intitule": "Le programme est l'outillage, pas l'intention",
+          "decision": "L'argent du Delphinat est gasto en trois postes seulement : le wiki, le bot, les boosts.",
+          "mecanisme": "Les deux paliers de boosts sont engagés au franchissement du seuil, sans campagne ni contrepartie politique. Le reste est du travail interne, non facturé.",
+          "operateur": "Le Dauphin",
+          "outil": "Page Programme du wiki, wiki-gratiennois.duckdns.org/programme : paliers de 14 puis 28 boosts"
+        }
+      ],
+      "interdits": [
+        "Ne pas inscrire au manifeste une mesure dont l'application ne serait vérifiable par aucun membre.",
+        "Ne pas présenter une intention comme une réalisation : le wiki, le bot et le serveur sont les seules preuves recevables."
+      ]
+    },
+
+    {
+      "numero": "Article I",
+      "titre": "Socialisme d'État",
+      "chapeau": "Un socialisme concret, rigoureux et discipliné, loin des tergiversations libérales. L'État n'est pas une abstraction : c'est un budget, un contrôle, un inventaire, et un système qui refuse de laisser faire. Sur le Delphinat, cela signifie une monnaie d'État dont l'émission est plafonnée, et une administration dont les comptes sont lisibles par tous.",
+      "paragraphes": [
+        "Le mot « socialisme » est ici une contrainte administrative, pas une décoration. Uneministration qui pretendant gouverner sans garder de comptes, sans plafond, sans audit et sans sanction pécuniaire n'est pas un gouvernement : c'est une conversation. Le PSRG tient l'autre exigence. L'économie du Delphinat existe — les ducats sont une monnaie réelle, comptée en base, jamais recalculée en mémoire — et elle est gouvernée comme un budget d'État : une émission par jour, un métier qui rapporte, un marché qui fixe les prix, une taxation qui sanctionne sans spolier.",
+        "La rigueur se vérifie dans les trois règles que le code lui-même s'impose. Aucune opération d'argent hors de SQL : un transfert est une transaction, un solde n'est jamais recalculé en mémoire. Aucun droit d'édition sans fondement constitutionnel : le rôle d'écriture sur le wiki est déduit de la Constitution. Aucune protection non déclarée : ce qui n'est pas réglé est ce qui n'est pas garanti, et le bot le dit."
+      ],
+      "mesures": [
+        {
+          "intitule": "Une monnaie d'État à émission plafonnée",
+          "decision": "L'émission de ducats est plafonnée par jour et par membre. Le plafond est un paramètre du serveur, pas une promesse.",
+          "mecanisme": "Le réglage gainsMaxJour borne les gains quotidiens ; gainsParMessage fixe le rendement unitaire ; xpMultiplicateur et gainsMultiplicateurXp lient l'effort de niveau au rendement. Un membre qui écrit cent messages ne s'enrichit pas : il sature.",
+          "operateur": "L'administration",
+          "outil": "/configurer progression ducats:1 gainsMaxJour borne, puis /configurer afficher"
+        },
+        {
+          "intitule": "Le travail productif est rémunéré, l'effort est compté",
+          "decision": "Un métier existe et s'exerce à intervalle fixe. L'effort de guerre, la production et la régulation sont des actes de travail.",
+          "mecanisme": "Le métier s'exerce toutes les deux heures ; la récompense quotidienne est claimable une fois par jour ; l'épargne protège le solde du vol et de la taxation. Un membre qui travaille dispose d'une position qu'une taxation peut atteindre — c'est là toute la fonction sociale de la monnaie.",
+          "operateur": "Un membre",
+          "outil": "/travailler, /recompense, /epargner, /retirer-epargne"
+        },
+        {
+          "intitule": "Une fiscalité d'État, pas un pillage",
+          "decision": "La taxation est un instrument de sanction disciplinaire, jamais une levée de fonds. Elle prend sur le solde, jamais sur l'épargne.",
+          "mecanisme": "La commande de taxation est réservée au niveau modération et exige un motif, qui est journalisé. Le fait que l'épargne soit hors d'atteinte est une garantie, pas un détail : on taxe la faute, pas la caisse.",
+          "operateur": "La modération",
+          "outil": "/taxer <membre> <montant> [motif]"
+        },
+        {
+          "intitule": "Les comptes de l'État sont publics",
+          "decision": "Nul n'a le droit de connaître un solde qu'il ne peut pas consulter publiquement.",
+          "mecanisme": "Le solde et la position au classement sont affichables par tout membre. Le classement par ducats est public. L'administration dispose d'un unique instrument de crédit manuel, et il est journalisé comme toute opération d'écriture.",
+          "operateur": "Un membre",
+          "outil": "/solde [membre], /classement-ducats ; /donner (réservé à l'administration)"
+        },
+        {
+          "intitule": "Un marché intérieur, donc une production",
+          "decision": "Le Delphinat produit et échange. Le marché est l'instrument de spécialisation du travail.",
+          "mecanisme": "La boutique liste ce que le marché propose, l'achat débite en transaction. Un marché qui ne fait que consommer distribue des statuts ; un marché qui échange produit des métiers.",
+          "operateur": "Un membre",
+          "outil": "/boutique, /acheter <article>"
+        },
+        {
+          "intitule": "L'audit des comptes et des pouvoirs",
+          "decision": "L'administration est une charge, pas un privilège. Elle s'audite comme une administration.",
+          "mecanisme": "L'audit liste les dix membres cumulant le plus de permissions dangereuses, par nom lisible, et signale tout réglage manquant. C'est la seule commande qui découvre une menace sans qu'un membre ne la signale.",
+          "operateur": "Le Dauphin",
+          "outil": "/audit (niveau administration)"
+        }
+      ],
+      "interdits": [
+        "Aucune monnaie émise sans plafond quotidien vérifiable dans les réglages.",
+        "Aucune émission d'argent par un chemin qui ne passe pas par une transaction SQL.",
+        "Aucune augmentation d'un solde d'un membre sans passage par une commande journalisée."
+      ]
+    },
+
+    {
+      "numero": "Article II",
+      "titre": "Souveraineté absolue",
+      "chapeau": "Défense intransigeante de l'indépendance et de l'intégrité du Delphinat. La souveraineté d'un État se mesure à ce qu'il contrôle : son territoire, ses données, ses écrits, et l'identité de ceux qui s'y présentent. Sur le Delphinat, ces quatre choses sont toutes techniques, donc toutes défendables.",
+      "paragraphes": [
+        "Le Delphinat est un serveur Discord. Sa souveraineté est donc littéralement une question de droits : qui peut écrire dans la base, qui peut modifier l'encyclopédie, qui peut parler au nom de l'institution, et quel compte est reconnu comme appartenant au pays. Ce sont quatre problèmes techniques, et ils sont résolus.",
+        "L'indépendance se défend d'abord contre la prise de contrôle externe. Un raid n'est pas une opinion : c'est une arrivée massive de comptes, et cela se détecte à la vitesse d'arrivée. Le verrouillage est réversible, la quarantaine est un rôle, et le bot ne bannit jamais seul — même lorsque la configuration lui donnerait ce pouvoir. C'est délibéré : un État qui laisse sonUnique automating décider de sa propre défense n'est plus souverain de rien."
+      ],
+      "mesures": [
+        {
+          "intitule": "L'intégrité du territoire : l'anti-raid",
+          "decision": "Une arrivée massive déclenche automatiquement le verrouillage du serveur et l'isolement des nouveaux membres.",
+          "mecanisme": "Le seuil d'arrivée et la fenêtre d'observation sont deux paramètres distincts. Le verrouillage attribue le rôle de quarantaine à tous les membres qui en sont dépourvus, puis annonce la mesure. Le journal conserve le nombre d'arrivées et le seuil franchi.",
+          "operateur": "Le bot, sous le contrôle de l'administration",
+          "outil": "/configurer proteger anti-raid:True seuil-raid:5 fenetre-raid:10"
+        },
+        {
+          "intitule": "L'âge du compte comme critère de suspicion",
+          "decision": "L'âge minimal des comptes est un paramètre de défense, pas un jugement : il permet de distinguer un arrivant d'un compte jetable.",
+          "mecanisme": "Un compte créé il y a moins de raidAgeMinimumJours jours est traité comme suspect lors d'un déclenchement. Le réglage est explicite et modifiable par l'administration.",
+          "operateur": "L'administration",
+          "outil": "/configurer proteger avec raidAgeMinimumJours"
+        },
+        {
+          "intitule": "Le verrouillage est une mesure d'urgence, révocable",
+          "decision": "Verrouiller, c'est isoler. Deverrouiller, c'est revenir. Les deux sont des commandes, pas des états permanents.",
+          "mecanisme": "Le verrouillage retire le rôle de quarantaine de tous les membres, dans les deux sens. Il est journalisé, et l'alerte part dans le salon d'alerte avec un bouton de levée. Un raid qui s'essouffle ne laisse pas le pays fermé.",
+          "operateur": "Le Dauphin",
+          "outil": "/verrouiller [raison] puis /deverrouiller ; la levée par bouton dans le salon d'alerte"
+        },
+        {
+          "intitule": "Le bot ne décide jamais seul",
+          "decision": "Aucune exclusion ni aucun bannissement n'est exécuté automatiquement, quelle que soit la configuration.",
+          "mecanisme": "Les filtres automatiques (mentions, flood, liens, mots) produisent un délai ou un avertissement, pas une exclusion. Au-delà de trois sanctions actives, le bot envoie une alerte : c'est un signal d'escalade, pas une décision. Le bannissement lui-même est une commande de modération, journalisée, et réversible par /debannir — y compris pour un compte qui a quitté le serveur.",
+          "operateur": "La modération",
+          "outil": "SEUIL_ESCALADE = 3 ; /bannir, /debannir, /revoquer"
+        },
+        {
+          "intitule": "La souveraineté des données : l'encyclopédie est le territoire",
+          "decision": "Le wiki est la source. Il est géré par les charges constitutionnelles, et par personne d'autre.",
+          "mecanisme": "Les droits d'écriture sur l'encyclopédie ne sont pas un réglage technique mais une lecture de la Constitution : le Dauphin, le Régent, le Conseil et les Baillits écrivent ; les charges représentatives n'écrivent pas. Le bot ne dispose d'aucun droit d'écriture sur le wiki : il signale les changements de rôles, et c'est le wiki qui décide quoi en faire.",
+          "operateur": "Les charges constitutionnelles",
+          "outil": "Rôles Dauphin, Régent, Conseil, Baillit sur le wiki — répartition exacte en annexe IV"
+        },
+        {
+          "intitule": "L'indépendance des données du bot",
+          "decision": "Le bot et le wiki partagent une base, jamais une table. Le bot ne peut pas altérer le contenu du pays.",
+          "mecanisme": "Toutes les tables de DelphinaBot sont préfixées delphinabot_. Aucune écriture du bot n'atteint une table du site. La synchronisation est signée : seule la requête authentifiée par le secret partagé est acceptée, et l'authentification utilisateur reste requise sur toutes les autres voies d'écriture.",
+          "operateur": "Le système",
+          "outil": "Préfixe de tables delphinabot_ ; secret de synchronisation vérifié côté serveur"
+        },
+        {
+          "intitule": "L'identité du membre est adossée au pays",
+          "decision": "On n'est pas du Delphinat parce qu'on est sur le serveur : on l'est parce que le lien entre le compte et la page de l'encyclopédie est validé.",
+          "mecanisme": "Un membre demande la validation d'un lien vers sa page du wiki. La modération valide, et le rôle de vérification lui est attribué. C'est le mécanisme par lequel le pays reconnaît ses ressortissants, et il reste entre les mains de l'équipe.",
+          "operateur": "Un membre, puis la modération",
+          "outil": "/lien <page du wiki> puis /valider-lien <membre>"
+        }
+      ],
+      "interdits": [
+        "Aucune ouverture de l'écriture de l'encyclopédie à un rôle non prévu par la Constitution.",
+        "Aucune concession du rôle de modération à un compte non validé.",
+        "Aucun bannissement automatique, même si la configuration l'autorise."
+      ]
+    },
+
+    {
+      "numero": "Article III",
+      "titre": "Affirmation nationale et rejet du pacifisme",
+      "chapeau": "La puissance s'affirme par tous les moyens nécessaires. Le pacifisme est un renoncement, et le renoncement est une faiblesse. Le Delphinat soutient ses guerres, admet l'effort de guerre comme une priorité absolue, et ne se dérobe jamais devant un conflit par principe. Sur le terrain numérique, cela a un nom précis : la sanction, la fermeture, l'expiation des outrages.",
+      "paragraphes": [
+        "Un État qui renonce à punir est un État qui renonce à exister. La doctrine du PSRG est donc simple : ce qui est interdit est sanctionné, ce qui est répété est gradué, et ce qui est grave est tracé. Le refus du pacifisme ne se déclare pas dans un manifeste — il se démontre par la continuité du registre des sanctions et par l'impossibilité d'y échapper.",
+        "Mais l'affirmation de la puissance a un corollaire exigeant : la retenue. Le refus du pacifisme ne doit pasdegener en cruauté ni en arbitraire. Une sanction non motivée est une injustice ; une sanction non enregistrée est une faute d'État ; une sanction jamais levée est une vengeance. C'est pourquoi le système distingue soigneusement la décision de l'exécution, et pourquoi chaque sanction porte un motif, une durée quand elle est temporaire, et un dossier."
+      ],
+      "mesures": [
+        {
+          "intitule": "La gradation des sanctions",
+          "decision": "La réponse à une faute est graduée : avertissement, délai, sourdine, exclusion, bannissement.",
+          "mecanisme": "Chaque niveau est une commande distincte, avec un usage et un niveau de permission propres. Un délai a une durée exprimée en langage humain — 30m, 2h, 1j — que l'analyseur de durée traduit en millisecondes. La sourdine retire le rôle de sourdine, dont la levée est manuelle.",
+          "operateur": "La modération",
+          "outil": "/avertir, /delai <membre> <durée> [motif], /sourdine, /exclure, /bannir, /revoquer"
+        },
+        {
+          "intitule": "Aucune sanction n'est effacée",
+          "decision": "Une sanction est levée, jamais supprimée. Le dossier de sanctions est permanent.",
+          "mecanisme": "La levée supprime la sanction active, la trace reste. L'historique est consultable par la modération, et le membre sanctionné est prévenu. Le bannissement reste révocable, y compris pour un compte qui a quitté le serveur : la trace survit à l'absence.",
+          "operateur": "La modération",
+          "outil": "/historique [membre] ; /revoquer <membre> [type] ; /debannir <identifiant>"
+        },
+        {
+          "intitule": "Les quatre filtres automatiques",
+          "decision": "Les mentions en masse, le flood, les liens non autorisés et les mots surveillés sont des infractions de droit, pas des négligences.",
+          "mecanisme": "Le bot applique un délai de dix minutes au-delà de cinq mentions dans un message, un délai de cinq minutes au-delà de huit messages en rafale, un délai de cinq minutes pour un lien non autorisé, et un avertissement pour un terme interdit. Chaque sanction est journalisée avec son motif.",
+          "operateur": "Le bot, sous la responsabilité de l'administration",
+          "outil": "/configurer proteger anti-mentions max-mentions:5 anti-flood max-flood:8 anti-liens:True anti-mots:True"
+        },
+        {
+          "intitule": "Une liste blanche, pas une liste noire",
+          "decision": "Le filtrage des liens fonctionne par autorisation : seuls les domaines désignés passent.",
+          "mecanisme": "Les domaines autorisés sont un paramètre du serveur. Un lien vers un domaine non autorisé est traité comme une tentative, pas comme une erreur de saisie. Le wiki lui-même figure parmi les domaines autorisés : un pays qui bloque sa propre encyclopédie n'est pas un pays.",
+          "operateur": "L'administration",
+          "outil": "/configurer domaines wiki-gratiennois.duckdns.org ; liens autorisés par défaut : discord.gg, youtu.be, github.com, wiki-gratiennois.duckdns.org"
+        },
+        {
+          "intitule": "L'interpellation est un acte de-citoyenneté",
+          "decision": "N'importe quel membre peut signaler un autre membre, et le signalement n'est jamais ignoré.",
+          "mecanisme": "Le signalement se fait depuis le dernier message du membre concerné, et se clôt explicitement : résolu ou rejeté. La file des signalements en attente est visible par la modération. Un signalement qui reste sans suite est une faute de l'administration, pas une faute du signalant.",
+          "operateur": "Un membre, puis la modération",
+          "outil": "/signaler <membre> [motif], /signalements, /resoudre-signalement <numéro> [résolu|rejeté]"
+        },
+        {
+          "intitule": "L'effort de guerre comme instrument d'ordre",
+          "decision": "Quand l'ordre est rompu, on ralentit d'abord, on purge ensuite.",
+          "mecanisme": "Le ralentissement impose un délai entre deux messages dans un salon, salon par salon : c'est la mesure de contention la moins brutale et la plus réversible. La purge supprime en bloc les derniers messages d'un salon, cent au maximum. Le verrouillage du serveur est la mesure de guerre, et c'est la seule qui ferme le pays.",
+          "operateur": "La modération",
+          "outil": "/ralentir <secondes>, /purger [nombre], /verrouiller [raison]"
+        },
+        {
+          "intitule": "La trace écrite du fait",
+          "decision": "Ce qui s'est passé au Delphinat est consigné, consultable et daté.",
+          "mecanisme": "Le journal enregistre les événements du serveur, horodatés. Il conserve un identifiant, un motif, et au plus quatre cents caractères d'extrait. Le journal n'enregistre aucun message privé et ne mémorise aucun contenu : la trace est une trace, pas une surveillance.",
+          "operateur": "Le Dauphin",
+          "outil": "/journal (niveau administration) ; salons : journal d'activité, alertes, signalements, sanctions"
+        }
+      ],
+      "interdits": [
+        "Aucune infraction sans motif écrit.",
+        "Aucune sanction sans information du membre concerné.",
+        "Aucun filtrage de lien par liste noire : la règle est l'autorisation.",
+        "Aucune conservation de contenu au-delà de l'extrait nécessaire."
+      ]
+    },
+
+    {
+      "numero": "Article IV",
+      "titre": "Unité et Ordre",
+      "chapeau": "Le rassemblement inconditionnel du peuple derrière le régime, et le rejet total du libéralisme. L'unité n'est pas un voeu : c'est un rôle. Et l'ordre n'est pas une intention : c'est un salon, un seuil, un délai, une permission retirée.",
+      "paragraphes": [
+        "Un peuple se rassemble derrière une institution qui parle d'une seule voix. Sur Discord, cette voix unique se construit par la concentration des rôles : un rôle d'administration, un rôle de modération, un rôle de sourdine, un rôle de quarantaine, un rôle de DJ, un rôle d'accueil, un rôle de vérification, un rôle automatique. Chacun a un emploi déclaré, un salon ou un comportement qui le déclenche, et unopérateur qui en répond.",
+        "Le libéralisme, dans ce qu'il a de réellement nuisible, c'est l'exception. Le droit d'envoyer n'importe quel lien, le droit de garder toutes les permissions, le droit de parler au nom du régime avec n'importe quel pseudo. Le PSRG les combat par des moyens comptables : l'autorisation de liens, l'audit des permissions, et la détection d'usurpation de nom."
+      ],
+      "mesures": [
+        {
+          "intitule": "Les huit emplois de rôle",
+          "decision": "Chaque rôle du serveur a un emploi déclaré dans la configuration du bot, ou n'en a aucun.",
+          "mecanisme": "Le bot gère huit rôles : administration, modération, sourdine, DJ, quarantaine, accueil, vérification et automatique. Un rôle non déclaré n'est pas géré : il n'est ni attribué, ni surveillé, ni connu du bot. La transcription exacte des huit emplois se trouve dans le code du bot.",
+          "operateur": "L'administration",
+          "outil": "/configurer roles administration|moderation|sourdine|dj|quarantaine|accueil|verification|automatique"
+        },
+        {
+          "intitule": "Les cinq emplois de salon",
+          "decision": "Il existe exactement cinq salons de service : journal, alertes, accueil, signalements, sanctions.",
+          "mecanisme": "Le journal d'activité conserve la trace des événements ; le salon d'alerte reçoit les alertes de sécurité et d'escalade ; le salon d'accueil reçoit l'arrivée des membres ; le salon des signalements reçoit la file d'attente ; le salon des sanctions reçoit les dossiers. Aucun autre salon n'est un salon de régime.",
+          "operateur": "L'administration",
+          "outil": "/configurer salons journal|alertes|accueil|signalements|punitions"
+        },
+        {
+          "intitule": "La cascade d'accueil",
+          "decision": "L'arrivée d'un membre est une procédure, pas un hasard.",
+          "mecanisme": "À l'arrivée, le membre reçoit le rôle automatique, et le rôle d'accueil si le salon est configuré. En cas de raid, il reçoit la quarantaine. La séquence est un fait technique, elle est donc vérifiable et elle ne dépend d'aucun bénévolat.",
+          "operateur": "Le bot",
+          "outil": "Rôle automatique et rôle d'accueil, attribués à l'arrivée ; rôle de quarantaine en cas de verrouillage"
+        },
+        {
+          "intitule": "L'usurpation de nom est une atteinte à l'ordre",
+          "decision": "Prendre le nom d'une institution, de son bot ou de son équipe de modération est une infraction.",
+          "mecanisme": "Le bot compare le pseudo du membre au nom du bot, au nom du rôle d'administration et au nom du rôle de modération, et retient les noms trop proches. L'événement est journalisé comme usurpation. Une institution dont le nom se prête impunément n'est pas une institution.",
+          "operateur": "Le bot, sous la responsabilité de l'administration",
+          "outil": "Détection d'usurpation ; consultation par /journal"
+        },
+        {
+          "intitule": "Permissions resserrées, jamais abandonnées",
+          "decision": "Les permissions administratives ne sont pas décoratives : elles sont comptées, nommées et revues.",
+          "mecanisme": "L'audit examine six permissions dangereuses : administrateur, gestion du serveur, gestion des rôles, gestion des crochets, bannissement, exclusion. Il affiche les dix membres les plus exposés, par nom lisible de permission, triés par nombre de permissions cumulées. Aucun membre ne devrait cumuler plusieurs de ces six permissions.",
+          "operateur": "Le Dauphin",
+          "outil": "/audit ; l'audit signale aussi l'absence de salon d'alerte, de rôle de modération et de rôle de quarantaine"
+        },
+        {
+          "intitule": "La règle est rappelée, pas devinée",
+          "decision": "Les règles de modération sont un texte que n'importe quel membre peut faire s'afficher.",
+          "mecanisme": "La commande de règles rappelle ce que le bot applique réellement — les quatre filtres, les seuils, les sanctions. Un membre ne peut pas être sanctionné par une règle qu'il n'a jamais pu lire.",
+          "operateur": "Un membre",
+          "outil": "/regles"
+        }
+      ],
+      "interdits": [
+        "Aucun rôle de régime sans emploi déclaré dans la configuration.",
+        "Aucun rôle d'administration cumulant plusieurs permissions dangereuses sans justification inscrite au journal.",
+        "Aucune règle appliquée qui ne puisse être relue par le membre concerné."
+      ]
+    },
+
+    {
+      "numero": "Article V",
+      "titre": "Application, contrôle et responsabilité",
+      "chapeau": "Un manifeste sans protocole n'est qu'une déclaration d'intention. Le PSRG applique donc un protocole d'installation, une cadence de contrôle, et une répartition nominative des responsabilités. Le contrôle n'est pas une formalité : c'est ce qui distingue un gouvernement d'une revendication.",
+      "paragraphes": [
+        "Le protocole d'installation tient en cinq commandes. On règle les salons, on règle les rôles, on règle les protections, on affiche les réglages pour vérifier, et on lance un audit. Ensuite on teste la chaîne d'alerte. Six commandes, pas une de plus : c'est la totalité du travail de configuration, et il est reproductible par n'importe quel administrateur.",
+        "La cadence de contrôle est elle aussi un choix politique. Un audit hebdomadaire est le minimum : les permissions d'un serveur changent sans qu'aucune décision n'ait été prise. Un journal consulté quotidiennement est la mémoire courte du pouvoir. Sans ces deux gestes, le centralisme se dégrade lentement en laisser-faire."
+      ],
+      "mesures": [
+        {
+          "intitule": "Le protocole d'installation, en six commandes",
+          "decision": "Le serveur se configure en une séance, et la configuration se relit en une commande.",
+          "mecanisme": "L'ordre compte : les salons avant les rôles, les rôles avant les protections, l'affichage avant l'audit. L'affichage relit l'intégralité des réglages en cours d'effet — c'est la preuve que la configuration est celle qu'on croit.",
+          "operateur": "L'administration",
+          "outil": "/configurer salons, /configurer roles, /configurer proteger, /configurer afficher, /audit, /alertes"
+        },
+        {
+          "intitule": "La chaîne d'alerte doit être testée, pas supposée",
+          "decision": "Tant que la chaîne d'alerte n'a pas été testée, le pays n'a pas de défense : il a une configuration.",
+          "mecanisme": "La commande d'alerte envoie un message de test dans le salon d'alerte, avec un bouton de levée du verrou. Sans salon d'alerte, le bot fonctionne mais ne prévient personne — et l'audit le signale explicitement.",
+          "operateur": "L'administration",
+          "outil": "/alertes ; l'absence de salon d'alerte est signalée par /audit"
+        },
+        {
+          "intitule": "Le contrôle hebdomadaire",
+          "decision": "L'audit est une obligation périodique, pas une réaction à incident.",
+          "mecanisme": "L'audit met en évidence deux dérives : les permissions qui s'accumulent sur un même compte, et les seuils de sécurité que l'on a relâchés. Il signale en particulier un seuil de raid supérieur à vingt, qui laisse passer une attaque.",
+          "operateur": "Le Dauphin",
+          "outil": "/audit, au moins une fois par semaine"
+        },
+        {
+          "intitule": "Le contrôle quotidien",
+          "decision": "Le journal est consulté chaque jour, et les signalements sont traités sans délai.",
+          "mecanisme": "Le journal expose les derniers événements du serveur. La file des signalements en attente est un indicateur de santé du corps social : une file qui grossit signifie une équipe qui ne suit pas, et se corriger avant que la dette ne devienne une insurrection.",
+          "operateur": "La modération",
+          "outil": "/journal, /signalements, /statistiques"
+        },
+        {
+          "intitule": "La responsabilité est nominative",
+          "decision": "Chaque charge constitutionnelle a une responsabilité propre, et elle est déduite du texte, pas de l'usage.",
+          "mecanisme": "Le tableau des charges est reproduit en annexe IV, avec la citation de la Constitution qui justifie chaque droit. Une charge représentative n'a pas de droit d'édition sur l'encyclopédie : ce n'est pas un amoindrissement, c'est la garantie que le texte du pays reste la propriété des charges qui le gouvernent.",
+          "operateur": "Les charges constitutionnelles",
+          "outil": "Rôles d'édition du wiki, définis par la Constitution, article P-1"
+        }
+      ],
+      "interdits": [
+        "Aucune installation déclarée terminée sans exhibition de /configurer afficher.",
+        "Aucune chaîne d'alerte considérée comme opérationnelle avant /alertes.",
+        "Aucune semaine sans audit, aucune journée sans traitement de la file de signalements."
+      ]
+    },
+
+    {
+      "numero": "Article VI",
+      "titre": "Les limites assumées",
+      "chapeau": "Un manifeste honnête énonce ce qu'il ne fait pas. Le PSRG préfère une limite déclarée à une promesse impossible. Ce qui suit n'est pas une faiblesse de la doctrine : c'est sa preuve de sérieux.",
+      "paragraphes": [
+        "Le bot est un outil, et un outil a des bords. Les énoncer n'affaiblit pas le parti : cela empêche l'administration de s'appuyer sur une capacité qu'elle n'a pas, ce qui est la manière la plus sûre de perdre la confiance d'un peuple.",
+        "Ces limites ne sont pas des maka du programme : ce sont les conditions de sa crédibilité."
+      ],
+      "mesures": [
+        {
+          "intitule": "Le bot n'écrit jamais un article",
+          "decision": "Le bot signale les changements de rôles ; le wiki décide quoi en faire.",
+          "mecanisme": "La synchronisation pousse vers le wiki les rôles vérifiés et un rattachement précis, sur demande nominative d'un membre autorisé. Le contenu du pays n'est jamais produit par un automate.",
+          "operateur": "Le système",
+          "outil": "/synchroniser [page] [membre] (niveau administration)"
+        },
+        {
+          "intitule": "Le bot ne lit aucun message privé",
+          "decision": "La vie privée des membres n'est ni lue, ni conservée.",
+          "mecanisme": "Le bot ne lit pas les messages privés et ne mémorise aucun contenu. Seuls sont conservés un identifiant, un motif, et au plus quatre cents caractères d'extrait. Il n'envoie rien sur le serveur sans qu'un membre l'ait demandé nommément.",
+          "operateur": "Le système",
+          "outil": "Politique de conservation du bot ; pages Conditions et Confidentialite du wiki, wiki-gratiennois.duckdns.org/bot/conditions et wiki-gratiennois.duckdns.org/bot/confidentialite"
+        },
+        {
+          "intitule": "Les onze commandes de musique ont une condition",
+          "decision": "Onze des cinquante-sept commandes dépendent de deux exécutables installés sur la machine du serveur.",
+          "mecanisme": "Sans FFmpeg ni yt-dlp, seules les commandes de musique répondent « yt-dlp est introuvable » ou « salon vocal inaccessible ». Les quarante-six autres restent intactes. Le bot diffuse dans le salon où l'on se trouve, jamais dans un autre, et quitte le salon trente secondes après le départ du dernier membre.",
+          "operateur": "L'administration",
+          "outil": "/jouer, /pause, /reprendre, /suivant, /arreter, /file, /volume, /boucle, /deplacer, /retirer, /en-cours"
+        },
+        {
+          "intitule": "Les mesures non outillées ne sont pas des mesures",
+          "decision": "Ce que Discord ne sait pas faire n'est pas écrit dans ce manifeste comme s'il le faisait.",
+          "mecanisme": "Discord ne permet ni de trancher un litige, ni de créer une institution, ni de representational un pouvoir législatif. Ces questions relèvent des charges constitutionnelles et du texte du pays, non de l'outillage. Le manifeste s'arrête donc là où s'arrête l'outil, et renvoie le reste aux institutions.",
+          "operateur": "Le parti",
+          "outil": "Annexe I, qui donne l'inventaire exact des capacités du bot"
+        }
+      ],
+      "interdits": [
+        "Ne pas invoquer une capacité que l'inventaire des commandes ne mentionne pas.",
+        "Ne pas présenter une limite technique comme un choix politique, ni l'inverse."
+      ]
+    }
+  ],
+
+  "annexes": [
+    {
+      "numero": "Annexe I",
+      "titre": "Inventaire des capacités de DelphinaBot",
+      "intro": "Les cinquante-sept commandes, par module et par niveau de permission. « membre » : tout membre du serveur. « modération » : l'équipe de modération. « dj » : le rôle de disqueuse. « admin » : l'administration. Cet inventaire est l'état réel du bot au jour de l'édition ; il vaut plafond de ce que le manifeste peut demander.",
+      "colonnes": ["Commande", "Module", "Niveau", "Usage"],
+      "groupes": [
+        {
+          "module": "Sécurité — 7 commandes",
+          "lignes": [
+            ["/alertes", "Sécurité", "moderation", "/alertes"],
+            ["/audit", "Sécurité", "admin", "/audit"],
+            ["/configurer", "Sécurité", "admin", "/configurer <salons|roles|proteger|progression|musique|domaines|mots|afficher>"],
+            ["/deverrouiller", "Sécurité", "admin", "/deverrouiller"],
+            ["/lien", "Sécurité", "membre", "/lien <page du wiki>"],
+            ["/valider-lien", "Sécurité", "moderation", "/valider-lien <membre>"],
+            ["/verrouiller", "Sécurité", "admin", "/verrouiller [raison]"]
+          ]
+        },
+        {
+          "module": "Modération — 14 commandes",
+          "lignes": [
+            ["/avertir", "Modération", "moderation", "/avertir <membre> [motif]"],
+            ["/bannir", "Modération", "moderation", "/bannir <identifiant> [motif]"],
+            ["/debannir", "Modération", "moderation", "/debannir <identifiant>"],
+            ["/delai", "Modération", "moderation", "/delai <membre> <durée> [motif]"],
+            ["/exclure", "Modération", "moderation", "/exclure <membre> [motif]"],
+            ["/historique", "Modération", "moderation", "/historique [membre]"],
+            ["/purger", "Modération", "moderation", "/purger [nombre]"],
+            ["/ralentir", "Modération", "moderation", "/ralentir <secondes>"],
+            ["/regles", "Modération", "membre", "/regles"],
+            ["/resoudre-signalement", "Modération", "moderation", "/resoudre-signalement <numéro> [résolu|rejeté]"],
+            ["/revoquer", "Modération", "moderation", "/revoquer <membre> [type]"],
+            ["/signalements", "Modération", "moderation", "/signalements"],
+            ["/signaler", "Modération", "membre", "/signaler <membre> [motif]"],
+            ["/sourdine", "Modération", "moderation", "/sourdine <membre> [motif]"]
+          ]
+        },
+        {
+          "module": "Économie — 11 commandes",
+          "lignes": [
+            ["/acheter", "Économie", "membre", "/acheter <article>"],
+            ["/boutique", "Économie", "membre", "/boutique"],
+            ["/classement-ducats", "Économie", "membre", "/classement-ducats"],
+            ["/donner", "Économie", "admin", "/donner <membre> <montant>"],
+            ["/epargner", "Économie", "membre", "/epargner <montant>"],
+            ["/recompense", "Économie", "membre", "/recompense"],
+            ["/retirer-epargne", "Économie", "membre", "/retirer-epargne <montant>"],
+            ["/solde", "Économie", "membre", "/solde [membre]"],
+            ["/taxer", "Économie", "moderation", "/taxer <membre> <montant> [motif]"],
+            ["/transferer", "Économie", "membre", "/transferer <membre> <montant>"],
+            ["/travailler", "Économie", "membre", "/travailler"]
+          ]
+        },
+        {
+          "module": "Système — 5 commandes",
+          "lignes": [
+            ["/aide", "Système", "membre", "/aide [commande]"],
+            ["/journal", "Système", "admin", "/journal"],
+            ["/ping", "Système", "membre", "/ping"],
+            ["/statistiques", "Système", "membre", "/statistiques"],
+            ["/synchroniser", "Système", "admin", "/synchroniser [page] [membre]"]
+          ]
+        },
+        {
+          "module": "Divertissement — 9 commandes",
+          "lignes": [
+            ["/choisir", "Divertissement", "membre", "/choisir <a | b | c>"],
+            ["/citation", "Divertissement", "membre", "/citation"],
+            ["/classement", "Divertissement", "membre", "/classement"],
+            ["/de", "Divertissement", "membre", "/de <notation> [nombre]"],
+            ["/decret", "Divertissement", "membre", "/decret"],
+            ["/niveau", "Divertissement", "membre", "/niveau [membre]"],
+            ["/pile-ou-face", "Divertissement", "membre", "/pile-ou-face"],
+            ["/quiz", "Divertissement", "membre", "/quiz"],
+            ["/reponse", "Divertissement", "membre", "/reponse <A|B|C|D>"]
+          ]
+        },
+        {
+          "module": "Musique — 11 commandes",
+          "lignes": [
+            ["/arreter", "Musique", "dj", "/arreter"],
+            ["/boucle", "Musique", "dj", "/boucle [aucune|piste|file]"],
+            ["/deplacer", "Musique", "dj", "/deplacer <position>"],
+            ["/en-cours", "Musique", "membre", "/en-cours"],
+            ["/file", "Musique", "membre", "/file"],
+            ["/jouer", "Musique", "dj", "/jouer <recherche ou lien> [nombre]"],
+            ["/pause", "Musique", "dj", "/pause"],
+            ["/reprendre", "Musique", "dj", "/reprendre"],
+            ["/retirer", "Musique", "dj", "/retirer <position>"],
+            ["/suivant", "Musique", "dj", "/suivant"],
+            ["/volume", "Musique", "dj", "/volume <0-100>"]
+          ]
+        }
+      ]
+    },
+
+    {
+      "numero": "Annexe II",
+      "titre": "Réglages du serveur et valeurs par défaut",
+      "intro": "Ce que le serveur applique tant que l'administration n'a rien décidé autrement. Toutes ces valeurs sont modifiables par la commande de configuration, sans redémarrage, et se relisent par la commande d'affichage.",
+      "colonnes": ["Réglage", "Valeur par défaut", "Commande"],
+      "groupes": [
+        {
+          "module": "Défense du territoire",
+          "lignes": [
+            ["Anti-raid", "activé", "/configurer proteger anti-raid:True"],
+            ["Seuil de raid", "5 arrivées", "/configurer proteger seuil-raid:5"],
+            ["Fenêtre d'observation", "10 secondes", "/configurer proteger fenetre-raid:10"],
+            ["Bannissement automatique des comptes attaquants", "désactivé — le bot ne banni jamais seul", "/configurer proteger raidBannirComptes:False"],
+            ["Âge minimum des comptes", "aucun filtre", "/configurer proteger avec raidAgeMinimumJours"]
+          ]
+        },
+        {
+          "module": "Filtres de message",
+          "lignes": [
+            ["Anti-mentions", "activé", "/configurer proteger anti-mentions:True"],
+            ["Mentions maximales par message", "5 — au-delà, délai de 10 minutes", "/configurer proteger max-mentions:5"],
+            ["Anti-flood", "activé", "/configurer proteger anti-flood:True"],
+            ["Messages en rafale", "8 — au-delà, délai de 5 minutes", "/configurer proteger max-flood:8"],
+            ["Anti-liens", "activé", "/configurer proteger anti-liens:True"],
+            ["Anti-mots", "activé", "/configurer proteger anti-mots:True"],
+            ["Domaines autorisés", "discord.gg, youtu.be, github.com, wiki-gratiennois.duckdns.org", "/configurer domaines <domaine>"],
+            ["Mots surveillés", "aucun", "/configurer mots <mot>"]
+          ]
+        },
+        {
+          "module": "Économie et progression",
+          "lignes": [
+            ["Expérience", "active", "/configurer progression xp:True"],
+            ["Multiplicateur d'expérience", "1", "/configurer progression multiplicateur-xp:1"],
+            ["Ducats gagnés par message", "1", "/configurer progression ducats:1"],
+            ["Plafond quotidien de gains", "300", "/configurer progression plafond:300"],
+            ["Économie", "active", "/configurer progression economie:True"]
+          ]
+        },
+        {
+          "module": "Salons, rôles et musique",
+          "lignes": [
+            ["Salon du journal", "aucun", "/configurer salons journal #journal"],
+            ["Salon des alertes", "aucun", "/configurer salons alertes #alertes"],
+            ["Salon d'accueil", "aucun", "/configurer salons accueil #accueil"],
+            ["Salon des signalements", "aucun", "/configurer salons signalements #signalements"],
+            ["Salon des sanctions", "aucun", "/configurer salons punitions #sanctions"],
+            ["Rôle d'administration", "aucun", "/configurer roles administration @Administration"],
+            ["Rôle de modération", "aucun", "/configurer roles moderation @Moderation"],
+            ["Rôle de sourdine", "aucun", "/configurer roles sourdine @Sourdine"],
+            ["Rôle de disqueuse", "aucun", "/configurer roles dj @DJ"],
+            ["Rôle de quarantaine", "aucun", "/configurer roles quarantaine @Quarantaine"],
+            ["Rôle d'accueil", "aucun", "/configurer roles accueil @Accueil"],
+            ["Rôle de vérification", "aucun", "/configurer roles verification @Verifie"],
+            ["Rôle automatique", "aucun", "/configurer roles automatique @Membre"],
+            ["Musique", "autorisée", "/configurer musique autorisee:True"],
+            ["Volume par défaut", "40", "/configurer musique volume:40"]
+          ]
+        }
+      ]
+    },
+
+    {
+      "numero": "Annexe III",
+      "titre": "Chaîne d'alerte et de sanction",
+      "intro": "Le parcours complet d'une faute, de la détection à la levée. Chaque étape est une commande existante et une écriture journalisée.",
+      "colonnes": ["Étape", "Ce qui se passe", "Opérateur", "Outil"],
+      "lignes": [
+        ["1. Détection", "Un filtre automatique qualifie le message : mentions en masse, rafale, lien non autorisé, terme surveillé, ou pseudo proche d'une institution.", "Le bot", "/configurer proteger"],
+        ["2. Sanction automatique", "Un délai de dix minutes, un délai de cinq minutes, ou un avertissement est appliqué et journalisé, avec son motif. Aucune exclusion, aucun bannissement.", "Le bot", "SANCTIONS du module de protection"],
+        ["3. Information du membre", "Le membre sanctionné est prévenu, motif et durée compris.", "Le bot", "Notification au membre"],
+        ["4. Escalade", "Au-delà de trois sanctions actives, une alerte part dans le salon des sanctions. C'est un signal, pas une décision.", "Le bot", "Seuil d'escalade : 3"],
+        ["5. Instruction", "La modération examine le dossier de sanctions du membre.", "La modération", "/historique <membre>"],
+        ["6. Décision", "Avertissement, délai, sourdine, exclusion ou bannissement, avec motif obligatoire.", "La modération", "/avertir, /delai, /sourdine, /exclure, /bannir"],
+        ["7. Prise de sanction pécuniaire", "La taxation prend sur le solde, jamais sur l'épargne.", "La modération", "/taxer <membre> <montant> [motif]"],
+        ["8. Trace", "L'événement est inscrit au journal du serveur, horodaté.", "Le bot", "/journal"],
+        ["9. Levée", "La sanction est levée ; la trace demeure. Un bannissement se lève même pour un compte parti.", "La modération", "/revoquer, /debannir, /sourdine"]
+      ]
+    },
+
+    {
+      "numero": "Annexe IV",
+      "titre": "Répartition des charges constitutionnelles",
+      "intro": "Le PSRG ne s'approprie aucun pouvoir que la Constitution ne prévoit pas. Les droits d'écriture sur l'encyclopédie sont ci-dessous tels qu'ils découlent du texte fondateur, avec la citation qui les justifie. Un membre du parti qui n'occupe aucune de ces charges n'écrit pas dans l'encyclopédie : il y contribue en participant au débat.",
+      "colonnes": ["Charge", "Droit sur le wiki", "Fondement dans la Constitution"],
+      "lignes": [
+        ["Dauphin", "Écrit, restaure et supprime", "« Le Dauphin possède tous les pouvoirs et également le droit de véto. »"],
+        ["Régent", "Écrit et restaure", "« Sa participation est obligatoire dans la création, la modification et la suppression de lois au conseil. »"],
+        ["Conseil Delphinal", "Écrit et restaure", "« Ils sont les suppléants du Dauphin, ils disposent du droit d'administration du serveur. »"],
+        ["Baillit", "Écrit et restaure", "« Ce sont les modérateurs, ils assurent une surveillance permanente du serveur. »"],
+        ["Premier Ministre", "Aucun droit d'écriture", "« Le Premier Ministre peut nommer un Gouvernement. »"],
+        ["Ministre", "Aucun droit d'écriture", "« Le Ministère est nommé par le Premier Ministre. »"],
+        ["Représentant de l'Assemblée", "Aucun droit d'écriture", "« Le Représentant de l'Assemblée représente l'assemblée de Gratianopolis. »"],
+        ["Député", "Aucun droit d'écriture", "« L'objectif des députés est de discuter des problèmes de Gratianopolis… »"]
+      ]
+    }
+  ],
+
+  "cloture": "Le IIIe Delphinat de Gratianopolis ne demande pas à ses membres de croire en sa puissance. Il leur demande de l'organiser. Ce manifeste est cette organisation, écrite en commandes et en seuils, vérifiable par n'importe quel membre à n'importe quel moment. Ce qui n'est pas outillé n'est pas décidé. Ce qui n'est pas vérifié n'est pas cru."
+}

@@ -167,6 +167,16 @@ export default async function RootLayout({
               <Link href="/personnalites" className="inline-block py-2.5 text-slate-300 transition hover:text-gold-200">
                 👑 Personnalités
               </Link>
+              <Link href="/manifeste-psrg" className="inline-block py-2.5 text-slate-300 transition hover:text-gold-200">
+                ☭ Manifeste du PSRG
+              </Link>
+              <a
+                href="/Manifeste-PSRG.pdf"
+                className="inline-block py-2.5 text-slate-300 transition hover:text-gold-200"
+                download
+              >
+                ⬇ Télécharger le manifeste (PDF)
+              </a>
               <Link href="/credits" className="inline-block py-2.5 text-slate-300 transition hover:text-gold-200">
                 ✍️ Crédits
               </Link>

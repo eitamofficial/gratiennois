@@ -6,7 +6,7 @@ import MobileNav from "@/components/MobileNav";
 export const metadata: Metadata = {
   title: "Programme",
   description:
-    "Parti Révolutionnaire Socialiste Gratiennois : stabilisation du serveur, paliers de boosts et outillage du wiki.",
+    "Parti Socialiste Révolutionnaire Gratiennois : stabilisation du serveur, paliers de boosts et outillage du wiki.",
   alternates: { canonical: "/programme" },
 };
 
@@ -59,7 +59,7 @@ export default function ProgrammePage() {
       <article className="mx-auto max-w-3xl">
         <header className="border-b border-gold-500/20 pb-6">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold-400">
-            Parti Révolutionnaire Socialiste Gratiennois
+            Parti Socialiste Révolutionnaire Gratiennois
           </p>
           <h1 className="mt-2 font-display text-3xl font-bold text-ink-50 sm:text-4xl">
             Un serveur stable, et de quoi l&apos;entretenir
@@ -156,11 +156,16 @@ export default function ProgrammePage() {
             >
               crédits
             </Link>
-            . Le programme est la position du{" "}
+            .            Le programme est la position du{" "}
             <strong className="text-ink-200">
-              Parti Révolutionnaire Socialiste Gratiennois
+              Parti Socialiste Révolutionnaire Gratiennois
             </strong>
-            ; il n&apos;engage que ce parti.
+            ; il n&apos;engage que ce parti. Sa doctrine et son protocole
+            d&apos;application sont exposés dans le{" "}
+            <Link href="/manifeste-psrg" className="text-gold-300 underline-offset-4 hover:underline">
+              manifeste du PSRG
+            </Link>
+            .
           </p>
         </footer>
       </article>

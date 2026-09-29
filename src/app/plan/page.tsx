@@ -20,6 +20,11 @@ const PAGES_SPECIALES = [
   { href: "/wiki", label: "Index du wiki", description: "Tous les articles, filtres par catégorie." },
   { href: "/recherche", label: "Recherche", description: "Recherche intelligente, facettes et suggestions." },
   { href: "/constitution", label: "Constitution (PDF)", description: "Prévisualisation du document officiel." },
+  {
+    href: "/manifeste-psrg",
+    label: "Manifeste du PSRG",
+    description: "Doctrine du parti et protocole d'application, avec son PDF.",
+  },
   { href: "/institutions", label: "Institutions", description: "Les huit charges et leurs détenteurs." },
   { href: "/personnalites", label: "Personnalités", description: "Membres du serveur Discord officiel." },
   { href: "/tags", label: "Tags", description: "Nuage de mots-clés du wiki." },

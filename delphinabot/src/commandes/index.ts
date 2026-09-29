@@ -13,10 +13,12 @@ import { COMMANDES_FUN } from "./fun.js";
 import { COMMANDES_ECONOMIE } from "./economie.js";
 import { COMMANDES_MUSIQUE } from "./musique.js";
 import { COMMANDES_SYSTEME } from "./systeme.js";
+import { COMMANDES_ACCUEIL } from "./accueil.js";
 
 /** Toutes les commandes, dans l'ordre d'affichage de l'aide. */
 export const TOUTES_LES_COMMANDES: Commande[] = [
   ...COMMANDES_SYSTEME,
+  ...COMMANDES_ACCUEIL,
   ...COMMANDES_SECURITE,
   ...COMMANDES_MODERATION,
   ...COMMANDES_ECONOMIE,
@@ -24,4 +26,4 @@ export const TOUTES_LES_COMMANDES: Commande[] = [
   ...COMMANDES_MUSIQUE,
 ];
 
-export { COMMANDES_SECURITE, COMMANDES_MODERATION, COMMANDES_ECONOMIE, COMMANDES_FUN, COMMANDES_MUSIQUE, COMMANDES_SYSTEME };
+export { COMMANDES_SECURITE, COMMANDES_MODERATION, COMMANDES_ECONOMIE, COMMANDES_FUN, COMMANDES_MUSIQUE, COMMANDES_SYSTEME, COMMANDES_ACCUEIL };

@@ -7,12 +7,13 @@
  * raccordées ici.
  */
 
-import { type GuildMember, type Message, type VoiceState } from "discord.js";
+import { type GuildMember, type Message, type PartialGuildMember, type VoiceState } from "discord.js";
 import type { Delphinabot } from "./client.js";
 import { lireReglages } from "./db/serveur.js";
 import { journal } from "./logger.js";
 import { journaliser } from "./db/journal.js";
 import { surArrivee } from "./modules/antiraid.js";
+import { embedBienvenue, embedDepart, type ContexteMembre } from "./modules/accueil.js";
 import { verifierMessage } from "./modules/protection.js";
 import { or, succes } from "./lib/embres.js";
 import { estSalonTextuel } from "./commandes/outils.js";
@@ -24,6 +25,7 @@ export function installerEvenements(bot: Delphinabot): void {
   bot.once("ready", () => void pret(bot));
   bot.on("guildCreate", (guild) => void nouveauServeur(bot, guild.id));
   bot.on("guildMemberAdd", (membre) => void arrivee(bot, membre));
+  bot.on("guildMemberRemove", (membre) => void depart(bot, membre));
   bot.on("messageCreate", (message) => void surMessage(bot, message));
   bot.on("voiceStateUpdate", (avant, apres) => void surVoix(bot, avant, apres));
 
@@ -91,9 +93,74 @@ async function nouveauServeur(bot: Delphinabot, guildId: string): Promise<void> 
   }
 }
 
-/** Arrivée d'un membre. */
-async function arrivee(bot: Delphinabot, membre: GuildMember): Promise<void> {
+/**
+ * Renseignement reels d'un membre, pour les messages d'accueil.
+ *
+ * Seuls les champs qui existent encore au moment du message sont lus : un
+ * membre qui part entre son arrivee et l'envoi ne doit pas faire echouer
+ * l'embed pour une image de trop.
+ */
+function contexteMembre(
+  bot: Delphinabot,
+  membre: GuildMember | PartialGuildMember,
+  nomServeur: string,
+): ContexteMembre {
+  // Les liens viennent de la configuration du bot, pas d'une constante : le
+  // wiki est heberge ailleurs en developpement, et un message d'accueil qui
+  // renvoie vers la mauvaise adresse est un lien mort publie partout.
+  const wiki = bot.configuration.wikiUrl.replace(/\/+$/, "");
+  return {
+    pseudo: membre.user.username,
+    identifiant: membre.user.id,
+    nomServeur,
+    ageCompteJours: Math.max(
+      0,
+      Math.round((Date.now() - membre.user.createdTimestamp) / 86_400_000),
+    ),
+    // Au départ, Discord ne fournit qu'un membre partiel : les rôles peuvent
+    // manquer. On les lit donc sans l'exiger, plutot que d'abandonner le
+    // message d'au revoir a cause d'un champ absent.
+    roles: Array.from(membre.roles?.cache?.values() ?? [])
+      .map((role) => (role as { name?: string }).name)
+      .filter((nom): nom is string => typeof nom === "string" && !nom.startsWith("=="))
+      .slice(0, 6),
+    wiki,
+    constitution: `${wiki}/constitution`,
+  };
+}
+
+/**
+ * Depart d'un membre.
+ *
+ * Le message part dans le salon d'accueil, comme celui d'arrivee : un membre
+ * doit pouvoir voir qu'il a ete recu et qu'il est parti, et deux salons
+ * feraient que l'un des deux messages soit perdu pour la moitie du serveur.
+ *
+ * Aucun message n'est envoye pour un bot : un autre bot qui se deconnecte
+ * n'interesse personne, et le salon verrait bouger pour rien.
+ */
+async function depart(bot: Delphinabot, membre: GuildMember | PartialGuildMember): Promise<void> {
   if (membre.user.bot) return;
+
+  const reglages = await lireReglages(membre.guild.id).catch(() => null);
+  if (!reglages?.salonBienvenue) return;
+
+  const salon = membre.guild.channels.cache.get(reglages.salonBienvenue);
+  if (!salon || !estSalonTextuel(salon)) return;
+
+  // `joinedTimestamp` peut valoir null si Discord ne l'a pas envoyé : on parle
+  // alors d'un membre arrivé aujourd'hui plutot que d'inventer une anciennete.
+  const arrive = membre.joinedTimestamp;
+  const dureeJours = arrive
+    ? Math.max(0, Math.round((Date.now() - arrive) / 86_400_000))
+    : 0;
+
+  const embed = embedDepart(contexteMembre(bot, membre, membre.guild.name), dureeJours);
+  await salon.send({ embeds: [embed] }).catch(() => undefined);
+}
+
+/** Arrivée d'un membre. */
+async function arrivee(bot: Delphinabot, membre: GuildMember): Promise<void> {  if (membre.user.bot) return;
 
   const reglages = await lireReglages(membre.guild.id).catch(() => null);
   if (!reglages) return;
@@ -107,15 +174,9 @@ async function arrivee(bot: Delphinabot, membre: GuildMember): Promise<void> {
   if (reglages.salonBienvenue) {
     const salon = membre.guild.channels.cache.get(reglages.salonBienvenue);
     if (salon && estSalonTextuel(salon)) {
-      const ageJours = Math.round((Date.now() - membre.user.createdTimestamp) / 86_400_000);
-      const embed = succes(
-        [
-          `Bienvenue **${membre.user.username}** sur ${membre.guild.name}.`,
-          `Compte créé il y a ${ageJours} jour(s).`,
-          verdict.quarantaine
-            ? "Le serveur est verrouillé : votre accès sera validé par l'administration."
-            : "Lisez le règlement, puis présentez-vous.",
-        ].join("\n"),
+      const embed = embedBienvenue(
+        contexteMembre(bot, membre, membre.guild.name),
+        verdict.quarantaine,
       );
       await salon.send({ embeds: [embed] }).catch(() => undefined);
     }

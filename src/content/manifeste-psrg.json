@@ -15,7 +15,7 @@
     { "label": "Position politique", "valeur": "Pro-Esto" },
     { "label": "Nature", "valeur": "Parti de gouvernement — il exercise le pouvoir, il ne le conteste pas" },
     { "label": "Champ d'application", "valeur": "Le serveur Discord du Delphinat et l'encyclopédie qui l'atteste" },
-    { "label": "Outillage", "valeur": "DelphinaBot, 57 commandes, un seul processus et une seule base de données" },
+    { "label": "Outillage", "valeur": "DelphinaBot, 58 commandes, un seul processus et une seule base de données" },
     { "label": "Autorité de référence", "valeur": "La Constitution du IIIe Delphinat, texte fondateur créé par Esto le 26/09/26" },
     { "label": "Document de coalition", "valeur": "Programme de financement des boosts et d'outillage du wiki" }
   ],
@@ -37,7 +37,7 @@
           "decision": "Toute ligne du manifeste doit correspondre à une commande, un réglage ou une permission réellement existants sur le serveur.",
           "mecanisme": "Rédaction contraignante : la colonne « Outil » de chaque mesure cite la commande exacte. Une mesure sans outil cité est retirée du texte.",
           "operateur": "Le parti",
-          "outil": "Les 57 commandes de DelphinaBot, inventaire reproduit en annexe I"
+          "outil": "Les 58 commandes de DelphinaBot, inventaire reproduit en annexe I"
         },
         {
           "intitule": "Le programme est l'outillage, pas l'intention",
@@ -271,9 +271,9 @@
         {
           "intitule": "La cascade d'accueil",
           "decision": "L'arrivée d'un membre est une procédure, pas un hasard.",
-          "mecanisme": "À l'arrivée, le membre reçoit le rôle automatique, et le rôle d'accueil si le salon est configuré. En cas de raid, il reçoit la quarantaine. La séquence est un fait technique, elle est donc vérifiable et elle ne dépend d'aucun bénévolat.",
+          "mecanisme": "À l'arrivée, le membre reçoit le rôle automatique, et le rôle d'accueil si le salon est configuré. En cas de raid, il reçoit la quarantaine et lit un message d'accueil différent, qui annonce la validation au lieu du libre accès. Le message d'accueil et le message d'au revoir sont produits par le même module que la commande de simulation : ce qu'un membre voit est exactement ce que la simulation montre. La séquence est un fait technique, elle est donc vérifiable et elle ne dépend d'aucun bénévolat.",
           "operateur": "Le bot",
-          "outil": "Rôle automatique et rôle d'accueil, attribués à l'arrivée ; rôle de quarantaine en cas de verrouillage"
+          "outil": "Rôle automatique et rôle d'accueil, attribués à l'arrivée ; rôle de quarantaine en cas de verrouillage ; /simuler pour relire les deux messages ; /bienvenue pour les quatre étapes"
         },
         {
           "intitule": "L'usurpation de nom est une atteinte à l'ordre",
@@ -381,7 +381,7 @@
         },
         {
           "intitule": "Les onze commandes de musique ont une condition",
-          "decision": "Onze des cinquante-sept commandes dépendent de deux exécutables installés sur la machine du serveur.",
+          "decision": "Onze des cinquante-huit commandes dépendent de deux exécutables installés sur la machine du serveur.",
           "mecanisme": "Sans FFmpeg ni yt-dlp, seules les commandes de musique répondent « yt-dlp est introuvable » ou « salon vocal inaccessible ». Les quarante-six autres restent intactes. Le bot diffuse dans le salon où l'on se trouve, jamais dans un autre, et quitte le salon trente secondes après le départ du dernier membre.",
           "operateur": "L'administration",
           "outil": "/jouer, /pause, /reprendre, /suivant, /arreter, /file, /volume, /boucle, /deplacer, /retirer, /en-cours"
@@ -405,7 +405,7 @@
     {
       "numero": "Annexe I",
       "titre": "Inventaire des capacités de DelphinaBot",
-      "intro": "Les cinquante-sept commandes, par module et par niveau de permission. « membre » : tout membre du serveur. « modération » : l'équipe de modération. « dj » : le rôle de disqueuse. « admin » : l'administration. Cet inventaire est l'état réel du bot au jour de l'édition ; il vaut plafond de ce que le manifeste peut demander.",
+      "intro": "Les cinquante-huit commandes, par module et par niveau de permission. « membre » : tout membre du serveur. « modération » : l'équipe de modération. « dj » : le rôle de disqueuse. « admin » : l'administration. Cet inventaire est l'état réel du bot au jour de l'édition ; il vaut plafond de ce que le manifeste peut demander. Une commande qui n'existe pas dans le bot n'a pas sa place ici, et le dépôt le vérifie à chaque compilation.",
       "colonnes": ["Commande", "Module", "Niveau", "Usage"],
       "groupes": [
         {
@@ -456,11 +456,12 @@
           ]
         },
         {
-          "module": "Système — 5 commandes",
+          "module": "Système — 6 commandes",
           "lignes": [
             ["/aide", "Système", "membre", "/aide [commande]"],
+            ["/bienvenue", "Système", "membre", "/bienvenue"],
             ["/journal", "Système", "admin", "/journal"],
-            ["/ping", "Système", "membre", "/ping"],
+            ["/simuler", "Système", "admin", "/simuler <accueil|depart|quarantaine>"],
             ["/statistiques", "Système", "membre", "/statistiques"],
             ["/synchroniser", "Système", "admin", "/synchroniser [page] [membre]"]
           ]

@@ -139,34 +139,10 @@ const cmdStatistiques: Commande = {
   },
 };
 
-const cmdPing: Commande = {
-  nom: "ping",
-  categorie: "systeme",
-  niveau: "membre",
-  usage: "/ping",
-  resume: "Mesure la latence du bot vers Discord.",
-  donnees: commande("ping", "Latence du bot."),
-  async executer({ bot, interaction, serveur }) {
-    await executer({ bot, interaction, serveur }, async () => {
-      const debut = Date.now();
-      await interaction.deferReply({ ephemeral: true });
-      const aller = Date.now();
-      await interaction.editReply({ content: "…" });
-      const retour = Date.now();
-
-      await repondre(
-        interaction,
-        or(
-          [
-            `**Latence** : ${Math.round(bot.ws.ping)} ms`,
-            `**Aller-retour de l'interaction** : ${retour - debut} ms`,
-            `**Traversée du réseau** : ${retour - aller} ms`,
-          ].join("\n"),
-        ),
-      );
-    });
-  },
-};
+// `/ping` a été retiré : `/statistiques` affiche déjà la latence du bot,
+// dans le même format. Deux commandes pour une seule donnée est une commande
+// de trop — elle occupe un emplacement dans la liste de Discord et n'apporte
+// rien que l'autre ne dise.
 
 const cmdJournal: Commande = {
   nom: "journal",
@@ -271,7 +247,6 @@ const cmdSynchroniser: Commande = {
 export const COMMANDES_SYSTEME: Commande[] = [
   cmdAide,
   cmdStatistiques,
-  cmdPing,
   cmdJournal,
   cmdSynchroniser,
 ];

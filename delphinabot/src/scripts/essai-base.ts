@@ -18,6 +18,7 @@ import {
   ajusterBanque,
   ajusterDucats,
   classement,
+  enregistrerMessage,
   lireMembre,
   rang,
   reclamerRecompense,
@@ -110,6 +111,76 @@ async function main(): Promise<void> {
   const jour = await reclamerRecompense(SERVEUR, BOB, 50);
   verifier(jour.montant === 50, "récompense quotidienne accordée");
   verifier((await reclamerRecompense(SERVEUR, BOB, 50)).montant === 0, "récompense refusée une seconde fois");
+
+  // --- Progression ---------------------------------------------------------
+  // `enregistrerMessage` est la seule écriture qui touche cinq colonnes à la
+  // fois. C'est aussi celle dont le numérotage des paramètres a été décalé d'un
+  // cran sans qu'aucun essai ne la traverse : PostgreSQL ne signalait
+  // l'erreur que sur le premier message réel d'un membre, en production.
+  // Ces vérifications referment ce trou.
+  //
+  // Les compteurs sont remis à zéro d'abord : plus haut, une écriture a fixé
+  // l'XP de tout le serveur pour éprouver le classement, et les gains du jour
+  // ont été consommés par la récompense quotidienne.
+  await transaction(async (client) => {
+    await client.query(
+      `UPDATE delphinabot_membres
+          SET xp = 0, xp_total = 0, niveau = 0,
+              messages = 0, messages_jour = 0, gains_jour = 0
+        WHERE serveur_id = $1 AND utilisateur_id = $2`,
+      [SERVEUR, BOB],
+    );
+  });
+
+  const progression = await enregistrerMessage(SERVEUR, BOB, {
+    xpParMessage: 2,
+    xpMultiplicateur: 1.5,
+    gainsParMessage: 3,
+    gainsMaxJour: 1000,
+    xpActif: true,
+    economieActive: true,
+  });
+  verifier(progression.xpGagne === 3, "XP gagnée au message, multiplicateur compris");
+  verifier(progression.gains === 3, "ducats gagnés au message");
+
+  const apresMessage = await lireMembre(SERVEUR, BOB);
+  verifier(apresMessage.xpTotal === 3, "XP totale écrite en base");
+  verifier(apresMessage.xp === 3, "XP de session écrite en base");
+  verifier(apresMessage.messages === 1, "message comptabilisé");
+  verifier(apresMessage.messagesJour === 1, "message du jour comptabilisé");
+  verifier(apresMessage.gainsJour === 3, "gains du jour écrits dans la bonne colonne");
+  verifier(apresMessage.niveau === niveauDepuisXp(3), "niveau recalculé depuis l'XP totale");
+
+  // Le plafond quotidien est la seule chose qui distingue « on a gagné » de
+  // « on a gagné moins que prévu » : il se vérifie sur la colonne, pas sur le
+  // retour de la fonction.
+  await transaction(async (client) => {
+    await client.query(
+      `UPDATE delphinabot_membres SET gains_jour = 999 WHERE serveur_id = $1 AND utilisateur_id = $2`,
+      [SERVEUR, BOB],
+    );
+  });
+  const plafonne = await enregistrerMessage(SERVEUR, BOB, {
+    xpParMessage: 0,
+    xpMultiplicateur: 1,
+    gainsParMessage: 50,
+    gainsMaxJour: 1000,
+    xpActif: true,
+    economieActive: true,
+  });
+  verifier(plafonne.gains === 1, "le gain est tronqué par le plafond restant");
+  verifier((await lireMembre(SERVEUR, BOB)).gainsJour === 1000, "le plafond journalier tient");
+
+  const nul = await enregistrerMessage(SERVEUR, BOB, {
+    xpParMessage: 2,
+    xpMultiplicateur: 1.5,
+    gainsParMessage: 3,
+    gainsMaxJour: 1000,
+    xpActif: false,
+    economieActive: false,
+  });
+  verifier(nul.xpGagne === 0 && nul.gains === 0, "progression désactivée ne rapporte rien");
+  verifier((await lireMembre(SERVEUR, BOB)).messages === 3, "le message reste compté même sans gain");
 
   // --- Sanctions -----------------------------------------------------------
   const sanction = await enregistrerSanction({

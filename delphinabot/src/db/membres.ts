@@ -275,10 +275,10 @@ export async function enregistrerMessage(
     `UPDATE delphinabot_membres
         SET messages = messages + 1,
             messages_jour = messages_jour + 1,
-            gains_jour = gains_jour + $4,
-            xp = xp + $5,
-            xp_total = xp_total + $5,
-            niveau = $6,
+            gains_jour = gains_jour + $3,
+            xp = xp + $4,
+            xp_total = xp_total + $4,
+            niveau = $5,
             modifie_le = now()
       WHERE serveur_id = $1 AND utilisateur_id = $2`,
     [serveurId, utilisateurId, gains, xpGagne, niveauApres],

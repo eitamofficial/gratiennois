@@ -308,6 +308,42 @@ seul. Copiez `.env.example` et renseignez au minimum :
 | `DISCORD_CLIENT_ID` | pour `npm run deploy` (enregistrement des 57 commandes) |
 | `DATABASE_URL` | la même base Neon que le wiki, ou une seconde base dédiée |
 
+`DISCORD_CLIENT_ID` ne se copie pas : il se déduit du jeton. L'endpoint
+`GET /oauth2/applications/@me` renvoie l'identifiant d'application, qui est
+exactement la valeur affichée dans **General Information**. C'est plus sûr qu'une
+recopie, et cela évite d'aller chercher la valeur à la main.
+
+### Les permissions du rôle du bot
+
+Le rôle Discord du bot ne doit **pas** porter `Administrateur`. Cette permission
+contourne toutes les permissions de salon : le bot voit et agit partout, y
+compris là où on ne l'attend pas. Elle rend aussi `/audit` incapable de
+signaler quoi que ce soit, puisque le bot peut tout de toute façon.
+
+La Constitution confie la surveillance aux Baillits, pas le gouvernement à
+l'outil. Le rôle porte donc les permissions nommées du `README.md` de
+`delphinabot/` : `Manage Roles`, `Manage Messages`, `Kick Members`,
+`Ban Members`, `Moderate Members`, `Mute Members`, `Move Members`,
+`Manage Nicknames`, `View Channel`, `Send Messages`, `Embed Links`,
+`Attach Files`, `Connect`, `Speak`, `Use External Emoji`,
+`Read Message History` — soit le masque `1099938786310`.
+
+Pour revenir en arrière : sur le rôle DelphinaBot, cocher `Administrator` et
+décocher le reste.
+
+Les variables de rôles du bot se rattachent, elles, aux charges de la
+Constitution :
+
+| Variable | Charge | Fondement |
+|---|---|---|
+| `ROLE_ADMIN_ID` | Conseil Delphinal | « ils disposent du droit d'administration du serveur » |
+| `ROLE_MODERATION_ID` | Baillit | « Ce sont les modérateurs, ils assurent une surveillance permanente du serveur. » |
+
+`ROLE_MUTE_ID` et `ROLE_DJ_ID` ne correspondent à aucune charge : ce sont des
+rôles ordinaires, à régler dans le bot par `/configurer roles sourdine` et
+`/configurer roles dj`. Laisser ces deux variables vides est correct et sans
+risque.
+
 Le bot partage la base du wiki mais jamais ses tables : tout est préfixé
 `delphinabot_`. Partager `DATABASE_URL` est donc sans risque, et évite de
 payer une seconde base pour quelques tables.

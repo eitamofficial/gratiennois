@@ -110,16 +110,32 @@ npm run build || echec "npm run build a échoué — le site reste sur la versio
 # ---------------------------------------------------------------------------
 
 journal "redémarrage du service wiki"
-if command -v sv >/dev/null 2>&1; then
-  sv restart wiki 2>/dev/null || sv up wiki 2>/dev/null || true
+
+# Deux superviseurs coexistent selon l'installation, et il faut gérer les deux.
+#
+#   - `termux-services` : le service s'appelle `wiki`, et `sv restart` suffit ;
+#   - le script de boot root (`/data/adb/service.d/wiki-gratiennois.sh`) : il
+#     lance `run-wiki` dans une boucle `while true`, sans passer par `sv`. Là,
+#     `sv restart wiki` ne fait rien du tout — silencieusement. Il faut tuer le
+#     processus `next-server` et laisser la boucle le relancer (elle attend 15 s).
+#
+# On tente `sv` d'abord, puis on vérifie que le port a bien été libéré : c'est
+# cette vérification, et non le code de retour de `sv`, qui dit la vérité.
+if command -v sv >/dev/null 2>&1 && sv status wiki >/dev/null 2>&1; then
+  journal "superviseur termux-services détecté"
+  sv restart wiki 2>/dev/null || true
 else
-  printf 'sv introuvable : redémarrez le service à la main.\n' >&2
+  journal "superviseur par script de boot détecté — arrêt de next-server"
+  pkill -f 'next-server' 2>/dev/null || true
+  pkill -f 'next start' 2>/dev/null || true
+  journal "la boucle de supervision relance le wiki sous 15 s"
 fi
 
-# `next start` met quelques secondes à ouvrir son port : on réessaie plutôt
-# que de conclure trop vite à une panne.
+# `next start` met quelques secondes à ouvrir son port, et le superviseur par
+# script de boot attend 15 s avant de relancer : on laisse donc jusqu'à 50 s
+# plutôt que de conclure trop vite à une panne.
 journal "vérification"
-for essai in 1 2 3 4 5 6 7 8 9 10; do
+for essai in $(seq 1 25); do
   sleep 2
   code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 5 \
     "http://127.0.0.1:${WIKI_PORT}/api/health" 2>/dev/null || true)
@@ -129,7 +145,7 @@ for essai in 1 2 3 4 5 6 7 8 9 10; do
     printf '\n'
     exit 0
   fi
-  printf '  essai %s/10 : HTTP %s\n' "$essai" "${code:-aucune réponse}"
+  printf '  essai %s/25 : HTTP %s\n' "$essai" "${code:-aucune réponse}"
 done
 
 printf '\nLe wiki ne répond pas. Journaux :\n' >&2

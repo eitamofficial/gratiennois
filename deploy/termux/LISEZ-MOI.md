@@ -252,6 +252,67 @@ tail -f $PREFIX/var/service/wiki/log/x
 `false`, le wiki croit être sur un système de fichiers éphémère, ce qui
 signalerait une variable d'environnement parasite.
 
+## Mettre le wiki à jour
+
+Une seule commande, depuis la tablette :
+
+```bash
+cd ~/wiki
+bash deploy/termux/mettre-a-jour
+```
+
+Elle enchaîne : `git pull --ff-only`, application du correctif de contenu,
+`npm install` **seulement si** `package-lock.json` a bougé, `npm run build`,
+puis redémarrage et vérification que `/api/health` répond bien `200`.
+
+Le script s'arrête **avant** de toucher au service si une étape échoue : le site
+reste alors sur la version précédente, au lieu de redémarrer sur un `.next` à
+moitié réécrit.
+
+Deux options utiles :
+
+```bash
+bash deploy/termux/mettre-a-jour --sans-contenu   # code seul
+bash deploy/termux/mettre-a-jour --sans-git       # ni pull ni install
+```
+
+### Pourquoi le contenu demande une étape à part
+
+`data/` est exclu de Git : un `git pull` met le code à jour mais laisse les
+articles intacts. Le seul mécanisme prévu est le bouton « Installer / mettre à
+niveau » de `/admin` — or il **protège** les articles retouchés par la rédaction,
+et il exige une connexion en Dauphin.
+
+D'où `deploy/termux/appliquer-contenu.mjs`, qui applique un correctif daté :
+
+```bash
+node deploy/termux/appliquer-contenu.mjs --dry-run   # montre ce qui changerait
+node deploy/termux/appliquer-contenu.mjs             # applique
+```
+
+Ses garanties : sauvegarde préalable dans `data/.sauvegardes/`, révision
+`update` créée pour chaque article (l'instantané conserve l'**ancienne** version,
+donc restaurable depuis `/wiki/<slug>/versions`), écriture atomique, et
+**aucune création** — un article absent de la production n'est pas ressuscité.
+
+### Le jeton DuckDNS n'est pas dans le dépôt
+
+`deploy/termux/env.exemple` et le script de boot contiennent un **modèle**, pas
+le jeton. Sur la tablette, le jeton vit à deux endroits seulement :
+
+```bash
+# Le service de rafraîchissement
+grep DUCKDNS_TOKEN $PREFIX/var/service/duckdns/env
+
+# Le démarrage au boot (script root)
+printf 'DUCKDNS_TOKEN=%s\n' 'votre-jeton' > ~/.duckdns-token
+chmod 600 ~/.duckdns-token
+```
+
+Sans `~/.duckdns-token`, le rafraîchissement au boot est simplement désactivé —
+le reste du démarrage n'en dépend pas. Le dépôt étant **public**, un jeton
+versionné permettrait à n'importe qui de repointer le sous-domaine.
+
 ## Sauvegarder le contenu
 
 Si vous restez en stockage JSON, tout le wiki tient dans `data/` :
@@ -282,3 +343,93 @@ les mesures de l'étape 7.
 
 **« permission denied » au démarrage de Caddy** — le port 80 est bien réservé.
 Lancez Caddy avec `su -c` et le chemin complet, comme indiqué à l'étape 5.
+
+---
+
+## 9. Deux domaines sur une seule tablette (installation réelle)
+
+La tablette héberge **deux** sites, chacun sur son sous-domaine DuckDNS :
+
+| Domaine | Service | Port local |
+|---|---|---|
+| `wiki-gratiennois.duckdns.org` | le wiki (Next.js) | 3000 |
+| `syn-streaming.duckdns.org` | SYNHUB (déjà présent) | 3001 |
+
+Un seul processus peut tenir les ports 80 et 443. C'est donc **Caddy qui les
+prend**, et qui répartit selon le nom demandé. Le fichier correspondant est
+[`Caddyfile.portier`](Caddyfile.portier) : il déclare les deux sites, lie
+l'adresse `192.168.1.10` (Android occupe déjà `127.0.0.1:80` et `:443`) et
+obtient les deux certificats par validation HTTP-01.
+
+Le relais TLS propre à SYNHUB (`tools/https-proxy.mjs`) est donc **désactivé**
+dans `/data/adb/service.d/syn-server.sh` : deux processus ne peuvent pas
+écouter sur 443, et l'un des deux sites serait tombé au hasard. Le serveur
+applicatif de SYNHUB, lui, n'a pas changé : il écoute toujours sur 3001. Une
+sauvegarde du script d'origine est conservée en `syn-server.sh.avant-caddy`.
+
+### Pourquoi les identifiants ne sont pas dans `.env`
+
+Next.js relit `.env` à son démarrage et y interprète les `$` comme des
+références de variables. Une empreinte scrypt (`scrypt$sel$empreinte`) y perd
+ses deux séparateurs ; `startsWith("scrypt$")` devient faux, la vérification
+retombe sur une comparaison en clair, et **la connexion échoue toujours** avec
+« Identifiants incorrects » alors que le mot de passe est bon.
+
+Les comptes vivent donc dans **`.env.secrets`**, que `run-wiki` exporte après
+`.env` et que Next ne connaît pas :
+
+```bash
+# ~/wiki/.env.secrets  (chmod 600)
+WIKI_USERS='esto:scrypt$sel$empreinte:dauphin'
+```
+
+Le symptôme se reconnaît à un détail : un mot de passe **sans `$`** fonctionne,
+un mot de passe qui en contient un échoue. C'est ce qui a permis de trancher.
+
+### Le démarrage au boot
+
+`termux-services` n'est pas nécessaire ici : la tablette est rootée, et
+KernelSU exécute les scripts de `/data/adb/service.d/` au démarrage du système,
+sans qu'il faille ouvrir Termux.
+
+```bash
+cp deploy/termux/boot-wiki-gratiennois.sh /data/adb/service.d/wiki-gratiennois.sh
+chmod 755 /data/adb/service.d/wiki-gratiennois.sh
+```
+
+Il surveille le wiki, le bot, Caddy et l'enregistrement DuckDNS. Les journaux
+sont dans `~/wiki-service.log`, `~/bot-service.log` et
+`/data/adb/caddy/logs/service.log`.
+
+> Sur Android, `su -c` s'exécute dans un espace de noms où `/data/adb` n'est pas
+> accessible en écriture. Pour modifier un script de démarrage, utilisez
+> `su -M -c` (« mount master »), sans quoi la copie échoue en « permission
+> denied » alors que les droits affichés semblent corrects.
+
+### HTTPS forcé, sur trois niveaux
+
+Rediriger le port 80 ne suffit pas : tant que le serveur applicatif écoute sur
+`0.0.0.0`, le site reste consultable en clair sur `http://<ip>:3000` depuis le
+réseau local, et le HTTPS devient décoratif.
+
+| Niveau | Moyen | Effet |
+|---|---|---|
+| Réseau | `next start --hostname 127.0.0.1` | le wiki n'écoute plus que pour Caddy ; l'accès direct en clair est refusé |
+| Portier | HTTPS automatique de Caddy | toute requête sur le port 80 repart en `308` vers `https://` |
+| Navigateur | `Strict-Transport-Security` | après la première visite, le navigateur refuse lui-même le clair |
+
+Deux détails qui comptent :
+
+- **`header_down -Strict-Transport-Security`** dans chaque `reverse_proxy` :
+  l'application pose son propre HSTS, et sans cette ligne la réponse en porterait
+  deux. C'est celui du portier qui fait foi.
+- **Ne pas écrire de bloc `http://` explicite** pour la redirection : Caddy la
+  crée seul dès qu'un domaine figure dans le fichier, et un bloc manuel
+  entrerait en concurrence avec le défi ACME du renouvellement de certificat.
+
+SYNHUB fait exception assumée : il reste joignable en clair sur le port 3001
+depuis le réseau local, parce que son code affiche lui-même ces adresses pour la
+TV et le téléphone. Le fermer casserait cet usage. Ses visiteurs passent par
+`https://syn-streaming.duckdns.org`, où le HTTPS est bien forcé.
+
+

@@ -35,6 +35,7 @@
     "check:caracteres": "node scripts/check-caracteres.mjs",
     "check:manifeste": "node scripts/check-manifeste.mjs",
     "check:sql": "node scripts/check-sql.mjs",
+    "check:xss": "node scripts/check-xss.mjs",
     "assets:manifeste": "node scripts/generate_manifeste_pdf.mjs",
     "check:oeuf": "node scripts/check-oeuf.mjs",
     "check:oeuf:navigateur": "node scripts/check-oeuf-navigateur.mjs"

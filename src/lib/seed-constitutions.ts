@@ -345,9 +345,9 @@ P-2 à P-15 la société.
 **L'article P-14** est la seule règle du texte qui mentionne les **micronations
 étrangères** : elle interdit à leurs chefs de se présenter au gouvernement de
 Gratianopolis, « pour éviter des influences ou du contrôle ». C'est une
-disposition anti-impérialiste, qui explique qu'un [[swaylo|Empereur de
-Norlot]] ne puisse diriger le gouvernement de [[esto|Esto]] : le conquérant
-d'hier reste à la porte du pouvoir.
+disposition anti-impérialiste, qui explique qu'un Empereur de Norlot —
+Swaylo, traître au Delphinat — ne puisse diriger le gouvernement de
+Gratianopolis : le traître d'hier reste à la porte du pouvoir.
 
 **L'article P-15** nominalise les Dauphins votables : *Esto*, *Sélios* et
 *Math*. Le Trône n'est donc pas une abstraction — c'est une liste fermée de

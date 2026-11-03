@@ -21,7 +21,7 @@ function iso(daysAgo: number): string {
  * par `src/lib/fingerprint.ts` — un module unique, partagé avec le magasin, pour
  * que les deux comparaisons ne puissent pas diverger.
  */
-export const SEED_VERSION = 10;
+export const SEED_VERSION = 11;
 
 /**
  * Contenu de lancement du wiki.
@@ -765,8 +765,8 @@ Le Conseil Delphinal et le Régent jouent un rôle de contrôle : le Dauphin pro
   },
 
   // ------------------------------------------------------------------
-  // Personnalités : les fiches de Eitam, Selios, Esto, Bougre, Swaylo et
-  // Baron ne sont **pas** définies ici mais dans `seed-lore.ts`, qui porte le
+  // Personnalités : les fiches de Eitam, Selios, Esto, Bougre sont
+  // définies ici mais dans `seed-lore.ts`, qui porte le
   // récit de la rédaction. Ne pas les régénérer : deux définitions de même
   // slug font que la seconde écrase silencieusement la première.
   // ------------------------------------------------------------------

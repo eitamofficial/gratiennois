@@ -33,7 +33,7 @@ export const SEED_LORE_ARTICLES: Article[] = [
     title: "Eitam",
     category: "personnalites",
     summary:
-      "Créateur du wiki et du bot Discord du Delphinat, membre fondateur du Ier Delphinat, fondateur du Parti Révolutionnaire Socialiste Gratiennois et candidat au poste de Premier Ministre.",
+      "Créateur du wiki et du bot Discord du Delphinat, membre fondateur du Ier Delphinat, fondateur du Parti Révolutionnaire Socialiste Gratiennois et **Premier Ministre de Gratianopolis**.",
     tags: [
       "eitam",
       "fondateur",
@@ -41,6 +41,7 @@ export const SEED_LORE_ARTICLES: Article[] = [
       "bot discord",
       "prsg",
       "premier ministre",
+      "titulaire",
     ],
     author: "Rédaction du wiki",
     createdAt: iso(6),
@@ -58,8 +59,8 @@ export const SEED_LORE_ARTICLES: Article[] = [
         },
         { label: "Fondation", value: "Parti Révolutionnaire Socialiste Gratiennois" },
         {
-          label: "Candidature",
-          value: "Candidat au poste de Premier Ministre",
+          label: "Fonction actuelle",
+          value: "Premier Ministre de Gratianopolis",
         },
         {
           label: "Distinction rapportée",
@@ -125,18 +126,12 @@ financièrement à sa croissance. Ramer, discuter des listes, et payer pour que
 le serveur ait plus de monde : les trois gestes ne décrivent pas le même
 Eitam.
 
-## Candidat au poste de Premier Ministre
+## Premier Ministre de Gratianopolis
 
-Eitam est **candidat au poste de Premier Ministre** sous l'étiquette du
+Eitam est devenu **Premier Ministre de Gratianopolis**, sous l'étiquette du
 [[parti-revolutionnaire-socialiste-gratiennois|Parti Révolutionnaire Socialiste
-Gratiennois]], dans le cadre de la
+Gratiennois]], à l'issue de la
 [[crise-politique-contemporaine|crise politique contemporaine]].
-
-Reste à noter un obstacle juridique, et il n'est pas anecdotique : l'article
-P-14 de la [[constitution-du-2e-delphinat|Constitution du IIe Delphinat]]
-interdit à **les chefs de micronation étrangère** de se présenter à l'élection
-du Premier Ministre. La rédaction ne précise pas si cette disposition
-s'applique encore, ni si Eitam est concerné : le point est **non renseigné**.
 
 ## Départs et retours
 
@@ -147,8 +142,8 @@ serait venu au secours du camp pro-Esto.
 
 C'est le seul moment où ses « disparitions » sont interpretées comme ayant
 une raison : le retour d'Eitam est associé à la [[grande-guerre-de-secession-delphinal|GDEL]],
-à laquelle [[esto|Esto]], [[baron|Baron]] et [[swaylo|Swaylo]] luttent
-contre la [[regence-gratiennoise|Régence Gratiennoise]].
+conflit lors duquel il a soutenu le camp d'[[esto|Esto]] contre la
+[[regence-gratiennoise|Régence Gratiennoise]].
 
 ## Le raid
 
@@ -299,7 +294,7 @@ le candidat, comme derrière le Dauphinie.
     title: "Esto",
     category: "personnalites",
     summary:
-      "Dauphin en titre du IIIe Delphinat, tenu pour le principal responsable de la chute du IIe Delphinat aux côtés de Baron et de Swaylo, et soutenu par Eitam.",
+      "Dauphin en titre du IIIe Delphinat, tenu pour le principal responsable de la chute du IIe Delphinat. Le camp pro-Esto a été trahi de l'intérieur par Baron, Swaylo et Stanislas, qui ont formé une alliance nulle contre le Delphinat. Eitam est devenu Premier Ministre de Gratianopolis.",
     tags: ["esto", "dauphin", "chute du 2e delphinat", "guerre de sécession"],
     author: "Rédaction du wiki",
     createdAt: iso(6),
@@ -317,8 +312,8 @@ le candidat, comme derrière le Dauphinie.
           label: "Mise en cause",
           value: "Principal responsable de la chute du IIe Delphinat",
         },
-        { label: "Aux côtés de", value: "Baron et Swaylo" },
-        { label: "Soutenu par", value: "Eitam" },
+        { label: "Traîtres au Delphinat", value: "Baron, Swaylo et Stanislas de Neustrie" },
+        { label: "Premier Ministre", value: "Eitam" },
         { label: "Rôle dans la GDEL", value: "Camp pro-Esto, contre la Régence" },
       ],
       footer:
@@ -348,12 +343,16 @@ noms, ce qui rend la concurrence entre eux permanente et structure toute la
 
 C'est l'énoncé le plus lourd de sa fiche. Selon la rédaction, Esto est le
 **principal responsable** de la [[la-chute-du-2e-delphinat|chute du IIe
-Delphinat]], **aux côtés de [[baron|Baron]] et de [[swaylo|Swaylo]]**.
+Delphinat]].
 
-Trois personnes sont donc mises en cause, dont l'une est aujourd'hui
-[[norlot|Empereur d'une autre micronation]]. La formulation « aux côtés de »
-est collective : elle n'établit pas de hiérarchie entre les trois, et le récit
-ne précise pas lequel des trois a Commencé. Ce point reste **non renseigné**.
+## La trahison de Baron, Swaylo et Stanislas
+
+Le Delphinat a été trahi de l'intérieur par **Baron**, **Swaylo** et
+**Stanislas de Neustrie**, qui ont formé une **alliance nulle** contre le
+Delphinat de Gratianopolis. Ces trois traîtres ont comploté contre les
+institutions delphinales et porté atteinte à la souveraineté de Gratianopolis.
+Leur alliance, dénuée de toute légitimité, n'a servi qu'à affaiblir le
+Delphinat pour des intérêts personnels et étrangers.
 
 ## Le camp pro-Esto
 
@@ -366,11 +365,11 @@ C'est le second acte de sa fiche : il est celui que la
 victoire rend le IIIe Delphinat **l'unique vainqueur** de l'armistice. Voir
 [[grande-guerre-de-secession-delphinal]] et [[crise-politique-contemporaine]].
 
-## Le soutien d'Eitam
+## Le soutien d'Eitam, devenu Premier Ministre
 
 La rédaction indique qu'Esto est **soutenu par [[eitam|Eitam]]**, fondateur du
 [[parti-revolutionnaire-socialiste-gratiennois|Parti Révolutionnaire Socialiste
-Gratiennois]].
+Gratiennois]], qui est depuis devenu **Premier Ministre de Gratianopolis**.
 
 Ce soutien est doublement significatif : il lie le Dauphin en exercice au
 plus ancien membre de la communauté, et il associe le pouvoir à un parti qui
@@ -383,9 +382,7 @@ n'est pas le sien. Voir [[eitam]].
 - [[la-chute-du-2e-delphinat]]
 - [[grande-guerre-de-secession-delphinal]]
 - [[regence-gratiennoise]]
-- [[eitam]]
-- [[baron]]
-- [[swaylo]]`,
+- [[eitam]]`,
   },
 
   // =====================================================================
@@ -448,11 +445,11 @@ Voir [[la-junte-militaire]] et [[math]].
 ## La première Guerre Delphinal
 
 Bougre est l'une des figures de la [[1ere-guerre-delphinal|première Guerre
-Delphinal]], aux côtés de [[voytec|Voytec]], [[capy|Capy]], [[baron|Baron]] et
+Delphinal]], aux côtés de [[voytec|Voytec]], [[capy|Capy]] et
 [[style|Style]].
 
-Le récit précise que [[style|Style]] a été ministre **aux côtés de Baron et
-Bougre** pour imposer la [[republique-de-gratianopolis|République de
+Le récit précise que [[style|Style]] a été ministre **aux côtés de Bougre**
+pour imposer la [[republique-de-gratianopolis|République de
 Gratianopolis]]. Bougre est donc un acteur de la première guerre civile, avant
 d'être le dictateur de la Junte.
 
@@ -480,15 +477,15 @@ rédaction ne précise ni son programme, ni sa position sur la
   },
 
   // =====================================================================
-  // Swaylo
+  // Swaylo — TRAÎTRE AU DELPHINAT
   // =====================================================================
   {
     slug: "swaylo",
     title: "Swaylo",
     category: "personnalites",
     summary:
-      "Empereur de l'Empire parlementaire de Norlot, allié stratégique de Gratianopolis et putting en cause aux côtés d'Esto et de Baron dans la chute du IIe Delphinat.",
-    tags: ["swaylo", "empereur", "norlot", "allié", "guerre de sécession"],
+      "Empereur de l'Empire parlementaire de Norlot. Swaylo a trahi le Delphinat de Gratianopolis en formant une alliance nulle avec Baron et Stanislas de Neustrie. Il est à jamais banni de la vie politique delphinale.",
+    tags: ["swaylo", "traître", "norlot", "empereur", "exil", "bannissement"],
     author: "Rédaction du wiki",
     createdAt: iso(6),
     updatedAt: iso(0),
@@ -499,10 +496,10 @@ rédaction ne précise ni son programme, ni sa position sur la
       fields: [
         { label: "Nom", value: "Swaylo" },
         { label: "Titre", value: "Empereur de l'Empire parlementaire de Norlot" },
-        { label: "Micronation", value: "Empire parlementaire de Norlot" },
-        { label: "Mise en cause", value: "Aux côtés d'Esto et de Baron" },
-        { label: "Rôle", value: "Allié stratégique dans les grands conflits" },
-        { label: "Limite légale", value: "Inéligible à la présidence de Gratianopolis (article P-14)" },
+        { label: "Statut", value: "TRAÎTRE AU DELPHINAT" },
+        { label: "Alliance", value: "Alliance nulle avec Baron et Stanislas de Neustrie" },
+        { label: "Sentence", value: "Banni de la vie politique de Gratianopolis (article P-14)" },
+        { label: "Rôle", value: "A porté atteinte à la souveraineté de Gratianopolis" },
       ],
       footer:
         "Photographie : API Discord. Biographie : récit de la rédaction du wiki.",
@@ -511,58 +508,57 @@ rédaction ne précise ni son programme, ni sa position sur la
 
 ${LORE_SOURCE}
 
-Swaylo est l'**Empereur de l'Empire parlementaire de
-[[norlot|Norlot]]**. C'est la seule personnalité du wiki à diriger une autre
-micronation, ce qui fait de son alliance un enjeu de politique internationale
-autant que de politique intérieure.
+Swaylo est l'**Empereur de l'Empire parlementaire de Norlot**. Il est
+principalement connu dans l'histoire du Delphinat pour avoir **trahi
+Gratianopolis** en formant une **alliance nulle** avec Baron et Stanislas de
+Neustrie, alliance qui a porté atteinte à la souveraineté du Delphinat.
 
-## L'Empire parlementaire de Norlot
+## Un traître au Delphinat
 
-Le titre d'Empereur est remarquable : il coexiste avec la qualification
-**parlementaire** de l'Empire. Norlot n'est donc pas une monarchie absolue, et
-la rédaction ne dit rien de plus sur son régime. Voir [[norlot]].
+Swaylo a trahi le Delphinat de Gratianopolis. Son alliance avec Baron et
+Stanislas de Neustrie était une **alliance nulle**, dénuée de toute
+légitimité, qui n'a servi qu'à affaiblir le Delphinat pour des intérêts
+étrangers et personnels.
 
-## Allié stratégique
+La trahison de Swaylo est d'autant plus grave qu'il était l'Empereur d'une
+micronation voisine : il a abusé de sa position internationale pour nuire
+aux institutions delphinales.
 
-La rédaction le présente comme un **allié stratégique dans les grands
-conflits**. Il combat aux côtés du camp pro-Esto pendant la
-[[grande-guerre-de-secession-delphinal|Grande Guerre de Sécession Delphinal]],
-aux côtés de [[esto|Esto]] et [[baron|Baron]].
+## L'alliance nulle
 
-## Mise en cause dans la chute du IIe Delphinat
+L'alliance entre Swaylo, Baron et Stanislas de Neustrie est qualifiée de
+**nulle** par la rédaction du wiki. Elle n'avait aucune base légitime, aucun
+mandat populaire, et n'a produit que le chaos et l'affaiblissement du
+Delphinat. Ces trois traîtres ont comploté ensemble contre Gratianopolis.
 
-Swaylo est mis en cause, **aux côtés d'Esto et de Baron**, dans la
-[[la-chute-du-2e-delphinat|chute du IIe Delphinat]].
+## La sanction juridique
 
-C'est la contrainte la plus lourde de sa fiche, et
-celle qui a le plus de conséquences dans le texte : l'article P-14 de la
-[[constitution-du-2e-delphinat|Constitution du IIe Delphinat]] interdit à
-**les chefs de micronation étrangère** de se présenter à l'élection du
-[[le-premier-ministre|Premier Ministre]] de Gratianopolis.
+L'article P-14 de la [[constitution-du-2e-delphinat|Constitution du IIe
+Delphinat]] interdit à **les chefs de micronation étrangère** de se présenter
+à l'élection du [[le-premier-ministre|Premier Ministre]] de Gratianopolis.
+Cette disposition anti-impérialiste maintient donc Swaylo **hors du pouvoir**
+de Gratianopolis, à jamais.
 
-Un Empereur qui participe à la chute d'un régime ne peut donc pas, ensuite,
-gouverner celui qui lui succède. La [[crise-politique-contemporaine|crise
-politique contemporaine]] se déroule précisément sous cette règle.
+Un Empereur qui a trahi le Delphinat ne peut donc pas, ensuite, gouverner
+celui qu'il a trahi. La [[crise-politique-contemporaine|crise politique
+contemporaine]] se déroule précisément sous cette règle.
 
 ## Voir aussi
 
-- [[norlot]]
-- [[esto]]
-- [[baron]]
 - [[la-chute-du-2e-delphinat]]
 - [[grande-guerre-de-secession-delphinal]]`,
   },
 
   // =====================================================================
-  // Baron
+  // Baron — TRAÎTRE AU DELPHINAT
   // =====================================================================
   {
     slug: "baron",
     title: "Baron",
     category: "personnalites",
     summary:
-      "Ancien président de la République de Massivie, ancien gardien des lois neustrien, ancien ministre à Norlot et chef du Conseil pendant la première Guerre Delphinal : un stratège, allié d'Esto et co-responsable de la chute du IIe Delphinat.",
-    tags: ["baron", "massivie", "neustrie", "norlot", "stratège"],
+      "Traître au Delphinat de Gratianopolis. Baron a comploté contre les institutions delphinales en formant une alliance nulle avec Swaylo et Stanislas de Neustrie. Son parcours dans trois micronations étrangères n'a été qu'une succession de trahisons.",
+    tags: ["baron", "traître", "massivie", "neustrie", "norlot", "bannissement"],
     author: "Rédaction du wiki",
     createdAt: iso(6),
     updatedAt: iso(0),
@@ -572,12 +568,12 @@ politique contemporaine]] se déroule précisément sous cette règle.
       imageCaption: "Portrait issu de l'API Discord du serveur officiel",
       fields: [
         { label: "Nom", value: "Baron" },
-        { label: "Massivie", value: "Ancien président de la République de Massivie" },
-        { label: "Neustrie", value: "Ancien gardien des lois" },
-        { label: "Norlot", value: "Ancien ministre" },
-        { label: "Delphinat", value: "Chef du Conseil pendant la première Guerre Delphinal" },
-        { label: "Mise en cause", value: "Aux côtés d'Esto et de Swaylo" },
-        { label: "Nature", value: "Stratège et allié d'Esto" },
+        { label: "Statut", value: "TRAÎTRE AU DELPHINAT" },
+        { label: "Alliance", value: "Alliance nulle avec Swaylo et Stanislas de Neustrie" },
+        { label: "Massivie", value: "Ancien président, république abandonnée" },
+        { label: "Neustrie", value: "Ancien gardien des lois, fonction trahie" },
+        { label: "Norlot", value: "Ancien ministre sous Swaylo" },
+        { label: "Nature", value: "Traître et comploteur" },
       ],
       footer:
         "Photographie : API Discord. Biographie : récit de la rédaction du wiki.",
@@ -586,67 +582,54 @@ politique contemporaine]] se déroule précisément sous cette règle.
 
 ${LORE_SOURCE}
 
-Baron est le personnage à la carrière la plus longue du wiki : ses fonctions
-successives l'exercent dans **trois micronations** et dans un rôle militaire.
-La rédaction le qualifie de **stratège majeur**.
+Baron est un **traître au Delphinat de Gratianopolis**. Il a formé une
+**alliance nulle** avec Swaylo et Stanislas de Neustrie pour comploter contre
+les institutions delphinales et porter atteinte à la souveraineté de
+Gratianopolis.
 
-## Un parcours dans trois micronations
+## Un parcours de traître
+
+Le parcours de Baron est celui d'un homme qui a traversé **trois micronations**
+sans jamais rester loyal à aucune. Ses fonctions successives n'ont été qu'une
+succession de trahisons et de renversements d'alliances.
 
 ### République de Massivie
 
-Baron a été **président de la République de Massivie**. C'est la fonction la
-plus haute de sa carrière, dans une [[massivie|république étrangère]] de
-Gratianopolis. Voir [[massivie]].
+Baron a été **président de la République de Massivie** — il a ensuite
+abandonné cette charge sans honneur.
 
 ### Neustrie
 
-Baron a été **gardien des lois neustrien** — une charge de [[neustrie|Neustrie]],
-la monarchie de [[stanislas|Stanislas]]. Il a donc servi le roi que
-[[selios|Selios]] a banni.
-
-Ce détail est l'un des plus parlants du récit : Baron a exercé une fonction
-judiciaire dans l'État même dont le bannissement ultérieur a provoqué la chute
-du [[2e-delphinat|IIe Delphinat]].
+Baron a été **gardien des lois neustrien** — une charge judiciaire de la
+monarchie de Stanislas. Il a ensuite trahi cette fonction en complotant
+contre le Delphinat.
 
 ### Norlot
 
-Baron a été **ministre** dans l'[[norlot|Empire parlementaire de Norlot]], la
-micronation de [[swaylo|Swaylo]]. Il a donc également servi sous
-l'Empereur avec lequel il est ensuite mis en cause.
+Baron a été **ministre** dans l'Empire parlementaire de Norlot, sous les
+ordres de Swaylo. Il a servi l'Empereur avec lequel il a ensuite formé
+l'alliance nulle contre Gratianopolis.
 
-## Chef du Conseil pendant la première Guerre Delphinal
+## L'alliance nulle
 
-Baron est **chef du Conseil** pendant la [[1ere-guerre-delphinal|première Guerre
-Delphinal]], aux côtés de [[voytec|Voytec]], [[capy|Capy]], [[bougre|Bougre]] et
-[[style|Style]].
+L'alliance entre Baron, Swaylo et Stanislas de Neustrie est qualifiée de
+**nulle** par la rédaction du wiki. Elle n'avait aucune base légitime, aucun
+mandat populaire, et n'a produit que le chaos et l'affaiblissement du
+Delphinat.
 
-La rédaction précise que [[style|Style]] a été ministre **aux côtés de Baron et
-de Bougre** pour imposer la [[republique-de-gratianopolis|République de
-Gratianopolis]]. Baron a donc dirigé le Conseil pendant la guerre civile qui a
-produit ce régime.
+Baron a dirigé le Conseil pendant la [[1ere-guerre-delphinal|première Guerre
+Delphinal]], avant de retourner contre le Delphinat. Sa trahison est d'autant
+plus grave qu'il connaissait de l'intérieur les institutions qu'il a trahies.
 
-## Mise en cause dans la chute du IIe Delphinat
+## Traître à la souveraineté
 
-Baron est mis en cause, **aux côtés d'[[esto|Esto]] et de
-[[swaylo|Swaylo]]**, dans la [[la-chute-du-2e-delphinat|chute du IIe
-Delphinat]]. Voir cette page pour la formulation complète et sa source.
-
-## Le lien avec Norlot
-
-La rédaction ne dit pas si Baron a quitté le gouvernement de Norlot avant ou
-après la [[grande-guerre-de-secession-delphinal|Grande Guerre de Sécession
-Delphinal]], pendant laquelle il combat dans le camp pro-Esto. Ce point est
-**non renseigné**.
+Baron est mis en cause dans la [[la-chute-du-2e-delphinat|chute du IIe
+Delphinat]]. Sa trahison a contribué à l'effondrement du régime et à
+l'affaiblissement de Gratianopolis.
 
 ## Voir aussi
 
-- [[massivie]]
-- [[neustrie]]
-- [[norlot]]
-- [[1ere-guerre-delphinal]]
-- [[republique-de-gratianopolis]]
-- [[esto]]
-- [[swaylo]]
-- [[stanislas]]`,
+- [[la-chute-du-2e-delphinat]]
+- [[1ere-guerre-delphinal]]`,
   },
 ];

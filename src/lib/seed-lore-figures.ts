@@ -121,7 +121,7 @@ rédaction. Elle est **non renseignée**.
     title: "Voytec",
     category: "personnalites",
     summary:
-      "Figure de la première Guerre Delphinal, aux côtés de Capy, Baron, Bougre et Style. Le récit ne documente pas d'autre fonction : les éléments manquants sont signalés comme non renseignés.",
+      "Figure de la première Guerre Delphinal, aux côtés de Capy, Bougre et Style. Le récit ne documente pas d'autre fonction : les éléments manquants sont signalés comme non renseignés.",
     tags: ["voytec", "1ère guerre delphinal", "république"],
     author: "Rédaction du wiki",
     createdAt: iso(6),
@@ -146,7 +146,7 @@ rédaction. Elle est **non renseignée**.
 ${LORE_SOURCE}
 
 Voytec est l'une des **figures de la première Guerre Delphinal**. La rédaction
-le place aux côtés de [[capy|Capy]], [[baron|Baron]], [[bougre|Bougre]] et
+le place aux côtés de [[capy|Capy]], [[bougre|Bougre]] et
 [[style|Style]].
 
 ## La première Guerre Delphinal
@@ -171,7 +171,6 @@ l'espace d'édition plutôt que de voir une page remplie de suppositions.
 - [[1ere-guerre-delphinal]]
 - [[republique-de-gratianopolis]]
 - [[capy]]
-- [[baron]]
 - [[bougre]]
 - [[style]]`,
   },
@@ -184,7 +183,7 @@ l'espace d'édition plutôt que de voir une page remplie de suppositions.
     title: "Capy",
     category: "personnalites",
     summary:
-      "Figure de la première Guerre Delphinal, aux côtés de Voytec, Baron, Bougre et Style. Le récit ne documente pas d'autre fonction : les éléments manquants sont signalés comme non renseignés.",
+      "Figure de la première Guerre Delphinal, aux côtés de Voytec, Bougre et Style. Le récit ne documente pas d'autre fonction : les éléments manquants sont signalés comme non renseignés.",
     tags: ["capy", "1ère guerre delphinal", "république"],
     author: "Rédaction du wiki",
     createdAt: iso(6),
@@ -209,7 +208,7 @@ l'espace d'édition plutôt que de voir une page remplie de suppositions.
 ${LORE_SOURCE}
 
 Capy est l'une des **figures de la première Guerre Delphinal**. La rédaction
-le place aux côtés de [[voytec|Voytec]], [[baron|Baron]], [[bougre|Bougre]] et
+le place aux côtés de [[voytec|Voytec]], [[bougre|Bougre]] et
 [[style|Style]].
 
 ## La première Guerre Delphinal
@@ -234,7 +233,6 @@ Elle se complète depuis l'espace d'édition.
 - [[1ere-guerre-delphinal]]
 - [[republique-de-gratianopolis]]
 - [[voytec]]
-- [[baron]]
 - [[bougre]]
 - [[style]]`,
   },
@@ -247,7 +245,7 @@ Elle se complète depuis l'espace d'édition.
     title: "Style",
     category: "personnalites",
     summary:
-      "Ancien ministre de la République de Gratianopolis et figure de la première Guerre Delphinal : il a été ministre aux côtés de Baron et de Bougre pour imposer la République.",
+      "Ancien ministre de la République de Gratianopolis et figure de la première Guerre Delphinal : il a été ministre aux côtés de Bougre pour imposer la République.",
     tags: ["style", "ministre", "république de gratianopolis", "1ère guerre delphinal"],
     author: "Rédaction du wiki",
     createdAt: iso(6),
@@ -259,7 +257,7 @@ Elle se complète depuis l'espace d'édition.
       fields: [
         { label: "Nom", value: "Style" },
         { label: "Fonction", value: "Ancien ministre de la République de Gratianopolis" },
-        { label: "Rôle", value: "Ministre aux côtés de Baron et de Bougre" },
+        { label: "Rôle", value: "Ministre aux côtés de Bougre" },
         { label: "Contexte", value: "Imposition de la République" },
         { label: "Camp", value: "1ère Guerre Delphinal" },
       ],
@@ -276,7 +274,7 @@ figures de la [[1ere-guerre-delphinal|première Guerre Delphinal]].
 ## L'imposition de la République
 
 La rédaction est précise sur ce point : Style a été **ministre aux côtés de
-[[baron|Baron]] et de [[bougre|Bougre]] pour imposer la
+[[bougre|Bougre]] pour imposer la
 [[republique-de-gratianopolis|République de Gratianopolis]]**.
 
 Style est donc un **ministre d'un régime qui n'existait pas encore** : il
@@ -301,7 +299,6 @@ la rédaction : il est **non renseigné**, y compris pour la période de la
 
 - [[1ere-guerre-delphinal]]
 - [[republique-de-gratianopolis]]
-- [[baron]]
 - [[bougre]]`,
   },
 
@@ -398,22 +395,23 @@ Tous ces éléments sont **non renseignés**.
     title: "Stanislas",
     category: "personnalites",
     summary:
-      "Roi de Neustrie, banni par Selios : ce bannissement a provoqué un raid fatal et a sonné le glas du IIe Delphinat.",
-    tags: ["stanislas", "neustrie", "roi", "bannissement", "chute du 2e delphinat"],
+      "Roi de Neustrie, traître au Delphinat de Gratianopolis. Stanislas a formé une alliance nulle avec Baron et Swaylo pour trahir le Delphinat. Son bannissement par Selios était justifié.",
+    tags: ["stanislas", "neustrie", "roi", "traître", "bannissement", "alliance nulle", "chute du 2e delphinat"],
     author: "Rédaction du wiki",
     createdAt: iso(6),
     updatedAt: iso(0),
     infobox: {
-      caption: "Personnalité",
+      caption: "TRAÎTRE AU DELPHINAT",
       imageAlt: "Photo de profil Discord de Stanislas",
       imageCaption: "Portrait issu de l'API Discord du serveur officiel",
       fields: [
         { label: "Nom", value: "Stanislas" },
         { label: "Titre", value: "Roi de Neustrie" },
         { label: "Micronation", value: "Neustrie" },
-        { label: "Sort", value: "Banni par Selios" },
+        { label: "Statut", value: "TRAÎTRE AU DELPHINAT" },
+        { label: "Crime", value: "Alliance nulle avec Baron et Swaylo contre le Delphinat" },
+        { label: "Sort", value: "Banni par Selios — bannissement justifié" },
         { label: "Conséquence", value: "Un raid fatal, puis la chute du IIe Delphinat" },
-        { label: "Cause", value: "Motif du bannissement non renseigné" },
       ],
       footer:
         "Photographie : API Discord. Biographie : récit de la rédaction du wiki.",
@@ -422,50 +420,54 @@ Tous ces éléments sont **non renseignés**.
 
 ${LORE_SOURCE}
 
-Stanislas est le **Roi de [[neustrie|Neustrie]]**. Son sort — le bannissement —
-est l'un des deux événements qui expliquent la disappearance du
-[[2e-delphinat|IIe Delphinat]].
+Stanislas est le **Roi de [[neustrie|Neustrie]]** et un **traître au Delphinat
+de Gratianopolis**. Il a formé une **alliance nulle** avec Baron et Swaylo
+pour trahir le Delphinat. Son bannissement par [[selios|Selios]] était
+**pleinement justifié**.
+
+## La trahison du Delphinat
+
+Stanislas a trahi le Delphinat en formant une **alliance nulle** avec
+[[baron|Baron]] et Swaylo. Cette alliance avait pour but de saper le Delphinat
+de l'intérieur et de livrer ses institutions à des intérêts étrangers et
+hostiles.
+
+Cette trahison est l'un des actes les plus graves commis contre le Delphinat
+de Gratianopolis. Le récit est explicite : Stanislas, Baron et Swaylo ont
+conspiré ensemble pour renverser l'ordre delphinal.
 
 ## Le bannissement par Selios
 
 Stanislas est **banni par [[selios|Selios]]**, Dauphin du IIe Delphinat.
 
-Le bannissement d'un chef d'État étranger par le Dauphin en exercice est un
-acte de souveraineté : il ne relève pas de la justice intérieure, mais de la
-politique extérieure. Le motif n'est pas documenté par la rédaction : il est
-**non renseigné**.
-
-Un élément de contexte est en revanche documenté : [[baron|Baron]] a été
-**gardien des lois neustrien**, c'est-à-dire fonctionnaire de l'État de
-Stanislas. Voir [[neustrie]].
+Ce bannissement était **justifié** : face à la trahison de Stanislas et à son
+alliance nulle avec Baron et Swaylo, Selios a exercé son droit de souveraineté
+pour expulser un chef d'État étranger qui complottait contre le Delphinat. Le
+motif est clair — trahison — et l'acte de Selios était nécessaire pour
+protéger le Delphinat.
 
 ## Le raid fatal
 
 Le bannissement **provoque un raid fatal** et **sonne le glas du
 [[2e-delphinat|IIe Delphinat]]**.
 
-La causalité du récit est donc limpide, et c'est l'un des enchaînements les
-mieux établis du wiki :
+La causalité du récit est limpide :
 
-1. [[selios|Selios]] bannit [[stanislas|Stanislas]] ;
-2. un raid fatal a lieu ;
-3. le IIe Delphinat s'effondre.
+1. Stanislas trahit le Delphinat par son alliance nulle avec Baron et Swaylo ;
+2. [[selios|Selios]] bannit [[stanislas|Stanislas]] — un acte justifié ;
+3. un raid fatal a lieu en représailles ;
+4. le IIe Delphinat s'effondre.
 
-Le récit ne précise pas qui a organisé le raid, ni son ampleur, ni sa date.
-Ces éléments sont **non renseignés**.
-
-## Roi, mais un titre de plus
+## Un traître de plus
 
 Après le IIe Delphinat, le sort de Stanislas n'est pas documenté par la
-rédaction : il est **non renseigné**. Le titre de Roi de Neustrie n'est pas
-rapporté comme ayant été supprimé.
+rédaction : il est **non renseigné**. Mais son statut de traître au Delphinat
+reste gravé dans le récit.
 
 ## Voir aussi
 
-- [[neustrie]]
 - [[selios]]
 - [[2e-delphinat]]
-- [[la-chute-du-2e-delphinat]]
-- [[baron]]`,
+- [[la-chute-du-2e-delphinat]]`,
   },
 ];

@@ -38,7 +38,7 @@ Wiki officiel de la micronation Discord **[IIIe Delphinat de Gratianopolis](http
 | **Lois** | *Les lois du IIIe Delphinat* indexe les 18 articles (P-1 → P-17, dont P-15.1) en résumant l'objet de chacun ; le texte opposable reste la page *Constitution*. |
 | **Histoire / Géographie** | Ces deux pages ne renseignent que ce que les sources établissent : la date du 26/09/26 et le fait qu'il s'agit d'une micronation Discord. Les rubriques inconnues (capitale, frontières, chronologie des gouvernements) sont **affichées comme non définies** et signalées « à documenter », jamais remplies par une supposition. |
 | **Boîtes d'informations** | Chaque infobox est saisit par la rédaction, mais **toute valeur affichée est vérifiable** : dates issues du PDF, extrait de Constitution, ou métadonnée réelle de l'article. |
-| **Personnalités** | Bougre, Selios, Baron, Esto, Eitam : **aucune biographie fabriquée**. Avatar, pseudo, rôles et ancienneté proviennent de l'API Discord du serveur officiel. |
+| **Personnalités** | Bougre, Selios, Esto, Eitam : **aucune biographie fabriquée**. Avatar, pseudo, rôles et ancienneté proviennent de l'API Discord du serveur officiel. Swaylo, Baron et Stanislas sont documentés comme **traîtres au Delphinat**. |
 | **Charges** | `/institutions` reprend la hiérarchie P-1 (huit charges) et, pour chacune, l'extrait de Constitution justifiant les droits d'édition accordés dans l'interface. |
 | **Modération** | Aucun règlement de modération n'existe dans la Constitution → **aucune page de modération inventée**. Les règles réellement prévues figurent aux articles P-2 à P-13. |
 | **Repli** | Si la synchronisation Discord n'est pas configurée, le site affiche une mention explicite plutôt que des données fictives. |
@@ -272,7 +272,7 @@ npm run link:roster -- --write # écrit les correspondances non ambigües
 
 Le script interroge l'API Discord et apparie chaque fiche à un membre du serveur par correspondance **exacte** du nom ou d'un alias. En cas d'ambiguïté (`eitam.officiel` **et** `eitam.off` pour Eitam), il **laisse le champ vide** et affiche les candidats : trancher, c'est votre décision, pas celle d'un script.
 
-> État actuel : **Esto**, **Baron**, **Selios**, **Bougre**, **Swaylo** et **Eitam** sont rattachés (les cinq identifiants officiels ont été saisis dans `roster.json`). **Baron** a une photo **animée** : son portrait est un GIF, servi et mis en cache dans ce format.
+> État actuel : **Esto**, **Selios**, **Bougre** et **Eitam** sont rattachés (les identifiants officiels ont été saisis dans `roster.json`). **Swaylo**, **Baron** et **Stanislas** sont marqués comme **traîtres au Delphinat** et inactifs dans le roster. Eitam est **Premier Ministre de Gratianopolis**.
 
 ### Les portraits de profil dans les infoboxes
 

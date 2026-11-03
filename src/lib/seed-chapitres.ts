@@ -34,7 +34,7 @@ export const SEED_CHAPTER_ARTICLES: Article[] = [
     title: "La première Guerre Delphinal",
     category: "histoire",
     summary:
-      "Guerre civile de Gratianopolis dont l'issue fut l'imposition de la République, et à laquelle participèrent Voytec, Capy, Baron, Bougre et Style.",
+      "Guerre civile de Gratianopolis dont l'issue fut l'imposition de la République, et à laquelle participèrent Voytec, Capy, Bougre et Style.",
     tags: ["1ère guerre delphinal", "guerre civile", "république"],
     author: "Rédaction du wiki",
     createdAt: iso(6),
@@ -47,7 +47,7 @@ export const SEED_CHAPTER_ARTICLES: Article[] = [
         { label: "Issue", value: "Imposition de la République de Gratianopolis" },
         {
           label: "Principaux acteurs",
-          value: "Voytec, Capy, Baron, Bougre et Style",
+          value: "Voytec, Capy, Bougre et Style",
         },
         { label: "Dates", value: "Non renseignées" },
         { label: "Victimes", value: "Non renseignées" },
@@ -68,12 +68,11 @@ La rédaction nomme **cinq** figures de cette guerre :
 
 - [[voytec|Voytec]] ;
 - [[capy|Capy]] ;
-- [[baron|Baron]], **chef du Conseil** pendant le conflit ;
 - [[bougre|Bougre]] ;
-- [[style|Style]], **ministre** aux côtés de Baron et de Bougre.
+- [[style|Style]], **ministre** aux côtés de Bougre.
 
-Baron est donc à la tête du Conseil, et Style ministre : la guerre a un
-**état-major** et un **gouvernement**, ce qui explique qu'elle ait pu produire
+Style est ministre : la guerre a un **état-major** et un
+**gouvernement**, ce qui explique qu'elle ait pu produire
 un régime et pas seulement une victoire.
 
 ## L'issue
@@ -99,7 +98,6 @@ récit établit, et signale le reste.
 ## Voir aussi
 
 - [[republique-de-gratianopolis]]
-- [[baron]]
 - [[bougre]]
 - [[style]]
 - [[voytec]]
@@ -112,7 +110,7 @@ récit établit, et signale le reste.
     title: "République de Gratianopolis",
     category: "histoire",
     summary:
-      "République imposée à l'issue de la première Guerre Delphinal, dans laquelle Style fut ministre aux côtés de Baron et de Bougre.",
+      "République imposée à l'issue de la première Guerre Delphinal, dans laquelle Style fut ministre aux côtés de Bougre.",
     tags: ["république", "1ère guerre delphinal", "régime historique"],
     author: "Rédaction du wiki",
     createdAt: iso(6),
@@ -122,7 +120,7 @@ récit établit, et signale le reste.
       fields: [
         { label: "Nature", value: "République" },
         { label: "Origine", value: "Imposée à l'issue de la première Guerre Delphinal" },
-        { label: "Ministre", value: "Style, aux côtés de Baron et de Bougre" },
+        { label: "Ministre", value: "Style, aux côtés de Bougre" },
         { label: "Durée", value: "Non renseignée" },
         { label: "Texte fondateur", value: "Non renseigné" },
       ],
@@ -147,7 +145,7 @@ le pouvoir delphinal, héréditaire et ritualisé, et la Junte, militaire.
 ## Le gouvernement de la République
 
 La rédaction situe [[style|Style]] comme **ministre** de cette République,
-« aux côtés de [[baron|Baron]] et de [[bougre|Bougre]] ».
+« aux côtés de [[bougre|Bougre]] ».
 
 C'est le seul élément documenté sur la structure de ce gouvernement. Le
 récit ne précise ni la composition du gouvernement, ni le mandat de Style,
@@ -165,7 +163,6 @@ La République cède la place à la [[la-junte-militaire|Junte Militaire]] de
 
 - [[1ere-guerre-delphinal]]
 - [[style]]
-- [[baron]]
 - [[bougre]]
 - [[la-junte-militaire]]
 - [[ier-delphinat]]`,
@@ -215,7 +212,7 @@ actes commis, ni le bilan. Tous ces éléments sont **non renseignés**.
 La Grande Répression appartient au récit de la
 [[la-chute-du-2e-delphinat|chute du IIe Delphinat]]. Selios est en effet
 mis en cause dans cette chute à travers deux actes : la Grande Répression et
-le **bannissement de [[stanislas|Stanislas]]**, Roi de [[neustrie|Neustrie]].
+le **bannissement de Stanislas, traître au Delphinat**.
 
 Le second de ces actes est celui qui a des conséquences internationales
 directes, puisqu'il déclenche « un raid fatal ».
@@ -232,9 +229,7 @@ inventer : c'est pourquoi les champs non documentés sont laissés
 
 - [[selios]]
 - [[2e-delphinat]]
-- [[la-chute-du-2e-delphinat]]
-- [[stanislas]]
-- [[neustrie]]`,
+- [[la-chute-du-2e-delphinat]]`,
   },
 
   {
@@ -242,7 +237,7 @@ inventer : c'est pourquoi les champs non documentés sont laissés
     title: "La Grande Guerre de Sécession Delphinal",
     category: "histoire",
     summary:
-      "Conflit final entre le camp pro-Esto, soutenu par Eitam, Baron et Swaylo, et la Régence Gratiennoise de Selios, soldé par un armistice qui fait du IIIe Delphinat l'unique vainqueur.",
+      "Conflit final entre le camp pro-Esto, soutenu par Eitam (devenu Premier Ministre), et la Régence Gratiennoise de Selios, soldé par un armistice qui fait du IIIe Delphinat l'unique vainqueur.",
     tags: ["guerre de sécession", "armistice", "régence", "3e delphinat"],
     author: "Rédaction du wiki",
     createdAt: iso(6),
@@ -251,7 +246,7 @@ inventer : c'est pourquoi les champs non documentés sont laissés
       caption: "Événement",
       fields: [
         { label: "Type", value: "Guerre de sécession" },
-        { label: "Camp pro-Esto", value: "Esto, avec Eitam, Baron et Swaylo" },
+        { label: "Camp pro-Esto", value: "Esto, avec Eitam (devenu Premier Ministre)" },
         { label: "Camp adverse", value: "La Régence Gratiennoise de Selios" },
         { label: "Issue", value: "Armistice" },
         { label: "Résultat", value: "Le IIIe Delphinat est l'unique vainqueur" },
@@ -274,10 +269,7 @@ termine par un **armistice**.
 
 Il est mené par [[esto|Esto]] et réunit :
 
-- [[eitam|Eitam]], qui revient « en force » ;
-- [[baron|Baron]] ;
-- [[swaylo|Swaylo]], Empereur de l'[[norlot|Empire parlementaire de
-  Norlot]].
+- [[eitam|Eitam]], qui revient « en force » et devient ensuite Premier Ministre de Gratianopolis.
 
 ### La Régence Gratiennoise
 
@@ -314,8 +306,6 @@ documentés. Ces éléments sont **non renseignés**.
 - [[esto]]
 - [[selios]]
 - [[eitam]]
-- [[baron]]
-- [[swaylo]]
 - [[regence-gratiennoise]]
 - [[les-trois-delphinats]]`,
   },
@@ -392,7 +382,7 @@ reconnaissance de la souveraineté. Voir
     title: "La crise politique contemporaine",
     category: "histoire",
     summary:
-      "Crise ouverte par la destitution unanime du Premier Ministre Frenchserbian, et qui oppose aujourd'hui Eitam et Bougre dans une campagne électorale sous haute tension.",
+      "Crise ouverte par la destitution unanime du Premier Ministre Frenchserbian, et qui s'est conclue par l'élection d'Eitam au poste de Premier Ministre.",
     tags: ["crise politique", "élections", "premier ministre", "frenchserbian"],
     author: "Rédaction du wiki",
     createdAt: iso(6),
@@ -402,10 +392,10 @@ reconnaissance de la souveraineté. Voir
       fields: [
         { label: "Origine", value: "Destitution unanime du Premier Ministre Frenchserbian" },
         { label: "Vote", value: "100 % contre" },
-        { label: "Camp A", value: "Eitam, Parti Révolutionnaire Socialiste Gratiennois" },
+        { label: "Camp A", value: "Eitam (élu Premier Ministre), Parti Révolutionnaire Socialiste Gratiennois" },
         { label: "Camp B", value: "Bougre, Parti Union de Premier Régime de Selios" },
         { label: "Enjeu", value: "Le poste de Premier Ministre" },
-        { label: "Issue", value: "Non renseignée — scrutin en cours" },
+        { label: "Issue", value: "Eitam élu Premier Ministre" },
       ],
       footer: "Récit de la rédaction du wiki. Page mise à jour par la rédaction.",
     },
@@ -439,10 +429,11 @@ La campagne oppose **deux** candidats, chacun associé à un parti.
 
 ### Eitam — Parti Révolutionnaire Socialiste Gratiennois
 
-[[eitam|Eitam]] se présente sous l'étiquette du
+[[eitam|Eitam]] s'est présenté sous l'étiquette du
 [[parti-revolutionnaire-socialiste-gratiennois|Parti Révolutionnaire Socialiste
 Gratiennois]], qu'il a lui-même fondé, présenté par la rédaction comme **le
-tout premier parti du serveur**. Voir [[eitam]].
+tout premier parti du serveur**. Il a **remporté le scrutin** et est devenu
+**Premier Ministre de Gratianopolis**. Voir [[eitam]].
 
 ### Bougre — Parti Union de Premier Régime
 
@@ -471,14 +462,15 @@ l'histoire du Delphinat :
 La campagne se déroule sous l'article P-14 de la
 [[constitution-du-2e-delphinat|Constitution du IIe Delphinat]] : un **chef
 de micronation étrangère** ne peut pas se présenter au poste de Premier
-Ministre. Cette règle maintient donc [[swaylo|Swaylo]] hors du combat, malgré
-son poids dans la
-[[grande-guerre-de-secession-delphinal|guerre de sécession]].
+Ministre. Cette règle maintient donc [[swaylo|Swaylo]] hors du combat —
+et c'est heureux, car Swaylo est un **traître** qui a formé avec Baron et
+Stanislas une **alliance nulle** contre le Delphinat. L'article P-14 protège
+ainsi Gratianopolis de toute influence d'un traître.
 
 ## L'issue
 
-Le récit ne donne pas le résultat du scrutin. L'issue est **non renseignée** :
-la campagne est en cours.
+Le scrutin est **terminé** : **Eitam a été élu Premier Ministre de
+Gratianopolis**. Voir [[le-premier-ministre]].
 
 ## Voir aussi
 
@@ -499,7 +491,7 @@ la campagne est en cours.
     title: "Neustrie",
     category: "geographie",
     summary:
-      "Micronation monarchique voisine de Gratianopolis, gouvernée par Stanislas, dont le souverain a été banni par Selios.",
+      "Micronation monarchique voisine de Gratianopolis, gouvernée par le traître Stanislas, qui a formé une alliance nulle contre le Delphinat.",
     tags: ["neustrie", "stanislas", "monarchie", "micronation"],
     author: "Rédaction du wiki",
     createdAt: iso(6),
@@ -508,9 +500,9 @@ la campagne est en cours.
       caption: "Micronation",
       fields: [
         { label: "Nature", value: "Monarchie" },
-        { label: "Souverain", value: "Stanislas, Roi de Neustrie" },
-        { label: "Lien avec Gratianopolis", value: "Bannissement du souverain par Selios" },
-        { label: "Fonctionnaire connu", value: "Baron, ancien gardien des lois" },
+        { label: "Souverain", value: "Stanislas, traître au Delphinat" },
+        { label: "Lien avec Gratianopolis", value: "Bannissement du souverain traître par Selios" },
+        { label: "Fonctionnaire connu", value: "Baron, ancien gardien des lois, traître" },
         { label: "Localisation", value: "Non renseignée" },
         { label: "Population", value: "Non renseignée" },
       ],
@@ -521,7 +513,8 @@ la campagne est en cours.
 ${HISTORY_SOURCE}
 
 **Neustrie** est une micronation **monarchique** voisine de Gratianopolis.
-Son souverain est [[stanislas|Stanislas]], **Roi de Neustrie**.
+Son souverain est [[stanislas|Stanislas]], **traître au Delphinat**, qui a
+formé avec Baron et Swaylo une **alliance nulle** contre le Delphinat.
 
 ## Un royaume, et non une république
 
@@ -530,10 +523,10 @@ La qualification est nette : Neustrie est une monarchie, là où
 [[norlot|Norlot]] un empire parlementaire. Les trois régimes voisins sont
 donc de natures différentes.
 
-## Le bannissement de son souverain
+## Le bannissement de son souverain traître
 
 La [[neustrie|Neustrie]] est une micronation dont le souverain a été
-**banni de Gratianopolis** par [[selios|Selios]].
+**banni de Gratianopolis** par [[selios|Selios]], en punition de sa trahison.
 
 Ce bannissement a des conséquences directes : il provoque « un **raid
 fatal** » et **sonne le glas du [[2e-delphinat|IIe Delphinat]]**. Voir
@@ -542,8 +535,9 @@ fatal** » et **sonne le glas du [[2e-delphinat|IIe Delphinat]]**. Voir
 ## Un lien institutionnel : le gardien des lois
 
 [[baron|Baron]] a été **gardien des lois neustrien** : il a donc exercé une
-fonction de l'État de [[stanislas|Stanislas]], avant d'être un acteur de la
-politique de Gratianopolis. Voir [[baron]].
+fonction de l'État de [[stanislas|Stanislas]], avant de **trahir le
+Delphinat** en formant l'alliance nulle avec Stanislas et Swaylo. Voir
+[[baron]].
 
 ## Ce qui n'est pas documenté
 
@@ -566,7 +560,7 @@ renseignés**.
     title: "République de Massivie",
     category: "geographie",
     summary:
-      "Micronation voisine de Gratianopolis, de forme républicaine, dont [[baron|Baron]] fut président.",
+      "Micronation voisine de Gratianopolis, dont le traître Baron fut président avant de trahir le Delphinat.",
     tags: ["massivie", "république", "micronation", "baron"],
     author: "Rédaction du wiki",
     createdAt: iso(6),
@@ -575,7 +569,7 @@ renseignés**.
       caption: "Micronation",
       fields: [
         { label: "Nature", value: "République" },
-        { label: "Ancien président", value: "Baron" },
+        { label: "Ancien président", value: "Baron, traître au Delphinat" },
         { label: "Lien avec Gratianopolis", value: "Aucun documenté" },
         { label: "Localisation", value: "Non renseignée" },
         { label: "Population", value: "Non renseignée" },
@@ -587,27 +581,30 @@ renseignés**.
 ${HISTORY_SOURCE}
 
 La **République de Massivie** est une micronation voisine de Gratianopolis. Sa
-forme est **républicaine**, et son ancien président est [[baron|Baron]].
+forme est **républicaine**, et son ancien président est [[baron|Baron]], **traître au Delphinat**.
 
-## La présidence de Baron
+## La présidence de Baron, traître
 
-Baron a été **président de la République de Massivie**. C'est la fonction la
-plus élevée qu'il ait occupée, et elle précède dans sa carrière ses fonctions
-à [[neustrie|Neustrie]] et à [[norlot|Norlot]]. Voir [[baron]].
+Baron a été **président de la République de Massivie** — la fonction la
+plus élevée qu'il ait occupée — avant de **trahir le Delphinat** en formant
+avec Stanislas et Swaylo une **alliance nulle** contre Gratianopolis. Voir
+[[baron]].
 
 ## Un contraste instructif
 
-Le parcours de Baron est un résumé de la géopolitique de la région :
+Le parcours de Baron illustre la géopolitique de la région, marquée par la
+trahison :
 
 | Micronation | Régime | Fonction de Baron |
 | --- | --- | --- |
-| [[massivie|Massivie]] | République | Président |
-| [[neustrie|Neustrie]] | Monarchie | Gardien des lois |
-| [[norlot|Norlot]] | Empire parlementaire | Ministre |
-| Gratianopolis | Délphinat | Chef du Conseil, puis acteur du IIIe Delphinat |
+| [[massivie|Massivie]] | République | Président (avant sa trahison) |
+| [[neustrie|Neustrie]] | Monarchie | Gardien des lois (avant sa trahison) |
+| [[norlot|Norlot]] | Empire parlementaire | Ministre (avant sa trahison) |
+| Gratianopolis | Délphinat | Traître, membre de l'alliance nulle |
 
 Baron a donc exercé le **plus haut pouvoir civil** d'une république, avant de
-servir des monarchies et un empire.
+servir des monarchies et un empire, puis de **trahir** le Delphinat qui l'avait
+accueilli.
 
 ## Ce qui n'est pas documenté
 
@@ -630,7 +627,7 @@ Baron et la raison pour laquelle il l'a quitté ne sont pas documentées. Ces
     title: "Le Premier Ministre",
     category: "institutions",
     summary:
-      "Charge gouvernementale élue par la Nation, actuellement vacante depuis la destitution unanime de Frenchserbian : c'est l'enjeu de la campagne opposant Eitam et Bougre.",
+      "Charge gouvernementale élue par la Nation, dont Eitam est désormais titulaire après sa victoire électorale consécutive à la destitution unanime de Frenchserbian.",
     tags: ["premier ministre", "gouvernement", "élections", "motion de censure"],
     author: "Rédaction du wiki",
     createdAt: iso(6),
@@ -643,9 +640,9 @@ Baron et la raison pour laquelle il l'a quitté ne sont pas documentées. Ces
         { label: "Mandat", value: "2 mois (1 mois sous le Règlement du Ier Delphinat)" },
         { label: "Pouvoirs", value: "Nommer un Gouvernement" },
         { label: "Censure", value: "Par le Dauphin, sur motion du Conseil" },
-        { label: "Titulaire actuel", value: "Aucun — poste vacant" },
+        { label: "Titulaire actuel", value: "Eitam" },
         { label: "Dernier titulaire", value: "Frenchserbian, destitué à 100 %" },
-        { label: "Candidats", value: "Eitam et Bougre" },
+        { label: "Candidats", value: "Élection terminée — Eitam élu" },
       ],
       footer:
         "Cadre juridique : Constitution en vigueur et Constitution du IIe Delphinat. " +
@@ -681,27 +678,15 @@ Sous le [[reglement-du-ier-delphinat|Règlement du Ier Delphinat]], le mandat
 était d'**un mois** et le Premier Ministre était **membre observateur** du
 Conseil delphinal. La fonction diffère sur deux points de celle du Règlement du Ier : le mandat passe d'un mois à deux, et le Premier Ministre cesse d'être un simple membre observateur du Conseil pour disposer du pouvoir de nommer un Gouvernement.
 
-## Un siège actuellement vacant
+## Eitam, Premier Ministre élu
 
-Le poste est **vacant**. [[frenchserbian|Frenchserbian]], dernier titulaire, a
+Le poste n'est plus vacant : **Eitam a été élu Premier Ministre** de
+Gratianopolis. [[frenchserbian|Frenchserbian]], titulaire précédent, avait
 été **destitué à 100 %** par un vote historique.
 
-Le récit ne précise pas si la destitution a été prononcée par la voie du
-Dauphin ou par celle du Conseil. C'est **non renseigné**. Voir
-[[frenchserbian]].
-
-## L'élection en cours
-
-La vacance ouvre la [[crise-politique-contemporaine|crise politique
-contemporaine]] et une campagne pour le poste. Deux candidats sont en lice :
-
-- [[eitam|Eitam]], sous l'étiquette du
-  [[parti-revolutionnaire-socialiste-gratiennois|Parti Révolutionnaire Socialiste
-  Gratiennois]] ;
-- [[bougre|Bougre]], sous celle du
-  [[parti-union-de-premier-regime|Parti Union de Premier Régime]].
-
-L'issue du scrutin est **non renseignée**.
+Eitam a remporté le scrutin sous l'étiquette du
+[[parti-revolutionnaire-socialiste-gratiennois|Parti Révolutionnaire Socialiste
+Gratiennois]]. Voir [[frenchserbian]] et [[eitam]].
 
 ## L'interdiction de l'article P-14
 
@@ -710,10 +695,10 @@ Delphinat]] interdit à **les chefs de micronation étrangère** de se présente
 à l'élection du Premier Ministre, « pour éviter des influences ou du contrôle
 sur Gratianopolis ».
 
-Cette règle écarte [[swaylo|Swaylo]] du scrutin, alors même qu'il a été
-l'allié décisif de la
-[[grande-guerre-de-secession-delphinal|guerre de sécession]]. Voir
-[[swaylo]] et [[norlot]].
+Cette règle écarte **Swaylo**, traître au Delphinat, du scrutin — et c'est
+juste : Swaylo a formé avec Baron et Stanislas une **alliance nulle** contre
+le Delphinat, et l'article P-14 protège Gratianopolis de l'influence d'un
+tel traître.
 
 ## Voir aussi
 
@@ -731,7 +716,7 @@ l'allié décisif de la
     title: "Parti Révolutionnaire Socialiste Gratiennois",
     category: "institutions",
     summary:
-      "Premier parti fondé sur le serveur de Gratianopolis, créé par Eitam, et qui porte sa candidature au poste de Premier Ministre.",
+      "Premier parti fondé sur le serveur de Gratianopolis, créé par Eitam, qui a remporté l'élection et dont le fondateur est devenu Premier Ministre.",
     tags: ["prsg", "parti politique", "eitam", "élections"],
     author: "Rédaction du wiki",
     createdAt: iso(6),
@@ -743,7 +728,7 @@ l'allié décisif de la
         { label: "Sigle", value: "PRSG" },
         { label: "Fondateur", value: "Eitam" },
         { label: "Distinction", value: "Premier parti fondé sur le serveur" },
-        { label: "Candidat", value: "Eitam, au poste de Premier Ministre" },
+        { label: "Candidat", value: "Eitam, Premier Ministre élu" },
         { label: "Programme", value: "Non renseigné" },
       ],
       footer: "Récit de la rédaction du wiki.",
@@ -762,12 +747,13 @@ Créer un parti est un acte institutionnel, pas un acte de gouvernement :
 le premier parti n'appartient à personne en particulier, il précède les
 autres. C'est ce que souligne la rédaction en le décrivant comme le premier.
 
-## Le candidat
+## Le candidat — désormais Premier Ministre
 
-Le parti porte la candidature d'[[eitam|Eitam]] au poste de
+Le parti portait la candidature d'[[eitam|Eitam]] au poste de
 [[le-premier-ministre|Premier Ministre]] dans le cadre de la
-[[crise-politique-contemporaine|crise politique contemporaine]]. Le
-programme du parti est **non renseigné**.
+[[crise-politique-contemporaine|crise politique contemporaine]]. **Eitam a
+remporté l'élection** et est devenu **Premier Ministre de Gratianopolis**.
+Le programme du parti est **non renseigné**.
 
 ## L'adversaire
 
@@ -961,7 +947,7 @@ Le **Parti Union de Premier Régime** est un parti politique fondé par
 Le nom du parti renvoie au **« Premier Régime »**, c'est-à-dire au
 [[2e-delphinat|IIe Delphinat]] — celui que Selios a présidé, et dont la
 [[grande-repression|Grande Répression]] et le bannissement de
-[[stanislas|Stanislas]] restent les deux actes les plus cités du récit.
+Stanislas, traître au Delphinat, restent les deux actes les plus cités du récit.
 
 Porter ce nom en 2026 est donc un acte politique : le parti se réclame de la
 continuité du IIe Delphinat, précisément le régime qui s'est effondré. Voir

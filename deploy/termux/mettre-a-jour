@@ -1,0 +1,137 @@
+#!/data/data/com.termux/files/usr/bin/bash
+# Met le wiki à jour sur la tablette : code, contenu, puis redémarrage.
+#
+# ## Pourquoi un script plutôt qu'une suite de commandes
+#
+# Une mise à jour se rate rarement à l'étape qu'on croit. Le cas classique :
+# `git pull` passe, `npm run build` échoue, et le service redémarre quand même
+# sur un `.next` à moitié réécrit — le wiki tombe, et la cause est déjà sortie
+# de l'écran. Ce script s'arrête donc **avant** de toucher au service dès que
+# quelque chose échoue.
+#
+# ## Ordre des opérations, et ce qu'il protège
+#
+#   1. `git pull --ff-only` — refuse de créer un commit de fusion silencieux ;
+#   2. correctif de contenu — écrit dans `data/`, avec sauvegarde préalable ;
+#   3. `npm install` — uniquement si `package-lock.json` a bougé ;
+#   4. `npm run build` — le seul point de non-retour : s'il échoue, on s'arrête ;
+#   5. `sv restart wiki` — et vérification que le service répond vraiment.
+#
+# ## Usage
+#
+#   bash deploy/termux/mettre-a-jour              # tout
+#   bash deploy/termux/mettre-a-jour --sans-contenu   # code seulement
+#   bash deploy/termux/mettre-a-jour --sans-git       # ni pull ni install
+#
+# Le script suppose qu'il est lancé depuis la racine du projet, ou que
+# `WIKI_DIR` est défini.
+
+set -u
+
+: "${WIKI_DIR:=$(cd "$(dirname "$0")/../.." && pwd)}"
+: "${WIKI_PORT:=3000}"
+
+AVEC_CONTENU=1
+AVEC_GIT=1
+for argument in "$@"; do
+  case "$argument" in
+    --sans-contenu) AVEC_CONTENU=0 ;;
+    --sans-git) AVEC_GIT=0 ;;
+    -h|--help)
+      sed -n '2,30p' "$0" | sed 's/^# \{0,1\}//'
+      exit 0
+      ;;
+    *)
+      printf 'Argument inconnu : %s\n' "$argument" >&2
+      exit 2
+      ;;
+  esac
+done
+
+journal() {
+  printf '\n==> %s\n' "$*"
+}
+
+echec() {
+  printf '\nÉCHEC : %s\n' "$*" >&2
+  printf 'Le service n'"'"'a pas été touché.\n' >&2
+  exit 1
+}
+
+cd "$WIKI_DIR" || echec "impossible d'entrer dans $WIKI_DIR"
+
+journal "répertoire : $WIKI_DIR"
+
+# ---------------------------------------------------------------------------
+# 1. Le code
+# ---------------------------------------------------------------------------
+
+if [ "$AVEC_GIT" -eq 1 ]; then
+  if [ ! -d .git ]; then
+    journal "pas de dépôt git ici — étape ignorée"
+  else
+    journal "récupération du code"
+    git pull --ff-only || echec "git pull a échoué (modifications locales ?)"
+
+    # `npm ci` réinstalle tout et prend plusieurs minutes sur une tablette.
+    # On ne le fait que si les dépendances ont réellement changé.
+    if [ -f node_modules/.package-lock.json ] && \
+       cmp -s package-lock.json node_modules/.package-lock.json; then
+      journal "dépendances inchangées"
+    else
+      journal "installation des dépendances"
+      npm install --no-audit --no-fund || echec "npm install a échoué"
+    fi
+  fi
+fi
+
+# ---------------------------------------------------------------------------
+# 2. Le contenu
+# ---------------------------------------------------------------------------
+
+if [ "$AVEC_CONTENU" -eq 1 ]; then
+  if [ -f deploy/termux/contenu-2026-11-03.json ]; then
+    journal "application du correctif de contenu"
+    node deploy/termux/appliquer-contenu.mjs || echec "correctif de contenu en échec"
+  else
+    journal "aucun correctif de contenu à appliquer"
+  fi
+fi
+
+# ---------------------------------------------------------------------------
+# 3. La compilation
+# ---------------------------------------------------------------------------
+
+journal "compilation"
+npm run build || echec "npm run build a échoué — le site reste sur la version précédente"
+
+# ---------------------------------------------------------------------------
+# 4. Le service
+# ---------------------------------------------------------------------------
+
+journal "redémarrage du service wiki"
+if command -v sv >/dev/null 2>&1; then
+  sv restart wiki 2>/dev/null || sv up wiki 2>/dev/null || true
+else
+  printf 'sv introuvable : redémarrez le service à la main.\n' >&2
+fi
+
+# `next start` met quelques secondes à ouvrir son port : on réessaie plutôt
+# que de conclure trop vite à une panne.
+journal "vérification"
+for essai in 1 2 3 4 5 6 7 8 9 10; do
+  sleep 2
+  code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 5 \
+    "http://127.0.0.1:${WIKI_PORT}/api/health" 2>/dev/null || true)
+  if [ "$code" = "200" ]; then
+    printf 'Le wiki répond (HTTP 200) sur 127.0.0.1:%s.\n' "$WIKI_PORT"
+    curl -s --max-time 5 "http://127.0.0.1:${WIKI_PORT}/api/health"
+    printf '\n'
+    exit 0
+  fi
+  printf '  essai %s/10 : HTTP %s\n' "$essai" "${code:-aucune réponse}"
+done
+
+printf '\nLe wiki ne répond pas. Journaux :\n' >&2
+printf '  tail -n 50 $PREFIX/var/service/wiki/log/x\n' >&2
+exit 1

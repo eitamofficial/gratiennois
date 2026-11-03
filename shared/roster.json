@@ -37,7 +37,7 @@
         "Eitam",
         "Créateur"
       ],
-      "charge": "Créateur du wiki et du bot Discord",
+      "charge": "Créateur du wiki et du bot Discord — Premier Ministre de Gratianopolis",
       "actif": true
     },
     {
@@ -106,8 +106,8 @@
         "Swaylo",
         "Empereur"
       ],
-      "charge": "Empereur de l'Empire parlementaire de Norlot",
-      "actif": true
+      "charge": "Traître au Delphinat — Empereur de Norlot, banni de la vie politique de Gratianopolis",
+      "actif": false
     },
     {
       "slug": "baron",
@@ -120,8 +120,8 @@
       "roles": [
         "Baron"
       ],
-      "charge": "Personnalité du IIe Delphinat",
-      "actif": true
+      "charge": "Traître au Delphinat — alliance nulle avec Swaylo et Stanislas",
+      "actif": false
     },
     {
       "slug": "math",
@@ -205,7 +205,7 @@
       "roles": [
         "Stanislas"
       ],
-      "charge": "Roi de Neustrie",
+      "charge": "Traître au Delphinat — Roi de Neustrie, alliance nulle avec Baron et Swaylo",
       "actif": false
     }
   ],

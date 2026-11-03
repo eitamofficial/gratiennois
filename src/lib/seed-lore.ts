@@ -271,8 +271,8 @@ nom — « Union de Premier Régime » étant la formule même du
 [[2e-delphinat|IIe Delphinat]].
 
 Aux élections du [[crise-politique-contemporaine|premier ministère]], c'est
-[[bougre|Bougre]] qui porte les couleurs de ce parti : Selios reste derrière
-le candidat, comme derrière le Dauphinie.
+[[bougre|Bougre]] qui a porté les couleurs de ce parti : Selios est resté
+derrière le candidat, comme derrière la Dauphinie.
 
 ## Voir aussi
 
@@ -393,7 +393,7 @@ n'est pas le sien. Voir [[eitam]].
     title: "Bougre",
     category: "personnalites",
     summary:
-      "Ancien président devenu chef de la Junte Militaire, la dictature qui a gouverné Gratianopolis entre le Ier et le IIe Delphinat, renversée par le coup d'État de Math. Candidat au poste de Premier Ministre sous les couleurs du parti de Selios.",
+      "Ancien président devenu chef de la Junte Militaire, la dictature qui a gouverné Gratianopolis entre le Ier et le IIe Delphinat, renversée par le coup d'État de Math. Candidat malheureux au poste de Premier Ministre sous les couleurs du parti de Selios, battu par Eitam.",
     tags: ["bougre", "junte militaire", "dictature", "premier ministre", "pr"],
     author: "Rédaction du wiki",
     createdAt: iso(6),
@@ -408,7 +408,7 @@ n'est pas le sien. Voir [[eitam]].
         { label: "Pouvoir", value: "Chef de la Junte Militaire" },
         { label: "Règne", value: "Dictature entre le Ier et le IIe Delphinat" },
         { label: "Fin de règne", value: "Renversé par le coup d'État de Math" },
-        { label: "Candidature", value: "Premier Ministre, sous les couleurs du PR" },
+        { label: "Candidature", value: "Premier Ministre — battu par Eitam" },
         { label: "Parti", value: "Parti Union de Premier Régime de Selios" },
         { label: "Rôle militaire", value: "Combattant de la première Guerre Delphinal" },
       ],
@@ -453,14 +453,15 @@ pour imposer la [[republique-de-gratianopolis|République de
 Gratianopolis]]. Bougre est donc un acteur de la première guerre civile, avant
 d'être le dictateur de la Junte.
 
-## Candidat au poste de Premier Ministre
+## Candidat malheureux au poste de Premier Ministre
 
-Bougre est aujourd'hui **candidat au poste de Premier Ministre** sous les
-couleurs du [[parti-union-de-premier-regime|Parti Union de Premier Régime]],
-le parti de [[selios|Selios]].
+Bougre a été **candidat au poste de Premier Ministre** sous les couleurs du
+[[parti-union-de-premier-regime|Parti Union de Premier Régime]], le parti de
+[[selios|Selios]]. Il a été **battu par [[eitam|Eitam]]**, devenu Premier
+Ministre de Gratianopolis.
 
-La candidature est politiquement parlante : l'ancien dictateur revient dans
-le jeu démocratique, et le parti qu'il porte est celui du fondateur
+La candidature était politiquement parlante : l'ancien dictateur revenait dans
+le jeu démocratique, et le parti qu'il portait est celui du fondateur
 [[selios|Selios]] — c'est-à-dire du régime qui a succédé à sa dictature. La
 rédaction ne précise ni son programme, ni sa position sur la
 [[grande-repression|Grande Répression]]. Ces éléments sont **non renseignés**.

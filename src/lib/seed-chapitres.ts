@@ -425,7 +425,7 @@ une simple querelle administrative.
 
 ## La campagne : deux candidats, deux partis
 
-La campagne oppose **deux** candidats, chacun associé à un parti.
+La campagne a opposé **deux** candidats, chacun associé à un parti.
 
 ### Eitam — Parti Révolutionnaire Socialiste Gratiennois
 
@@ -437,29 +437,29 @@ tout premier parti du serveur**. Il a **remporté le scrutin** et est devenu
 
 ### Bougre — Parti Union de Premier Régime
 
-[[bougre|Bougre]] se présente sous les couleurs du
+[[bougre|Bougre]] s'est présenté sous les couleurs du
 [[parti-union-de-premier-regime|Parti Union de Premier Régime]], le parti de
-[[selios|Selios]]. Voir [[bougre]].
+[[selios|Selios]]. Il a été **battu**. Voir [[bougre]].
 
 ## Une campagne sous haute tension
 
-La rédaction décrit la campagne comme se déroulant « **sous haute
+La rédaction décrit la campagne comme s'étant déroulée « **sous haute
 tension** ».
 
 Trois éléments expliquent cette tension, et tous sont internes à
 l'histoire du Delphinat :
 
-1. l'un des deux candidats est l'**ancien dictateur** de la
+1. l'un des deux candidats était l'**ancien dictateur** de la
    [[la-junte-militaire|Junte Militaire]] ;
-2. l'autre est le **Dauphin actuel**, dont le bilan est entaché par la
-   [[la-chute-du-2e-delphinat|chute du IIe Delphinat]] dont il est tenu
-   responsable ;
-3. le scrutin porte sur le poste qui a justement vacanté par une destitution
+2. l'autre était le fondateur du **tout premier parti du serveur** et l'un des
+   membres les plus anciens de la communauté, ce qui donnait au scrutin l'allure
+   d'un duel entre deux mémoires du Delphinat ;
+3. le scrutin portait sur le poste laissé **vacant** par une destitution
    unanime.
 
 ## Un obstacle juridique pour Swaylo
 
-La campagne se déroule sous l'article P-14 de la
+La campagne s'est déroulée sous l'article P-14 de la
 [[constitution-du-2e-delphinat|Constitution du IIe Delphinat]] : un **chef
 de micronation étrangère** ne peut pas se présenter au poste de Premier
 Ministre. Cette règle maintient donc [[swaylo|Swaylo]] hors du combat —

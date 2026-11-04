@@ -66,11 +66,15 @@ cd "$WIKI_DIR" || echec "répertoire introuvable : $WIKI_DIR"
 verifier() {
   local archive="$1"
   [ -f "$archive" ] || echec "archive absente : $archive"
-  if openssl enc -d -aes-256-cbc -pbkdf2 -pass "file:$SAUVEGARDE_CLE" -in "$archive" \
-      | tar tzf - >/dev/null 2>&1; then
+  local controle
+  controle=$(mktemp "${TMPDIR:-/tmp}/sauvegarde-controle.XXXXXX")
+  if node "$WIKI_DIR/deploy/termux/chiffrer.mjs" dechiffrer "$archive" "$controle" "$(cat "$SAUVEGARDE_CLE")" >/dev/null 2>&1 \
+      && tar tzf "$controle" >/dev/null 2>&1; then
+    rm -f "$controle"
     journal "archive lisible : $(basename "$archive")"
     return 0
   fi
+  rm -f "$controle"
   echec "archive illisible ou corrompue : $(basename "$archive")"
 }
 
@@ -110,20 +114,30 @@ done
 [ -n "$INCLUS" ] || echec "rien à sauvegarder dans $WIKI_DIR"
 
 journal "création de l'archive"
+# On écrit d'abord le tar, puis on le chiffre : Node ne sait pas chiffrer un
+# flux en entrée standard sans le charger entièrement, et le contenu tient de
+# toute façon dans quelques mégaoctets.
+tar_clair=$(mktemp "${TMPDIR:-/tmp}/sauvegarde.XXXXXX")
 # shellcheck disable=SC2086
-if ! tar czf - --warning=no-file-changed $INCLUS 2>/dev/null \
-    | openssl enc -aes-256-cbc -pbkdf2 -salt -pass "file:$SAUVEGARDE_CLE" -out "$temporaire"; then
-  rm -f "$temporaire"
+if ! tar czf "$tar_clair" --warning=no-file-changed $INCLUS 2>/dev/null; then
+  rm -f "$temporaire" "$tar_clair"
   echec "échec de la création de l'archive"
 fi
+if ! node "$WIKI_DIR/deploy/termux/chiffrer.mjs" chiffrer "$tar_clair" "$temporaire" "$(cat "$SAUVEGARDE_CLE")" >/dev/null; then
+  rm -f "$temporaire" "$tar_clair"
+  echec "échec du chiffrement"
+fi
+rm -f "$tar_clair"
 
 # On ne publie l'archive qu'une fois relue : une sauvegarde qu'on n'a pas
 # vérifiée n'est qu'une promesse.
-if ! openssl enc -d -aes-256-cbc -pbkdf2 -pass "file:$SAUVEGARDE_CLE" -in "$temporaire" \
-    | tar tzf - >/dev/null 2>&1; then
-  rm -f "$temporaire"
+controle=$(mktemp "${TMPDIR:-/tmp}/sauvegarde-controle.XXXXXX")
+if ! node "$WIKI_DIR/deploy/termux/chiffrer.mjs" dechiffrer "$temporaire" "$controle" "$(cat "$SAUVEGARDE_CLE")" >/dev/null 2>&1 \
+    || ! tar tzf "$controle" >/dev/null 2>&1; then
+  rm -f "$temporaire" "$controle"
   echec "l'archive relue est corrompue — rien n'a été publié"
 fi
+rm -f "$controle"
 
 mv "$temporaire" "$archive"
 taille=$(du -h "$archive" | cut -f1)

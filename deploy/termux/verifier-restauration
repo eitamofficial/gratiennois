@@ -26,8 +26,11 @@ echo "archive   : $(basename "$archive")"
 echo "taille    : $(du -h "$archive" | cut -f1)"
 echo "date      : $(date -r "$archive" '+%Y-%m-%d %H:%M')"
 
-openssl enc -d -aes-256-cbc -pbkdf2 -pass "file:$CLE" -in "$archive" 2>/dev/null \
-  | tar xzf - -C "$TRAVAIL" || echec "déchiffrement ou extraction impossible"
+tar_clair=$(mktemp "${TMPDIR:-/tmp}/restauration.XXXXXX")
+node "$(dirname "$0")/chiffrer.mjs" dechiffrer "$archive" "$tar_clair" "$(cat "$CLE")" >/dev/null \
+  || { rm -f "$tar_clair"; echec "déchiffrement impossible"; }
+tar xzf "$tar_clair" -C "$TRAVAIL" || { rm -f "$tar_clair"; echec "extraction impossible"; }
+rm -f "$tar_clair"
 
 # Le contenu attendu, quel que soit le dossier racine de l'archive.
 articles=$(find "$TRAVAIL" -name articles.json -print -quit)

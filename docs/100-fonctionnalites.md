@@ -203,3 +203,26 @@ Par exemple la présence en édition (7) a son API et son stockage, mais l'édit
 Les dix fonctions Discord (61–70) demandent de modifier le bot, qui tourne dans un autre processus : les livrer à moitié aurait cassé un service qui fonctionne.
 
 **Pourquoi s'arrêter là plutôt que d'aller au bout.** Les 56 livrées sont vérifiées en production, une par une, sur les pages réelles. Les 32 restantes demandent soit une refonte de l'éditeur (1, 4, 8, 9), soit une intervention sur le bot Discord, soit de l'infrastructure (miroir, seconde machine, AVIF). Les ajouter en une passe aurait produit un site plus large et moins sûr — exactement ce qu'il ne faut pas faire avec une encyclopédie dont tout le propos est de distinguer ce qui est vérifié du reste.
+
+---
+
+## Deuxième passe — 4 novembre, après-midi
+
+**Livré depuis : 60 fonctions complètes.** Les quatre qui passent de « non commencée » à « livrée » :
+
+- **42** — recherche dans les infoboxes : une donnée saisie exprès pèse plus que le corps du texte.
+- **44** — recherche sémantique : quand la recherche littérale ne rend rien, le corpus est interrogé par proximité de vocabulaire (TF-IDF) et les pages les plus proches sont proposées, en le disant.
+- **52** — import Markdown : en-tête `---` facultatif, titre déduit du premier `#`, refus si l'adresse est déjà prise.
+- **58** — entités structurées : page publique, rattachement à l'article, création réservée à l'accès complet.
+
+**Connexion Discord — réparée.** Elle « fonctionnait » au sens technique, mais aucun rôle du serveur ne correspondait aux noms du roster : ils portent des emojis (« 🐬|Dauphin ») et divergent (« Conseil Ministériel du Delphinat » vs « Conseil Delphinal »). Les 66 membres entraient donc tous en lecture seule — d'où l'impression qu'il n'y avait que les comptes locaux. La correspondance se fait désormais sur les identifiants réels des rôles. Vérifié : **5 membres avec écriture** (dont Eitam en Premier Ministre et Esto en Dauphin), 54 lecteurs.
+
+**Sécurité — trois failles réelles fermées.**
+
+- `clientIp` lisait le **premier** saut de `X-Forwarded-For`, une valeur fournie par le client : un attaquant changeait d'adresse à chaque essai et contournait le quota de connexion. Le dernier saut, seul, est digne de confiance.
+- redirection ouverte : `/connexion?next=https://exemple.test` renvoyait vers un site tiers après connexion, avec le nom du wiki comme caution.
+- SSRF : un webhook pouvait viser `127.0.0.1`, la box ou le réseau local — que le serveur, lui, atteint. Les hôtes privés sont refusés.
+
+Plus : contrôle d'`Origin` sur toutes les écritures, quota et contrôle de format sur `/api/features`, qui n'en avait aucun.
+
+**Reste : 40 fonctions**, dont les dix du bot Discord (61–70) et la refonte de l'éditeur (1, 4, 8, 9). Le détail honnête reste celui de la section précédente, moins ces quatre.

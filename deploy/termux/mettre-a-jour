@@ -103,6 +103,16 @@ fi
 # ---------------------------------------------------------------------------
 
 journal "compilation"
+# Next.js fige certaines valeurs d'environnement dans le paquet au moment du
+# build (l'invitation Discord, par exemple). Sans ce chargement, la compilation
+# graverait les valeurs de repli du dépôt public — un lien mort — et il
+# faudrait recompiler pour corriger.
+if [ -f "$WIKI_DIR/.env.secrets" ]; then
+  set -a
+  # shellcheck disable=SC1091
+  . "$WIKI_DIR/.env.secrets"
+  set +a
+fi
 npm run build || echec "npm run build a échoué — le site reste sur la version précédente"
 
 # ---------------------------------------------------------------------------

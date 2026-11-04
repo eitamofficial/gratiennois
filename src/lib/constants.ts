@@ -1,10 +1,31 @@
 import { CATEGORIES, type Category } from "./types";
 
+/**
+ * Invitation du serveur Discord.
+ *
+ * Le slug réel n'est **pas** versionné : ce dépôt est public, et une invitation
+ * publiée attire les raids. Il se règle par `DISCORD_INVITE` dans
+ * `.env.secrets` (voir `env.exemple`), qui accepte un slug (`abc123`) comme une
+ * URL complète. À défaut, le slug de démonstration est utilisé — le lien mène
+ * alors nulle part, ce qui vaut mieux qu'un lien mort publié.
+ */
+export function discordInviteUrl(): string {
+  const brut = process.env.DISCORD_INVITE?.trim();
+  if (!brut) return "https://discord.gg/gratianopolis";
+  if (/^https?:\/\//i.test(brut)) return brut;
+  return `https://discord.gg/${brut.replace(/^\/+/, "")}`;
+}
+
+/** Le slug seul, pour l'affichage (« discord.gg/abc123 »). */
+function discordInviteLabel(): string {
+  return discordInviteUrl().replace(/^https?:\/\//i, "");
+}
+
 export const SITE = {
   name: "IIIe Delphinat de Gratianopolis",
   wikiName: "Wiki de Gratianopolis",
-  discordUrl: "https://discord.gg/gratianopolis",
-  discordInvite: "discord.gg/gratianopolis",
+  discordUrl: discordInviteUrl(),
+  discordInvite: discordInviteLabel(),
   description:
     "Encyclopédie officielle du IIIe Delphinat de Gratianopolis : histoire, institutions, géographie, culture, lois et personnalités de la micronation.",
 } as const;

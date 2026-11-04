@@ -1,4 +1,5 @@
 import rosterJson from "../../shared/roster.json";
+import { discordInviteUrl } from "./constants";
 import type { UserRole } from "./types";
 
 /**
@@ -73,14 +74,15 @@ function isStringArray(value: unknown): value is string[] {
 
 function load(): Roster {
   const raw = rosterJson as unknown as Record<string, unknown>;
-  const guild = (raw.guild ?? {}) as Record<string, unknown>;
   const characters = Array.isArray(raw.personnages) ? raw.personnages : [];
   const mapping = Array.isArray(raw.roleMapping) ? raw.roleMapping : [];
   const history = Array.isArray(raw.historique) ? raw.historique : [];
 
   return {
     version: typeof raw.version === "number" ? raw.version : 1,
-    invite: typeof guild.invite === "string" ? guild.invite : "",
+    // L'invitation vient de l'environnement, pas du fichier : le dépôt est
+    // public, et `shared/roster.json` y est versionné.
+    invite: discordInviteUrl(),
     // Un personnage sans slug ni nom ne peut rien rattacher : on l'écarte.
     personnages: characters
       .filter(

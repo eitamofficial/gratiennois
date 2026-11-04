@@ -40,6 +40,26 @@ export async function GET() {
   const warnings = checkDeploymentWarnings();
   if (problems.length > 0) ok = false;
 
+  // Configuration de l'authentification. Sans `AUTH_SECRET`, le mot de passe et
+  // le code A2F peuvent être justes : aucune session ne peut être signée, donc
+  // **personne ne peut se connecter**. C'est arrivé, et rien ne le signalait —
+  // le site répondait 200 et la connexion échouait en silence.
+  const authSecret = Boolean(process.env.AUTH_SECRET?.trim());
+  const twoFactor = Boolean(process.env.WIKI_2FA?.trim());
+  const accounts = (process.env.WIKI_USERS ?? "")
+    .split(",")
+    .map((entree) => entree.trim())
+    .filter(Boolean).length;
+
+  if (!authSecret) {
+    ok = false;
+    problems.push({
+      code: "auth-secret-absent",
+      message:
+        "AUTH_SECRET n'est pas défini : aucune session ne peut être signée, la connexion est impossible.",
+    } as (typeof problems)[number]);
+  }
+
   return NextResponse.json(
     {
       status: ok ? "ok" : "degraded",
@@ -56,6 +76,16 @@ export async function GET() {
       discord: {
         configured: Boolean(process.env.DISCORD_BOT_TOKEN && process.env.DISCORD_GUILD_ID),
         lastSync: discord?.fetchedAt ?? null,
+      },
+      auth: {
+        /** Signature des sessions : sans lui, la connexion est impossible. */
+        secret: authSecret,
+        /** Double authentification active pour tous les comptes. */
+        twoFactor,
+        /** Nombre de comptes déclarés, jamais leur identité. */
+        accounts,
+        /** Connexion Discord disponible (identifiant d'application présent). */
+        discordOAuth: Boolean(process.env.DISCORD_CLIENT_ID?.trim()),
       },
       deployment: { problems, warnings },
       error,

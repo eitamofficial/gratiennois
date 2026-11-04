@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { getServerSession } from "@/lib/auth";
+import { isDiscordLoginEnabled } from "@/lib/discord-oauth";
 import LoginForm from "@/components/LoginForm";
 
 export const metadata: Metadata = {
@@ -31,7 +32,9 @@ export default async function LoginPage() {
         </p>
 
         <Suspense fallback={<p className="text-center text-sm text-slate-400">Chargement…</p>}>
-          <LoginForm />
+          {/* La connexion Discord n'est proposée que si le serveur a de quoi
+              l'honorer : sinon le bouton mènerait à une erreur. */}
+          <LoginForm discord={isDiscordLoginEnabled()} />
         </Suspense>
       </div>
 

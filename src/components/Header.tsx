@@ -3,6 +3,7 @@ import { SITE } from "@/lib/constants";
 import FramedImage from "./FramedImage";
 import SearchBar from "./SearchBar";
 import ThemeToggle from "./ThemeToggle";
+import UserMenu from "./UserMenu";
 
 export default function Header() {
   return (
@@ -47,6 +48,10 @@ export default function Header() {
         >
           Rejoindre
         </a>
+
+        {/* Le menu de compte porte le seul lien « Connexion » du site : sans
+            lui, l'espace d'édition devenait inaccessible depuis l'interface. */}
+        <UserMenu />
 
         <ThemeToggle />
       </div>

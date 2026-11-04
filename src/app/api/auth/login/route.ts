@@ -35,6 +35,20 @@ const WINDOW_MS = 15 * 60 * 1000;
  * travail d'un attaquant.
  */
 export async function POST(request: Request) {
+  // Vérifié avant tout le reste : sans secret, la vérification du mot de passe
+  // et l'envoi du code réussiraient, puis la signature de session échouerait —
+  // le visiteur verrait une erreur générique après avoir tout saisi. Mieux vaut
+  // le dire tout de suite, et le dire clairement.
+  if (!process.env.AUTH_SECRET?.trim()) {
+    return NextResponse.json(
+      {
+        error:
+          "Configuration incomplète : le secret de session (AUTH_SECRET) n'est pas défini sur le serveur. La connexion est impossible tant qu'il manque.",
+      },
+      { status: 503 },
+    );
+  }
+
   const formatError = checkWriteRequest(request);
   if (formatError) {
     return NextResponse.json({ error: formatError }, { status: 415 });

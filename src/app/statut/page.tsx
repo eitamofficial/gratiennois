@@ -21,6 +21,15 @@ export default async function StatutPage() {
   const latence = Date.now() - debut;
   const dernier = revisions[0]?.createdAt ?? null;
 
+  // État de la connexion, vérifié et affiché : une panne d'authentification est
+  // invisible de l'extérieur — le site répond, seule la connexion échoue.
+  const secretSession = Boolean(process.env.AUTH_SECRET?.trim());
+  const deuxFacteurs = Boolean(process.env.WIKI_2FA?.trim());
+  const comptes = (process.env.WIKI_USERS ?? "")
+    .split(",")
+    .map((entree) => entree.trim())
+    .filter(Boolean).length;
+
   const indicateurs = [
     {
       label: "Disponibilité",
@@ -47,6 +56,14 @@ export default async function StatutPage() {
       valeur: dernier ? formatDateTime(dernier) : "—",
       detail: dernier ? "Dernière révision enregistrée" : "Aucune révision",
       ok: true,
+    },
+    {
+      label: "Connexion",
+      valeur: secretSession ? "Disponible" : "Indisponible",
+      detail: secretSession
+        ? `${comptes} compte${comptes > 1 ? "s" : ""} · double authentification ${deuxFacteurs ? "active" : "désactivée"}`
+        : "AUTH_SECRET absent : aucune session ne peut être signée",
+      ok: secretSession,
     },
   ];
 

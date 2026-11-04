@@ -18,13 +18,27 @@ import { useEffect, useRef, useState } from "react";
 
 type Etape = "identifiants" | "code" | "secours";
 
-export default function LoginForm() {
+export default function LoginForm({ discord = false }: { discord?: boolean }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const nextPath = searchParams.get("next") || "/admin";
 
   const [etape, setEtape] = useState<Etape>("identifiants");
-  const [error, setError] = useState<string | null>(null);
+  // Un retour d'OAuth arrive avec `?erreur=…` : sans ce décodage, le visiteur
+  // revoyait le formulaire vide, sans savoir pourquoi sa connexion Discord
+  // avait échoué.
+  const [error, setError] = useState<string | null>(() => {
+    const code = searchParams.get("erreur");
+    if (!code) return null;
+    const messages: Record<string, string> = {
+      discord_indisponible: "La connexion Discord n'est pas configurée sur ce serveur.",
+      trop_de_tentatives: "Trop de tentatives. Réessayez dans quelques minutes.",
+      session_expiree: "Votre session a expiré. Reconnectez-vous.",
+      acces_refuse: "Ce compte Discord n'a pas de charge sur le wiki.",
+      etat_invalide: "La vérification Discord a échoué. Réessayez.",
+    };
+    return messages[code] ?? "La connexion a échoué. Réessayez.";
+  });
   const [pending, setPending] = useState(false);
 
   const [challengeId, setChallengeId] = useState<string | null>(null);
@@ -355,6 +369,25 @@ export default function LoginForm() {
       <button type="submit" disabled={pending} className={bouton}>
         {pending ? "Connexion…" : "Se connecter"}
       </button>
+
+      {/* Connexion Discord : proposée seulement si le serveur a un identifiant
+          et un secret d'application. Sinon le bouton mènerait à une erreur, ce
+          qui est pire que de ne pas l'afficher. */}
+      {discord && (
+        <>
+          <div className="flex items-center gap-3 py-1">
+            <span className="h-px flex-1 bg-night-500" />
+            <span className="text-[11px] uppercase tracking-wide text-slate-500">ou</span>
+            <span className="h-px flex-1 bg-night-500" />
+          </div>
+          <a
+            href={`/api/auth/discord?next=${encodeURIComponent(nextPath)}`}
+            className="block w-full rounded-md border border-[#5865F2]/60 bg-[#5865F2]/15 px-4 py-2.5 text-center text-sm font-medium text-[#c7ccff] transition hover:bg-[#5865F2]/25"
+          >
+            Continuer avec Discord
+          </a>
+        </>
+      )}
 
       <p className="text-xs leading-relaxed text-slate-500">
         Une double authentification par message privé Discord protège les comptes

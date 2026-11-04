@@ -191,6 +191,10 @@ export interface ArticleInput {
   status?: ArticleStatus;
   /** Origine déclarée de la rédaction. */
   origin?: ArticleOrigin;
+  /** Résumé de modification, conservé dans la révision produite par l'écriture. */
+  comment?: string;
+  /** Modification mineure (forme, orthographe) — indicateur d'historique. */
+  minor?: boolean;
 }
 
 /** Version publique d'un article (sans le corps, pour les listes). */
@@ -225,6 +229,17 @@ export interface Revision {
   author: string;
   createdAt: string;
   snapshot: RevisionSnapshot;
+  /**
+   * Résumé de modification saisi par le rédacteur — la « boîte de résumé » de
+   * Wikipédia. Facultatif : une correction faite à la volée n'a pas toujours
+   * de quoi se décrire, et l'imposer pousserait à écrire « maj ».
+   */
+  comment?: string;
+  /**
+   * Modification mineure : correction de forme, orthographe, mise en page.
+   * Sert à filtrer l'historique, comme le « m » des historiques de Wikipédia.
+   */
+  minor?: boolean;
 }
 
 // ---------------------------------------------------------------------------

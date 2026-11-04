@@ -106,13 +106,134 @@ l'auteur qu'il est tenu d'en documenter la provenance — d'où la règle
 éditoriale appliquée à chaque page, qui distingue un fait documenté d'un
 récit de communauté.
 
-## La sécurité du wiki
+## Le fonctionnement du wiki
+
+Eitam a conçu le wiki et le bot qui l'alimente. Cette section décrit la
+mécanique, parce qu'une encyclopédie qui expose ses sources doit aussi exposer
+sa fabrique.
+
+### Une encyclopédie, six catégories
+
+Chaque page appartient à l'une des six catégories du wiki : **histoire**,
+**institutions**, **géographie**, **culture**, **lois** et **personnalités**.
+La catégorie n'est pas décorative : elle détermine l'icône de la page, son
+regroupement dans l'index et les facettes de la recherche.
+
+### La structure d'une page
+
+Un article se compose de cinq éléments :
+
+- un **titre**, dont dérive le *slug* — l'adresse de la page (/wiki/le-dauphin) ;
+- un **résumé** d'une à deux phrases, affiché dans les cartes et les résultats
+  de recherche ;
+- un **corps** rédigé en Markdown ;
+- des **étiquettes**, qui relient entre elles des pages de catégories
+  différentes ;
+- une **infobox** facultative, l'encadré de synthèse à droite.
+
+### Le langage des articles
+
+Le corps reconnaît les titres **##** et **###**, les listes, les citations, les
+tableaux, le gras, l'italique, le code et les liens externes. Il reconnaît
+surtout les **liens internes**, notés « [[slug]] » ou « [[slug|libellé]] » : le wiki
+résout la cible par son identifiant ou par son titre, et affiche le vrai titre
+de l'article plutôt que l'identifiant technique.
+
+Un lien vers une page qui n'existe pas s'affiche en **rouge** et mène à la
+recherche sur ce titre. C'est la convention des encyclopédies : un lien rouge
+n'est pas une erreur, c'est une page à écrire.
+
+### L'infobox
+
+L'encadré de synthèse rassemble les données clés sous forme de couples
+libellé/valeur. Son illustration est restreinte aux images du site et aux
+photos de profil Discord : une URL externe est refusée à l'enregistrement, ce
+qui évite qu'une page du wiki serve à charger un contenu tiers.
+
+### Qui peut écrire
+
+Quatre charges disposent du droit d'écriture, par ordre de l'article P-1 :
+**Dauphin**, **Régent**, **Conseil Delphinal** et **Baillit**. Les autres —
+Premier Ministre, ministre, représentant de l'Assemblée, député — consultent le
+wiki sans le modifier. La répartition n'est pas une règle du logiciel : elle
+recopie la hiérarchie constitutionnelle.
+
+### Les modèles de page
+
+Le wiki propose **treize modèles** de création : personnalité (souverain,
+dirigeant, membre), institution, texte fondateur, article de loi, guerre, crise
+politique, période historique, micronation, parti politique, élection et page
+libre.
+
+Chacun pré-remplit la catégorie, la structure des rubriques, l'infobox et les
+étiquettes. Leur point commun est ailleurs : les modèles écrivent
+« **non renseigné** » là où le récit ne dit rien. Une page incomplète mais
+honnête vaut mieux qu'une page complète et supposée — c'est la règle
+éditoriale du wiki, inscrite jusque dans ses formulaires.
+
+### L'éditeur
+
+L'espace d'édition offre une barre d'outils qui insère les constructions
+courantes, des raccourcis clavier (Ctrl+B, Ctrl+I, Ctrl+K, Ctrl+S), un
+compteur de mots et une aide syntaxique.
+
+L'**aperçu** n'est pas une approximation : il passe par le moteur de rendu du
+site, celui-là même qui affiche les articles. Ce que le rédacteur voit dans
+l'aperçu est exactement ce que le lecteur verra.
+
+Un **brouillon** est conservé dans le navigateur après chaque frappe. Il ne
+quitte jamais la machine du rédacteur : un brouillon perdu par une coupure ne
+peut donc pas publier quelque chose par accident.
+
+### Le résumé de modification
+
+Comme sur Wikipédia, chaque enregistrement peut être accompagné d'un **résumé
+de modification** — la phrase qui explique *pourquoi* la page a changé — et
+d'une case « **modification mineure** », réservée aux corrections de forme. Un
+**m** signale ces dernières dans l'historique.
+
+### L'historique
+
+Toute écriture produit une **révision** : création, modification, suppression
+ou restauration. L'historique permet de comparer deux versions ligne à ligne et
+mot à mot, et de restaurer n'importe quel état antérieur en un clic. Rien ne
+disparaît : une erreur se corrige, elle ne se cache pas.
+
+### La recherche
+
+La recherche est plein texte, avec facettes par catégorie, tolérance aux fautes
+de frappe, suggestions de termes et surlignage des correspondances dans les
+extraits.
+
+### L'analyse automatique
+
+Une intelligence artificielle lit les salons de parti du serveur Discord et
+propose des mises à jour d'articles, citations à l'appui. Ses propositions sont
+enregistrées comme des **brouillons invisibles** : rien n'est publié sans qu'un
+rédacteur l'ait validé. Le dispositif est décrit sur la page
+[[analyse-automatique]].
+
+### La synchronisation Discord
+
+Le bot interroge l'API Discord pour rattacher les pages aux membres du serveur :
+pseudos, photos de profil, rôles. Le lien entre un rôle Discord et une page du
+wiki est décrit dans un fichier partagé, shared/roster.json, seul endroit à
+modifier pour ajouter une personnalité.
+
+### L'hébergement
+
+Le wiki est hébergé sur une **tablette Android** sous Termux, derrière un
+reverse proxy Caddy qui termine le chiffrement. Un sous-domaine DuckDNS suit
+l'adresse publique de la box, et les certificats sont obtenus puis renouvelés
+automatiquement. Le service est supervisé : s'il s'arrête, il redémarre seul.
+
+### La sécurité
 
 Eitam est aussi l'auteur de l'architecture de sécurité du wiki. C'est un choix
 éditorial autant que technique : une encyclopédie qui raconte l'histoire d'un
 Delphinat doit être aussi difficile à falsifier qu'à consulter.
 
-Quatre dispositions la structurent :
+Cinq dispositions la structurent :
 
 - **double authentification** — les comptes d'édition ne s'ouvrent qu'après un
   code à six chiffres envoyé en message privé Discord par le bot du wiki. Un mot
@@ -122,6 +243,8 @@ Quatre dispositions la structurent :
 - **chiffrement du transport** — le site n'est servi qu'en HTTPS, avec un
   certificat renouvelé automatiquement et une politique HSTS qui interdit au
   navigateur de revenir au HTTP ;
+- **politique de contenu** — une CSP à nonce par réponse empêche l'exécution
+  d'un script qui n'aurait pas été émis par le serveur ;
 - **sauvegardes chiffrées** — le contenu, les comptes et la configuration sont
   archivés chaque jour en AES-256, vérifiés par relecture, puis recopiés sur une
   seconde machine. Une archive volée reste illisible ;

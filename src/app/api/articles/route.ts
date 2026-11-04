@@ -8,6 +8,7 @@ import {
   ValidationError,
 } from "@/lib/articles-store";
 import { checkWriteRequest } from "@/lib/request-security";
+import { rateLimit } from "@/lib/rate-limit";
 import { storageErrorResponse } from "@/lib/store/errors";
 
 export const runtime = "nodejs";
@@ -37,6 +38,18 @@ export async function POST(request: Request) {
   const formatError = checkWriteRequest(request);
   if (formatError) {
     return NextResponse.json({ error: formatError }, { status: 415 });
+  }
+
+  // Plafond d'écriture par compte. Une session volée pouvait jusqu'ici créer
+  // des articles en boucle : chaque écriture produit une révision, et le disque
+  // se remplit avant que quiconque s'en aperçoive. 60 écritures par quart
+  // d'heure laissent largement de quoi rédiger, sans permettre l'inondation.
+  const limite = rateLimit(`write:${session.username}`, 60, 15 * 60 * 1000);
+  if (!limite.allowed) {
+    return NextResponse.json(
+      { error: "Trop d'enregistrements en peu de temps. Réessayez dans quelques minutes." },
+      { status: 429, headers: { "Retry-After": String(limite.retryAfterSeconds) } },
+    );
   }
 
   let body: unknown;

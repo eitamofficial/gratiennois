@@ -21,14 +21,42 @@
 // protocole réel — y compris celui annoncé par `X-Forwarded-Proto` derrière le
 // reverse proxy Caddy, qui termine le TLS en amont.
 
-const contentSecurityPolicy = (isHttps: boolean) =>
-  [
+/**
+ * Politique de sécurité du contenu.
+ *
+ * ## `script-src` : nonce quand c'est possible, `'unsafe-inline'` sinon
+ *
+ * `'unsafe-inline'` autorise n'importe quel script en ligne — y compris celui
+ * qu'un attaquant parviendrait à injecter. Il annule donc l'essentiel de
+ * l'intérêt d'une CSP. La parade est un **nonce** : une valeur aléatoire par
+ * réponse, que seules les balises `<script>` de cette réponse portent. Un
+ * script injecté ne peut pas la deviner.
+ *
+ * Next.js lit le nonce dans l'en-tête CSP de la **requête** et l'applique à ses
+ * propres scripts ; il faut donc le poser aux deux endroits (voir
+ * `src/middleware.ts`).
+ *
+ * `'strict-dynamic'` complète le dispositif : un script porteur du nonce peut
+ * charger d'autres scripts, ce dont Next a besoin pour ses chunks.
+ *
+ * ## Pourquoi un interrupteur
+ *
+ * Une CSP mal réglée ne dégrade pas le site : elle le **casse** — plus de
+ * JavaScript, donc plus de connexion ni d'édition. `CSP_MODE=inline` rétablit
+ * l'ancien comportement sans reconstruire l'application, ce qui laisse une
+ * porte de sortie en cas d'urgence.
+ */
+const contentSecurityPolicy = (isHttps: boolean, nonce?: string | null) => {
+  const scriptSrc = nonce
+    ? `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'`
+    : "script-src 'self' 'unsafe-inline'";
+
+  return [
     "default-src 'self'",
-    // Next.js injecte des styles et un script inline (le script de thème, exécuté
-    // avant le premier rendu) : 'unsafe-inline' est nécessaire pour les deux, mais
-    // le contenu des articles est toujours rendu échappé par React, jamais injecté
-    // en HTML brut.
-    "script-src 'self' 'unsafe-inline'",
+    scriptSrc,
+    // Les styles restent en `'unsafe-inline'` : Next injecte des attributs
+    // `style` un peu partout, et une injection de style ne permet pas
+    // d'exécuter du code.
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: blob: https://cdn.discordapp.com",
     "font-src 'self' data:",
@@ -41,6 +69,7 @@ const contentSecurityPolicy = (isHttps: boolean) =>
     // Harmless sur une origine déjà HTTPS, bloquant sur une origine HTTP.
     ...(isHttps ? ["upgrade-insecure-requests"] : []),
   ].join("; ");
+};
 
 /** Les en-têtes qui ne dépendent pas du protocole. */
 export const securityHeaders: ReadonlyArray<readonly [string, string]> = [
@@ -52,8 +81,11 @@ export const securityHeaders: ReadonlyArray<readonly [string, string]> = [
 ];
 
 /** La CSP complète, `upgrade-insecure-requests` compris ou non. */
-export function contentSecurityPolicyValue(isHttps: boolean): string {
-  return contentSecurityPolicy(isHttps);
+export function contentSecurityPolicyValue(
+  isHttps: boolean,
+  nonce?: string | null,
+): string {
+  return contentSecurityPolicy(isHttps, nonce);
 }
 
 /**
@@ -63,8 +95,9 @@ export function contentSecurityPolicyValue(isHttps: boolean): string {
 export function applySecurityHeaders(
   response: { headers: Headers },
   isHttps: boolean,
+  nonce?: string | null,
 ): void {
-  response.headers.set("Content-Security-Policy", contentSecurityPolicy(isHttps));
+  response.headers.set("Content-Security-Policy", contentSecurityPolicy(isHttps, nonce));
   for (const [name, value] of securityHeaders) {
     response.headers.set(name, value);
   }

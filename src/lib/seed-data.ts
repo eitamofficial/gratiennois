@@ -21,7 +21,7 @@ function iso(daysAgo: number): string {
  * par `src/lib/fingerprint.ts` — un module unique, partagé avec le magasin, pour
  * que les deux comparaisons ne puissent pas diverger.
  */
-export const SEED_VERSION = 11;
+export const SEED_VERSION = 12;
 
 /**
  * Contenu de lancement du wiki.

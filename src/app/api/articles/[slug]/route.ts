@@ -8,6 +8,7 @@ import {
   ValidationError,
 } from "@/lib/articles-store";
 import { checkWriteRequest } from "@/lib/request-security";
+import { rateLimit } from "@/lib/rate-limit";
 import { storageErrorResponse } from "@/lib/store/errors";
 
 export const runtime = "nodejs";
@@ -43,6 +44,15 @@ export async function PUT(request: Request, { params }: Params) {
   const formatError = checkWriteRequest(request);
   if (formatError) {
     return NextResponse.json({ error: formatError }, { status: 415 });
+  }
+
+  // Même plafond qu'à la création : voir /api/articles pour le raisonnement.
+  const limite = rateLimit(`write:${session.username}`, 60, 15 * 60 * 1000);
+  if (!limite.allowed) {
+    return NextResponse.json(
+      { error: "Trop d'enregistrements en peu de temps. Réessayez dans quelques minutes." },
+      { status: 429, headers: { "Retry-After": String(limite.retryAfterSeconds) } },
+    );
   }
 
   const { slug } = await params;

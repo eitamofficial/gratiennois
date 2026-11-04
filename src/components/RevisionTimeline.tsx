@@ -27,10 +27,23 @@ export default function RevisionTimeline({ revisions }: { revisions: Revision[] 
               >
                 {action.label}
               </span>
+              {revision.minor && (
+                <abbr
+                  title="Modification mineure"
+                  className="rounded border border-night-500 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400 no-underline"
+                >
+                  m
+                </abbr>
+              )}
               <span className="text-slate-300">{revision.author}</span>
               <span className="text-xs text-slate-400">{formatDateTime(revision.createdAt)}</span>
               {revision.action === "update" && revision.snapshot.title && (
                 <span className="text-xs text-slate-400">« {revision.snapshot.title} »</span>
+              )}
+              {revision.comment && (
+                <span className="w-full text-xs italic text-slate-400 sm:w-auto">
+                  — {revision.comment}
+                </span>
               )}
             </li>
           );

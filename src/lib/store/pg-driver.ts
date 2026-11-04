@@ -35,6 +35,8 @@ interface RevisionRow {
   content: string;
   tags: string[] | null;
   infobox: ArticleInfobox | null;
+  comment: string | null;
+  minor: boolean | null;
 }
 
 function mapArticle(row: ArticleRow): Article {
@@ -70,6 +72,8 @@ function mapRevision(row: RevisionRow): Revision {
       tags: row.tags ?? [],
       infobox: row.infobox ?? undefined,
     },
+    comment: row.comment ?? undefined,
+    minor: row.minor ?? undefined,
   };
 }
 
@@ -223,6 +227,11 @@ export function createPgDriver(): StorageDriver {
             -- l'opération idempotente, elle peut être rejouée à chaque démarrage.
             ALTER TABLE articles ADD COLUMN IF NOT EXISTS infobox JSONB;
             ALTER TABLE revisions ADD COLUMN IF NOT EXISTS infobox JSONB;
+            -- Résumé de modification et indicateur « mineur » : les deux
+            -- conventions d'historique d'un wiki. Ajoutés après coup, d'où le
+            -- IF NOT EXISTS, qui rend l'opération rejouable à chaque démarrage.
+            ALTER TABLE revisions ADD COLUMN IF NOT EXISTS comment TEXT;
+            ALTER TABLE revisions ADD COLUMN IF NOT EXISTS minor BOOLEAN;
             -- État de publication : une proposition de l'intelligence artificielle
             -- est enregistrée comme un article, mais reste invisible du public
             -- tant qu'un rédacteur ne l'a pas validée.
@@ -379,8 +388,8 @@ export function createPgDriver(): StorageDriver {
         await client.query("BEGIN");
         await client.query(
           `INSERT INTO revisions
-             (id, article_slug, action, author, title, category, summary, content, tags, infobox, created_at)
-           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9::jsonb, $10::jsonb, $11)`,
+             (id, article_slug, action, author, title, category, summary, content, tags, infobox, created_at, comment, minor)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9::jsonb, $10::jsonb, $11, $12, $13)`,
           [
             revision.id,
             revision.articleSlug,
@@ -393,6 +402,8 @@ export function createPgDriver(): StorageDriver {
             JSON.stringify(revision.snapshot.tags),
             revision.snapshot.infobox ? JSON.stringify(revision.snapshot.infobox) : null,
             revision.createdAt,
+            revision.comment ?? null,
+            revision.minor ?? null,
           ],
         );
         await client.query(

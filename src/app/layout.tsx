@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { headers } from "next/headers";
 import { Cormorant_Garamond, Inter, Source_Serif_4 } from "next/font/google";
 import Link from "next/link";
 import "./globals.css";
@@ -98,6 +99,11 @@ export default async function RootLayout({
   const sante = await verifierStore();
   const storeIndisponible = !sante.ok;
 
+  // Nonce CSP posé par l'intergiciel. Le script de thème est en ligne : sans
+  // cette valeur, il serait bloqué dès que la politique n'autorise plus
+  // `'unsafe-inline'` — le thème clair cesserait de fonctionner, silencieusement.
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
+
   return (
     // `dark` est posée côté serveur : sans JavaScript, le site s'affiche
     // dans le thème signature. Le script ci-dessous applique le thème choisi
@@ -109,7 +115,7 @@ export default async function RootLayout({
       suppressHydrationWarning
     >
       <head>
-        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+        <script nonce={nonce} dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
       </head>
       <body className="font-sans flex min-h-screen flex-col">
         <a

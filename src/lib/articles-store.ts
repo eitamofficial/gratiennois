@@ -110,6 +110,7 @@ async function recordRevision(
   article: Article,
   action: Revision["action"],
   author: string,
+  meta: { comment?: string; minor?: boolean } = {},
 ): Promise<void> {
   const driver = await ensureReady();
   await driver.addRevision({
@@ -119,6 +120,11 @@ async function recordRevision(
     author,
     createdAt: new Date().toISOString(),
     snapshot: toSnapshot(article),
+    // Un résumé vide n'est pas un résumé : on stocke `undefined` plutôt qu'une
+    // chaîne vide, pour que l'historique distingue « pas de résumé » de
+    // « résumé effacé ».
+    comment: meta.comment?.trim() || undefined,
+    minor: meta.minor || undefined,
   });
 }
 
@@ -323,7 +329,10 @@ export async function createArticle(input: ArticleInput): Promise<Article> {
   };
 
   await driver.createArticle(article);
-  await recordRevision(article, "create", article.author);
+  await recordRevision(article, "create", article.author, {
+    comment: input.comment,
+    minor: input.minor,
+  });
   return article;
 }
 
@@ -352,7 +361,10 @@ export async function updateArticle(slug: string, input: ArticleInput): Promise<
   };
 
   await driver.updateArticle(updated);
-  await recordRevision(updated, "update", input.author?.trim() || updated.author);
+  await recordRevision(updated, "update", input.author?.trim() || updated.author, {
+    comment: input.comment,
+    minor: input.minor,
+  });
   return updated;
 }
 
@@ -559,6 +571,7 @@ const LIMITES_ARTICLE = {
   etiquette: 60,
   etiquettes: 40,
   identifiantDiscord: 25,
+  commentaire: 200,
 } as const;
 
 function borner(valeur: string, maximum: number, champ: string): string {
@@ -618,6 +631,17 @@ export function parseArticleInput(body: unknown): ArticleInput {
     discordUserId = candidat;
   }
 
+  // Résumé de modification : borné comme les autres champs, et réduit à
+  // `undefined` s'il est vide — l'historique affiche alors « sans résumé ».
+  let comment: string | undefined;
+  if (typeof raw.comment === "string" && raw.comment.trim()) {
+    comment = borner(
+      raw.comment.trim(),
+      LIMITES_ARTICLE.commentaire,
+      "résumé de modification",
+    );
+  }
+
   return {
     title: borner(String(raw.title ?? ""), LIMITES_ARTICLE.titre, "titre"),
     category: parseCategory(String(raw.category ?? "")),
@@ -627,5 +651,9 @@ export function parseArticleInput(body: unknown): ArticleInput {
     discordUserId,
     infobox,
     status,
+    comment,
+    // Seul un booléen vrai compte : une chaîne « false » ne doit pas devenir
+    // une modification mineure par coercition.
+    minor: raw.minor === true || undefined,
   };
 }

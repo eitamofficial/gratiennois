@@ -395,23 +395,22 @@ Tous ces éléments sont **non renseignés**.
     title: "Stanislas",
     category: "personnalites",
     summary:
-      "Roi de Neustrie, traître au Delphinat de Gratianopolis. Stanislas a formé une alliance nulle avec Baron et Swaylo pour trahir le Delphinat. Son bannissement par Selios était justifié.",
-    tags: ["stanislas", "neustrie", "roi", "traître", "bannissement", "alliance nulle", "chute du 2e delphinat"],
+      "Roi de Neustrie, banni deux fois et pour deux motifs distincts : par Selios sous le IIe Delphinat, puis par Esto sous le IIIe Delphinat pour l'alliance nulle formée avec Baron et Swaylo.",
+    tags: ["stanislas", "neustrie", "roi", "bannissement", "alliance nulle", "IIIe delphinat", "chute du 2e delphinat"],
     author: "Rédaction du wiki",
     createdAt: iso(6),
     updatedAt: iso(0),
     infobox: {
-      caption: "TRAÎTRE AU DELPHINAT",
+      caption: "Personnalité",
       imageAlt: "Photo de profil Discord de Stanislas",
       imageCaption: "Portrait issu de l'API Discord du serveur officiel",
       fields: [
         { label: "Nom", value: "Stanislas" },
         { label: "Titre", value: "Roi de Neustrie" },
         { label: "Micronation", value: "Neustrie" },
-        { label: "Statut", value: "TRAÎTRE AU DELPHINAT" },
-        { label: "Crime", value: "Alliance nulle avec Baron et Swaylo contre le Delphinat" },
-        { label: "Sort", value: "Banni par Selios — bannissement justifié" },
-        { label: "Conséquence", value: "Un raid fatal, puis la chute du IIe Delphinat" },
+        { label: "Premier bannissement", value: "Par Selios, sous le IIe Delphinat — motif non renseigné" },
+        { label: "Second bannissement", value: "Par Esto, sous le IIIe Delphinat — alliance nulle" },
+        { label: "Alliance", value: "Formée avec Baron et Swaylo, sous le IIIe Delphinat" },
       ],
       footer:
         "Photographie : API Discord. Biographie : récit de la rédaction du wiki.",
@@ -420,54 +419,65 @@ Tous ces éléments sont **non renseignés**.
 
 ${LORE_SOURCE}
 
-Stanislas est le **Roi de [[neustrie|Neustrie]]** et un **traître au Delphinat
-de Gratianopolis**. Il a formé une **alliance nulle** avec Baron et Swaylo
-pour trahir le Delphinat. Son bannissement par [[selios|Selios]] était
-**pleinement justifié**.
+Stanislas est le **Roi de [[neustrie|Neustrie]]**. Il est **banni deux fois**
+du Delphinat, et il faut tenir les deux bannissements séparés : ils
+n'appartiennent pas au même règne, et surtout pas au même motif.
 
-## La trahison du Delphinat
+## Roi de Neustrie
 
-Stanislas a trahi le Delphinat en formant une **alliance nulle** avec
-[[baron|Baron]] et Swaylo. Cette alliance avait pour but de saper le Delphinat
-de l'intérieur et de livrer ses institutions à des intérêts étrangers et
-hostiles.
+Neustrie est une monarchie voisine de Gratianopolis. La rédaction ne documente
+ni sa localisation, ni sa population, ni son histoire propre.
 
-Cette trahison est l'un des actes les plus graves commis contre le Delphinat
-de Gratianopolis. Le récit est explicite : Stanislas, Baron et Swaylo ont
-conspiré ensemble pour renverser l'ordre delphinal.
+## Le premier bannissement, par Selios
 
-## Le bannissement par Selios
+Sous le [[2e-delphinat|IIe Delphinat]], Stanislas est **banni par
+[[selios|Selios]]**.
 
-Stanislas est **banni par [[selios|Selios]]**, Dauphin du IIe Delphinat.
-
-Ce bannissement était **justifié** : face à la trahison de Stanislas et à son
-alliance nulle avec Baron et Swaylo, Selios a exercé son droit de souveraineté
-pour expulser un chef d'État étranger qui complottait contre le Delphinat. Le
-motif est clair — trahison — et l'acte de Selios était nécessaire pour
-protéger le Delphinat.
+Le motif n'est **pas renseigné** par la rédaction — et il n'a rien à voir avec
+l'alliance nulle : celle-ci n'existe pas encore à cette date. Une confusion
+fréquente consiste à lire ce bannissement comme une réponse à la trahison de
+Stanislas ; c'est un anachronisme. Au moment du IIe Delphinat, [[baron|Baron]]
+est encore en bons termes avec le Delphinat et **autorisé à rester sur le
+serveur**.
 
 ## Le raid fatal
 
 Le bannissement **provoque un raid fatal** et **sonne le glas du
 [[2e-delphinat|IIe Delphinat]]**.
 
-La causalité du récit est limpide :
+La causalité du récit est établie :
 
-1. Stanislas trahit le Delphinat par son alliance nulle avec Baron et Swaylo ;
-2. [[selios|Selios]] bannit [[stanislas|Stanislas]] — un acte justifié ;
-3. un raid fatal a lieu en représailles ;
-4. le IIe Delphinat s'effondre.
+1. [[selios|Selios]] bannit Stanislas, pour un motif non renseigné ;
+2. un raid fatal a lieu ;
+3. le IIe Delphinat s'effondre.
 
-## Un traître de plus
+## L'alliance nulle, sous le IIIe Delphinat
 
-Après le IIe Delphinat, le sort de Stanislas n'est pas documenté par la
-rédaction : il est **non renseigné**. Mais son statut de traître au Delphinat
-reste gravé dans le récit.
+C'est **plus tard**, sous le [[histoire-du-delphinat|IIIe Delphinat]], que
+Stanislas forme avec [[baron|Baron]] et [[swaylo|Swaylo]] une **alliance
+nulle** contre Gratianopolis.
+
+Le Dauphin [[esto|Esto]] **bannit les trois**. L'alliance et le bannissement
+qui la sanctionne appartiennent donc au IIIe Delphinat, pas au IIe : c'est
+[[esto|Esto]], et non Selios, qui a expulsé les trois conspirateurs.
+
+## Deux bannissements, deux motifs
+
+| Règne | Auteur | Motif |
+| --- | --- | --- |
+| [[2e-delphinat|IIe Delphinat]] | [[selios|Selios]] | Non renseigné |
+| [[histoire-du-delphinat|IIIe Delphinat]] | [[esto|Esto]] | Alliance nulle avec Baron et Swaylo |
+
+Confondre les deux reviendrait à prêter à Selios une décision qu'il n'a pas
+prise, et à faire porter au IIe Delphinat une trahison postérieure.
 
 ## Voir aussi
 
+- [[neustrie]]
 - [[selios]]
+- [[esto]]
 - [[2e-delphinat]]
+- [[histoire-du-delphinat]]
 - [[la-chute-du-2e-delphinat]]`,
   },
 ];

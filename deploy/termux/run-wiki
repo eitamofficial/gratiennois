@@ -47,7 +47,37 @@ while true; do
     journalier "AUCUN fichier .env dans $WIKI_DIR — le wiki partira sans configuration"
   fi
 
-  npm run start -- --port "$WIKI_PORT"
+  # Les identifiants d'édition vivent dans un fichier séparé, et ce n'est pas
+  # un détail de rangement. Next.js relit `.env` à son démarrage et y interprète
+  # les `$` comme des références de variables : une empreinte scrypt
+  # (`scrypt$sel$empreinte`) y perd ses deux séparateurs, `startsWith("scrypt$")`
+  # devient faux, et la vérification retombe sur une comparaison en clair qui
+  # échoue toujours. Le symptôme est un « Identifiants incorrects » alors que le
+  # mot de passe est bon. Ce fichier-ci n'est pas connu de Next : sa valeur
+  # arrive intacte.
+  if [ -f .env.secrets ]; then
+    set -a
+    # shellcheck disable=SC1091
+    . ./.env.secrets
+    set +a
+    journalier "identifiants chargés depuis .env.secrets"
+  fi
+
+  # `--hostname 127.0.0.1` : le serveur n'écoute plus que sur la boucle locale.
+  # Sans cela, `next start` écoute sur 0.0.0.0 et le wiki reste consultable en
+  # clair sur http://<ip-de-la-tablette>:3000 depuis le réseau local, ce qui
+  # contourne complètement Caddy et le HTTPS. Caddy relaie vers 127.0.0.1:3000 :
+  # le site n'est donc plus joignable que par le portier, en TLS.
+  #
+  # **Pourquoi `node .../bin/next` et non `npm run start`** : le binaire
+  # `node_modules/.bin/next` commence par `#!/usr/bin/env node`, et Android
+  # n'a pas de `/usr/bin/env`. Termux le rattrape normalement par `termux-exec`,
+  # qui réécrit le shebang à l'exécution — mais ce préchargement n'existe pas
+  # dans tous les contextes (service lancé par `su` depuis le script de boot,
+  # par exemple). Le binaire était alors « introuvable » alors qu'il était bien
+  # là, et le service bouclait sur un code 127. Passer par `node` supprime la
+  # question : plus de shebang à interpréter.
+  node node_modules/next/dist/bin/next start --hostname 127.0.0.1 --port "$WIKI_PORT"
   code=$?
   journalier "le wiki s'est arrêté (code $code), nouvelle tentative dans ${WIKI_RETRY}s"
   sleep "$WIKI_RETRY"

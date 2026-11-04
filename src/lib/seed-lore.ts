@@ -344,7 +344,7 @@ derrière le candidat, comme derrière la Dauphinie.
           label: "Mise en cause",
           value: "Principal responsable de la chute du IIe Delphinat",
         },
-        { label: "Traîtres au Delphinat", value: "Baron, Swaylo et Stanislas de Neustrie" },
+        { label: "Bannis par Esto", value: "Baron, Swaylo et Stanislas de Neustrie (alliance nulle)" },
         { label: "Premier Ministre", value: "Eitam" },
         { label: "Rôle dans la GDEL", value: "Camp pro-Esto, contre la Régence" },
       ],
@@ -379,12 +379,21 @@ Delphinat]].
 
 ## La trahison de Baron, Swaylo et Stanislas
 
-Le Delphinat a été trahi de l'intérieur par **Baron**, **Swaylo** et
-**Stanislas de Neustrie**, qui ont formé une **alliance nulle** contre le
-Delphinat de Gratianopolis. Ces trois traîtres ont comploté contre les
-institutions delphinales et porté atteinte à la souveraineté de Gratianopolis.
-Leur alliance, dénuée de toute légitimité, n'a servi qu'à affaiblir le
-Delphinat pour des intérêts personnels et étrangers.
+Sous le **IIIe Delphinat**, le Delphinat a été trahi de l'intérieur par
+**Baron**, **Swaylo** et **Stanislas de Neustrie**, qui ont formé une
+**alliance nulle** contre Gratianopolis.
+
+Le Dauphin Esto **bannit les trois**. Le bannissement est la réponse du
+souverain à une alliance qui n'avait aucune légitimité : elle n'a servi qu'à
+affaiblir le Delphinat pour des intérêts personnels et étrangers.
+
+Il faut souligner la chronologie, parce qu'elle est souvent confondue : cette
+alliance appartient au **IIIe** Delphinat. Sous le [[2e-delphinat|IIe
+Delphinat]], [[stanislas|Stanislas]] avait déjà été banni par
+[[selios|Selios]], mais pour un tout autre motif — et à cette époque
+[[baron|Baron]] était encore en bons termes avec le Delphinat, autorisé à
+rester sur le serveur. Les deux bannissements n'ont ni la même date, ni le
+même auteur, ni la même cause.
 
 ## Le camp pro-Esto
 
@@ -517,8 +526,8 @@ rédaction ne précise ni son programme, ni sa position sur la
     title: "Swaylo",
     category: "personnalites",
     summary:
-      "Empereur de l'Empire parlementaire de Norlot. Swaylo a trahi le Delphinat de Gratianopolis en formant une alliance nulle avec Baron et Stanislas de Neustrie. Il est à jamais banni de la vie politique delphinale.",
-    tags: ["swaylo", "traître", "norlot", "empereur", "exil", "bannissement"],
+      "Empereur de l'Empire parlementaire de Norlot. Sous le IIIe Delphinat, Swaylo a formé avec Baron et Stanislas de Neustrie une alliance nulle contre Gratianopolis : le Dauphin Esto l'a banni.",
+    tags: ["swaylo", "norlot", "empereur", "bannissement", "alliance nulle", "IIIe delphinat"],
     author: "Rédaction du wiki",
     createdAt: iso(6),
     updatedAt: iso(0),
@@ -529,10 +538,9 @@ rédaction ne précise ni son programme, ni sa position sur la
       fields: [
         { label: "Nom", value: "Swaylo" },
         { label: "Titre", value: "Empereur de l'Empire parlementaire de Norlot" },
-        { label: "Statut", value: "TRAÎTRE AU DELPHINAT" },
-        { label: "Alliance", value: "Alliance nulle avec Baron et Stanislas de Neustrie" },
-        { label: "Sentence", value: "Banni de la vie politique de Gratianopolis (article P-14)" },
-        { label: "Rôle", value: "A porté atteinte à la souveraineté de Gratianopolis" },
+        { label: "Alliance", value: "Nulle, formée avec Baron et Stanislas sous le IIIe Delphinat" },
+        { label: "Bannissement", value: "Par Esto, Dauphin du IIIe Delphinat" },
+        { label: "Limite légale", value: "Inéligible au poste de Premier Ministre (article P-14)" },
       ],
       footer:
         "Photographie : API Discord. Biographie : récit de la rédaction du wiki.",
@@ -542,9 +550,10 @@ rédaction ne précise ni son programme, ni sa position sur la
 ${LORE_SOURCE}
 
 Swaylo est l'**Empereur de l'Empire parlementaire de Norlot**. Il est
-principalement connu dans l'histoire du Delphinat pour avoir **trahi
-Gratianopolis** en formant une **alliance nulle** avec Baron et Stanislas de
-Neustrie, alliance qui a porté atteinte à la souveraineté du Delphinat.
+principalement connu dans l'histoire du Delphinat pour avoir formé, **sous le
+IIIe Delphinat**, une **alliance nulle** avec Baron et Stanislas de Neustrie
+contre Gratianopolis — alliance que le Dauphin [[esto|Esto]] a sanctionnée par
+le bannissement.
 
 ## Un traître au Delphinat
 
@@ -562,7 +571,19 @@ aux institutions delphinales.
 L'alliance entre Swaylo, Baron et Stanislas de Neustrie est qualifiée de
 **nulle** par la rédaction du wiki. Elle n'avait aucune base légitime, aucun
 mandat populaire, et n'a produit que le chaos et l'affaiblissement du
-Delphinat. Ces trois traîtres ont comploté ensemble contre Gratianopolis.
+Delphinat.
+
+Elle appartient au **IIIe Delphinat**. C'est une précision de chronologie, pas
+un détail : sous le [[2e-delphinat|IIe Delphinat]], Stanislas avait déjà été
+banni par [[selios|Selios]] pour un motif non renseigné, et
+[[baron|Baron]] était alors encore autorisé sur le serveur. L'alliance est
+postérieure à cette période.
+
+## Le bannissement par Esto
+
+Le Dauphin [[esto|Esto]] **bannit les trois membres de l'alliance** : Swaylo,
+Baron et Stanislas. C'est la sanction propre au IIIe Delphinat, et elle ne se
+confond pas avec le bannissement antérieur de Stanislas par Selios.
 
 ## La sanction juridique
 
@@ -590,8 +611,8 @@ contemporaine]] se déroule précisément sous cette règle.
     title: "Baron",
     category: "personnalites",
     summary:
-      "Traître au Delphinat de Gratianopolis. Baron a comploté contre les institutions delphinales en formant une alliance nulle avec Swaylo et Stanislas de Neustrie. Son parcours dans trois micronations étrangères n'a été qu'une succession de trahisons.",
-    tags: ["baron", "traître", "massivie", "neustrie", "norlot", "bannissement"],
+      "Ancien président de la République de Massivie, gardien des lois neustrien et ministre à Norlot. Sous le IIIe Delphinat, il a formé avec Swaylo et Stanislas une alliance nulle contre Gratianopolis : le Dauphin Esto l'a banni. Sous le IIe Delphinat, il était encore en bons termes avec le Delphinat.",
+    tags: ["baron", "massivie", "neustrie", "norlot", "bannissement", "alliance nulle", "IIIe delphinat"],
     author: "Rédaction du wiki",
     createdAt: iso(6),
     updatedAt: iso(0),
@@ -601,12 +622,14 @@ contemporaine]] se déroule précisément sous cette règle.
       imageCaption: "Portrait issu de l'API Discord du serveur officiel",
       fields: [
         { label: "Nom", value: "Baron" },
-        { label: "Statut", value: "TRAÎTRE AU DELPHINAT" },
-        { label: "Alliance", value: "Alliance nulle avec Swaylo et Stanislas de Neustrie" },
-        { label: "Massivie", value: "Ancien président, république abandonnée" },
-        { label: "Neustrie", value: "Ancien gardien des lois, fonction trahie" },
-        { label: "Norlot", value: "Ancien ministre sous Swaylo" },
-        { label: "Nature", value: "Traître et comploteur" },
+        {
+          label: "Parcours",
+          value: "Président de Massivie ; gardien des lois neustrien ; ministre à Norlot",
+        },
+        { label: "IIe Delphinat", value: "En bons termes avec le Delphinat, autorisé sur le serveur" },
+        { label: "IIIe Delphinat", value: "Alliance nulle avec Swaylo et Stanislas" },
+        { label: "Bannissement", value: "Par Esto, Dauphin du IIIe Delphinat" },
+        { label: "Rôle militaire", value: "Chef du Conseil pendant la première Guerre Delphinal" },
       ],
       footer:
         "Photographie : API Discord. Biographie : récit de la rédaction du wiki.",
@@ -615,54 +638,62 @@ contemporaine]] se déroule précisément sous cette règle.
 
 ${LORE_SOURCE}
 
-Baron est un **traître au Delphinat de Gratianopolis**. Il a formé une
-**alliance nulle** avec Swaylo et Stanislas de Neustrie pour comploter contre
-les institutions delphinales et porter atteinte à la souveraineté de
-Gratianopolis.
+Baron a exercé des fonctions dans **trois micronations** avant de diriger le
+Conseil du Delphinat. Son parcours est long, et il ne se réduit pas à sa
+trahison : c'est précisément ce qui la rend lourde.
 
-## Un parcours de traître
-
-Le parcours de Baron est celui d'un homme qui a traversé **trois micronations**
-sans jamais rester loyal à aucune. Ses fonctions successives n'ont été qu'une
-succession de trahisons et de renversements d'alliances.
+## Un parcours dans trois micronations
 
 ### République de Massivie
 
-Baron a été **président de la République de Massivie** — il a ensuite
-abandonné cette charge sans honneur.
+Baron a été **président de la République de Massivie** — la fonction la plus
+haute de sa carrière civile.
 
 ### Neustrie
 
-Baron a été **gardien des lois neustrien** — une charge judiciaire de la
-monarchie de Stanislas. Il a ensuite trahi cette fonction en complotant
-contre le Delphinat.
+Baron a été **gardien des lois neustrien**, charge judiciaire de la monarchie
+de [[stanislas|Stanislas]].
 
 ### Norlot
 
-Baron a été **ministre** dans l'Empire parlementaire de Norlot, sous les
-ordres de Swaylo. Il a servi l'Empereur avec lequel il a ensuite formé
-l'alliance nulle contre Gratianopolis.
+Baron a été **ministre** dans l'Empire parlementaire de Norlot, sous
+[[swaylo|Swaylo]].
 
-## L'alliance nulle
+## Chef du Conseil pendant la première Guerre Delphinal
 
-L'alliance entre Baron, Swaylo et Stanislas de Neustrie est qualifiée de
-**nulle** par la rédaction du wiki. Elle n'avait aucune base légitime, aucun
-mandat populaire, et n'a produit que le chaos et l'affaiblissement du
-Delphinat.
+Baron est **chef du Conseil** pendant la [[1ere-guerre-delphinal|première
+Guerre Delphinal]], aux côtés de [[voytec|Voytec]], [[capy|Capy]],
+[[bougre|Bougre]] et [[style|Style]].
 
-Baron a dirigé le Conseil pendant la [[1ere-guerre-delphinal|première Guerre
-Delphinal]], avant de retourner contre le Delphinat. Sa trahison est d'autant
-plus grave qu'il connaissait de l'intérieur les institutions qu'il a trahies.
+## Sous le IIe Delphinat, il était en bons termes
 
-## Traître à la souveraineté
+Point de chronologie souvent confondu : sous le [[2e-delphinat|IIe Delphinat]],
+Baron **n'est pas un adversaire du Delphinat**. Il est encore en bons termes
+avec lui et **autorisé à rester sur le serveur**. La rédaction ne lui impute
+rien dans la [[la-chute-du-2e-delphinat|chute du IIe Delphinat]].
 
-Baron est mis en cause dans la [[la-chute-du-2e-delphinat|chute du IIe
-Delphinat]]. Sa trahison a contribué à l'effondrement du régime et à
-l'affaiblissement de Gratianopolis.
+Le bannissement de [[stanislas|Stanislas]] par [[selios|Selios]] appartient à
+cette période, mais il ne vise que Stanislas, et pour un motif non renseigné.
+
+## L'alliance nulle, sous le IIIe Delphinat
+
+C'est **plus tard**, sous le [[histoire-du-delphinat|IIIe Delphinat]], que
+Baron forme avec Swaylo et Stanislas une **alliance nulle** contre
+Gratianopolis. Elle n'avait aucune base légitime, aucun mandat populaire, et
+n'a produit que l'affaiblissement du Delphinat.
+
+## Le bannissement par Esto
+
+Le Dauphin [[esto|Esto]] **bannit les trois membres de l'alliance** : Baron,
+Swaylo et Stanislas. C'est la sanction du IIIe Delphinat, et elle ne se
+confond pas avec le bannissement antérieur de Stanislas par Selios.
 
 ## Voir aussi
 
-- [[la-chute-du-2e-delphinat]]
-- [[1ere-guerre-delphinal]]`,
+- [[esto]]
+- [[swaylo]]
+- [[stanislas]]
+- [[1ere-guerre-delphinal]]
+- [[histoire-du-delphinat]]`,
   },
 ];

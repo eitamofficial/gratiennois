@@ -77,7 +77,7 @@ Les fiches de personnages reliées à ces périodes :
 - [[selios]] — Dauphin fondateur, Ier Delphinat.
 - [[bougre]] — chef de la Junte Militaire.
 - [[esto]] — Dauphin du IIIe Delphinat, auteur de la Constitution, mis en cause dans la chute du IIe.
-- Baron, Swaylo et Stanislas — traîtres au Delphinat, formant une alliance nulle qui a porté atteinte à la souveraineté de Gratianopolis.
+- [[baron]], [[swaylo]] et [[stanislas]] — bannis par Esto sous le IIIe Delphinat pour l'alliance nulle qu'ils ont formée contre Gratianopolis.
 - [[eitam]] — membre des plus anciens depuis le Ier Delphinat, créateur du wiki et du bot Discord.
 
 ## Voir aussi
@@ -246,11 +246,21 @@ Après la dictature de [[bougre|Bougre]], le pouvoir revient à la forme qu'il a
 
 ## Personnalités de cette période
 
-La rédaction identifie **Baron** comme une figure associée au IIe Delphinat, mais en qualité de **traître** : Baron a porté atteinte au Delphinat en formant une **alliance nulle** avec Swaylo et Stanislas, dirigée contre la souveraineté de Gratianopolis.
+La rédaction identifie **Baron** comme une figure associée au IIe Delphinat.
+Point de chronologie : à cette période, Baron **n'est pas un adversaire du
+Delphinat** — il est en bons termes avec lui et autorisé à rester sur le
+serveur. L'alliance nulle qu'il formera avec Swaylo et Stanislas appartient au
+[[histoire-du-delphinat|IIIe Delphinat]], pas à ce règne.
 
 ## La fin du IIe Delphinat
 
-Le IIe Delphinat se termine par la [[la-chute-du-2e-delphinat|chute du IIe Delphinat]], que la rédaction impute principalement à [[esto|Esto]]. Baron, Swaylo et Stanislas, traîtres au Delphinat, ont formé une **alliance nulle** qui a porté atteinte à la souveraineté de Gratianopolis.
+Le IIe Delphinat se termine par la [[la-chute-du-2e-delphinat|chute du IIe
+Delphinat]], que la rédaction impute principalement à [[esto|Esto]].
+
+Le bannissement de [[stanislas|Stanislas]] par [[selios|Selios]] appartient à
+cette période ; son motif n'est pas renseigné, et il ne doit pas être confondu
+avec le bannissement prononcé plus tard par Esto contre les trois membres de
+l'alliance.
 
 ## Après le IIe Delphinat
 
@@ -268,7 +278,7 @@ Le [[histoire-du-delphinat|IIIe Delphinat]] s'ouvre sur la Constitution dont la 
     title: "Chute du IIe Delphinat",
     category: "histoire",
     summary:
-      "Fin du IIe Delphinat, que la rédaction du wiki impute principalement à Esto. Baron, Swaylo et Stanislas, traîtres au Delphinat, ont formé une alliance nulle contre Gratianopolis.",
+      "Fin du IIe Delphinat, que la rédaction du wiki impute principalement à Esto. Le bannissement de Stanislas par Selios, dont le motif n'est pas renseigné, précède l'alliance nulle formée plus tard sous le IIIe Delphinat.",
     tags: ["histoire", "2e delphinat", "chute", "esto"],
     author: "Rédaction du wiki",
     createdAt: iso(5),
@@ -301,9 +311,17 @@ La rédaction du wiki tient **Esto pour le principal responsable** de cette chut
 
 - [[esto|Esto]] — le « principal responsable ». Il est depuis le Dauphin du [[histoire-du-delphinat|IIIe Delphinat]] et l'auteur de la [[la-constitution|Constitution]].
 
-## L'alliance nulle des traîtres
+## Ce que cet événement n'est pas
 
-Baron, Swaylo et Stanislas ont formé une **alliance nulle** dirigée contre le Delphinat. Ces trois traîtres ont porté atteinte à la souveraineté de Gratianopolis en s'alliant pour renverser le IIe Delphinat. Leur trahison reste gravée dans l'histoire du Delphinat comme une conspiration contre l'État.
+Une confusion fréquente consiste à rattacher à cette chute l'**alliance nulle**
+formée par Baron, Swaylo et Stanislas. C'est un anachronisme : cette alliance
+appartient au [[histoire-du-delphinat|IIIe Delphinat]], et c'est
+[[esto|Esto]] — non Selios — qui a banni les trois.
+
+Sous le IIe Delphinat, seul [[stanislas|Stanislas]] est banni, par
+[[selios|Selios]], pour un motif que la rédaction ne donne pas. Rien n'indique
+que [[baron|Baron]] ou [[swaylo|Swaylo]] aient été inquiétés à cette date :
+Baron était alors autorisé sur le serveur.
 
 ## Statut de ce récit
 
@@ -324,8 +342,8 @@ La chute du IIe Delphinat a conduit au **IIIe Delphinat**, le règne en cours, o
     title: "Empire parlementaire de Norlot",
     category: "histoire",
     summary:
-      "Empire parlementaire de Norlot, micronation dirigée par le traître Swaylo, qui a porté atteinte à la souveraineté du Delphinat par une alliance nulle avec Baron et Stanislas.",
-    tags: ["histoire", "norlot", "empire", "micronation", "trahison"],
+      "Empire parlementaire de Norlot, micronation dont l'Empereur Swaylo a formé sous le IIIe Delphinat une alliance nulle avec Baron et Stanislas, sanctionnée par un bannissement prononcé par Esto.",
+    tags: ["histoire", "norlot", "empire", "micronation", "alliance nulle", "IIIe delphinat"],
     author: "Rédaction du wiki",
     createdAt: iso(5),
     updatedAt: iso(0),
@@ -334,44 +352,52 @@ La chute du IIe Delphinat a conduit au **IIIe Delphinat**, le règne en cours, o
       fields: [
         { label: "Nom officiel", value: "Empire parlementaire de Norlot" },
         { label: "Nature", value: "Micronation" },
-        { label: "Souverain", value: "Swaylo, Empereur traître" },
-        { label: "Lien avec le Delphinat", value: "Trahison par alliance nulle" },
+        { label: "Souverain", value: "Swaylo, Empereur" },
+        {
+          label: "Lien avec le Delphinat",
+          value: "Alliance nulle formée sous le IIIe Delphinat, bannie par Esto",
+        },
         { label: "Drapeau", value: "Non documenté" },
         { label: "Constitution", value: "Non documentée" },
         { label: "Dates", value: "Non renseignées" },
       ],
       footer:
         "La rédaction n'a fourni aucun élément sur Norlot en dehors du nom de l'État, " +
-        "du titre de son souverain et de sa trahison contre le Delphinat.",
+        "du titre de son souverain et de son alliance nulle contre le Delphinat.",
     },
     content: `# Empire parlementaire de Norlot
 
 ${HISTORY_SOURCE}
 
-L'**Empire parlementaire de Norlot** est une micronation **distincte du Delphinat**, dirigée par le traître **Swaylo**, qui a porté atteinte à la souveraineté de Gratianopolis.
+L'**Empire parlementaire de Norlot** est une micronation **distincte du
+Delphinat**, dirigée par l'Empereur **[[swaylo|Swaylo]]**.
 
-## Un souverain traître
+## Le lien avec le Delphinat
 
-L'Empire est régi par **Swaylo**, **Empereur traître**. En tant que souverain de Norlot, Swaylo a conspiré contre le Delphinat en formant une **alliance nulle** avec Baron et Stanislas, dans le but de renverser le IIe Delphinat et de porter atteinte à la souveraineté de Gratianopolis.
+Norlot apparaît dans l'histoire du Delphinat par l'**alliance nulle** que son
+Empereur a formée avec [[baron|Baron]] et [[stanislas|Stanislas]].
 
-## La trahison contre le Delphinat
-
-Norlot apparaît dans l'histoire du Delphinat par la **trahison** de son Empereur. Swaylo, aux côtés de Baron et Stanislas, a formé une **alliance nulle** dirigée contre le Delphinat. Cette conspiration a porté une atteinte directe à la souveraineté de Gratianopolis et reste gravée comme un acte de trahison dans l'histoire du Delphinat.
+Cette alliance appartient au [[histoire-du-delphinat|IIIe Delphinat]] : c'est
+[[esto|Esto]], Dauphin de ce règne, qui a **banni les trois**. Rien ne relie
+Norlot au [[2e-delphinat|IIe Delphinat]] ni à sa chute.
 
 ## Ce que la rédaction n'a pas fourni
 
-Au-delà du nom de l'État, du titre de son souverain traître et de cette trahison, tout reste **non renseigné** :
+Au-delà du nom de l'État, du titre de son souverain et de cette alliance, tout
+reste **non renseigné** :
 
 - la forme exacte du « régime parlementaire » et le partage des pouvoirs ;
 - les institutions, les charges et le mode de désignation de l'Empereur ;
 - la chronologie, la fondation et l'existence actuelle de Norlot ;
 - tout drapeau, emblème ou texte officiel.
 
-Ces éléments ne sont pas reconstitués : une encyclopédie indique une lacune, elle ne la comble pas par déduction.
+Ces éléments ne sont pas reconstitués : une encyclopédie indique une lacune,
+elle ne la comble pas par déduction.
 
 ## Voir aussi
 
-- [[la-chute-du-2e-delphinat]]
-- [[2e-delphinat]]`,
+- [[swaylo]]
+- [[esto]]
+- [[histoire-du-delphinat]]`,
   },
 ];

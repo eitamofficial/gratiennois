@@ -212,10 +212,16 @@ actes commis, ni le bilan. Tous ces éléments sont **non renseignés**.
 La Grande Répression appartient au récit de la
 [[la-chute-du-2e-delphinat|chute du IIe Delphinat]]. Selios est en effet
 mis en cause dans cette chute à travers deux actes : la Grande Répression et
-le **bannissement de Stanislas, traître au Delphinat**.
+le **bannissement de [[stanislas|Stanislas]]**, Roi de
+[[neustrie|Neustrie]].
 
-Le second de ces actes est celui qui a des conséquences internationales
-directes, puisqu'il déclenche « un raid fatal ».
+Le motif de ce bannissement n'est pas renseigné. Il ne doit pas être confondu
+avec l'**alliance nulle** que Stanislas formera plus tard avec Baron et
+Swaylo : cette alliance appartient au [[histoire-du-delphinat|IIIe Delphinat]],
+et c'est [[esto|Esto]] qui l'a sanctionnée.
+
+Le bannissement prononcé par Selios est celui qui a des conséquences
+internationales directes, puisqu'il déclenche « un raid fatal ».
 
 ## Ce qui manque à cette page
 
@@ -491,8 +497,8 @@ Gratianopolis**. Voir [[le-premier-ministre]].
     title: "Neustrie",
     category: "geographie",
     summary:
-      "Micronation monarchique voisine de Gratianopolis, gouvernée par le traître Stanislas, qui a formé une alliance nulle contre le Delphinat.",
-    tags: ["neustrie", "stanislas", "monarchie", "micronation"],
+      "Micronation monarchique voisine de Gratianopolis, gouvernée par Stanislas. Son souverain a été banni deux fois : par Selios sous le IIe Delphinat, puis par Esto sous le IIIe pour l'alliance nulle formée avec Baron et Swaylo.",
+    tags: ["neustrie", "stanislas", "monarchie", "micronation", "alliance nulle"],
     author: "Rédaction du wiki",
     createdAt: iso(6),
     updatedAt: iso(0),
@@ -500,9 +506,12 @@ Gratianopolis**. Voir [[le-premier-ministre]].
       caption: "Micronation",
       fields: [
         { label: "Nature", value: "Monarchie" },
-        { label: "Souverain", value: "Stanislas, traître au Delphinat" },
-        { label: "Lien avec Gratianopolis", value: "Bannissement du souverain traître par Selios" },
-        { label: "Fonctionnaire connu", value: "Baron, ancien gardien des lois, traître" },
+        { label: "Souverain", value: "Stanislas, Roi de Neustrie" },
+        {
+          label: "Lien avec Gratianopolis",
+          value: "Deux bannissements : par Selios (IIe), puis par Esto (IIIe)",
+        },
+        { label: "Fonctionnaire connu", value: "Baron, ancien gardien des lois" },
         { label: "Localisation", value: "Non renseignée" },
         { label: "Population", value: "Non renseignée" },
       ],
@@ -513,8 +522,7 @@ Gratianopolis**. Voir [[le-premier-ministre]].
 ${HISTORY_SOURCE}
 
 **Neustrie** est une micronation **monarchique** voisine de Gratianopolis.
-Son souverain est [[stanislas|Stanislas]], **traître au Delphinat**, qui a
-formé avec Baron et Swaylo une **alliance nulle** contre le Delphinat.
+Son souverain est [[stanislas|Stanislas]], **Roi de Neustrie**.
 
 ## Un royaume, et non une république
 
@@ -523,26 +531,33 @@ La qualification est nette : Neustrie est une monarchie, là où
 [[norlot|Norlot]] un empire parlementaire. Les trois régimes voisins sont
 donc de natures différentes.
 
-## Le bannissement de son souverain traître
+## Le premier bannissement, par Selios
 
-La [[neustrie|Neustrie]] est une micronation dont le souverain a été
-**banni de Gratianopolis** par [[selios|Selios]], en punition de sa trahison.
+Sous le [[2e-delphinat|IIe Delphinat]], le souverain de Neustrie est **banni
+de Gratianopolis** par [[selios|Selios]]. Le motif n'est **pas renseigné**.
 
 Ce bannissement a des conséquences directes : il provoque « un **raid
-fatal** » et **sonne le glas du [[2e-delphinat|IIe Delphinat]]**. Voir
-[[stanislas]] et [[la-chute-du-2e-delphinat]].
+fatal** » et **sonne le glas du [[2e-delphinat|IIe Delphinat]]**.
+
+## Le second bannissement, par Esto
+
+Plus tard, sous le [[histoire-du-delphinat|IIIe Delphinat]], Stanislas forme
+avec [[baron|Baron]] et [[swaylo|Swaylo]] une **alliance nulle** contre
+Gratianopolis. Le Dauphin [[esto|Esto]] **bannit les trois**.
+
+Les deux bannissements ne se confondent pas : ni le même règne, ni le même
+auteur, ni le même motif.
 
 ## Un lien institutionnel : le gardien des lois
 
 [[baron|Baron]] a été **gardien des lois neustrien** : il a donc exercé une
-fonction de l'État de [[stanislas|Stanislas]], avant de **trahir le
-Delphinat** en formant l'alliance nulle avec Stanislas et Swaylo. Voir
-[[baron]].
+fonction de l'État de [[stanislas|Stanislas]]. Rien n'indique que cette
+fonction ait été remise en cause par le bannissement de Selios.
 
 ## Ce qui n'est pas documenté
 
 La localisation, la population, l'histoire propre de Neustrie, la nature de la
-fonction de « gardien des lois » et les conséquences du bannissement du roi
+fonction de « gardien des lois » et les conséquences des bannissements du roi
 du côté neustrien ne sont pas documentées. Ces éléments sont **non
 renseignés**.
 
@@ -560,7 +575,7 @@ renseignés**.
     title: "République de Massivie",
     category: "geographie",
     summary:
-      "Micronation voisine de Gratianopolis, dont le traître Baron fut président avant de trahir le Delphinat.",
+      "Micronation voisine de Gratianopolis, de forme républicaine, dont Baron fut président avant de rejoindre le Delphinat.",
     tags: ["massivie", "république", "micronation", "baron"],
     author: "Rédaction du wiki",
     createdAt: iso(6),
@@ -569,7 +584,7 @@ renseignés**.
       caption: "Micronation",
       fields: [
         { label: "Nature", value: "République" },
-        { label: "Ancien président", value: "Baron, traître au Delphinat" },
+        { label: "Ancien président", value: "Baron" },
         { label: "Lien avec Gratianopolis", value: "Aucun documenté" },
         { label: "Localisation", value: "Non renseignée" },
         { label: "Population", value: "Non renseignée" },
@@ -581,30 +596,30 @@ renseignés**.
 ${HISTORY_SOURCE}
 
 La **République de Massivie** est une micronation voisine de Gratianopolis. Sa
-forme est **républicaine**, et son ancien président est [[baron|Baron]], **traître au Delphinat**.
+forme est **républicaine**, et son ancien président est [[baron|Baron]].
 
-## La présidence de Baron, traître
+## La présidence de Baron
 
-Baron a été **président de la République de Massivie** — la fonction la
-plus élevée qu'il ait occupée — avant de **trahir le Delphinat** en formant
-avec Stanislas et Swaylo une **alliance nulle** contre Gratianopolis. Voir
-[[baron]].
+Baron a été **président de la République de Massivie** — la fonction la plus
+élevée qu'il ait occupée — avant de rejoindre le Delphinat. Voir [[baron]].
 
 ## Un contraste instructif
 
-Le parcours de Baron illustre la géopolitique de la région, marquée par la
-trahison :
+Le parcours de Baron illustre la géopolitique de la région : un même homme a
+exercé les plus hautes charges de trois régimes différents.
 
 | Micronation | Régime | Fonction de Baron |
 | --- | --- | --- |
-| [[massivie|Massivie]] | République | Président (avant sa trahison) |
-| [[neustrie|Neustrie]] | Monarchie | Gardien des lois (avant sa trahison) |
-| [[norlot|Norlot]] | Empire parlementaire | Ministre (avant sa trahison) |
-| Gratianopolis | Délphinat | Traître, membre de l'alliance nulle |
+| [[massivie|Massivie]] | République | Président |
+| [[neustrie|Neustrie]] | Monarchie | Gardien des lois |
+| [[norlot|Norlot]] | Empire parlementaire | Ministre |
+| Gratianopolis | Delphinat | Chef du Conseil |
 
 Baron a donc exercé le **plus haut pouvoir civil** d'une république, avant de
-servir des monarchies et un empire, puis de **trahir** le Delphinat qui l'avait
-accueilli.
+servir des monarchies et un empire. Sa rupture avec le Delphinat est
+postérieure : elle date de l'alliance nulle formée sous le
+[[histoire-du-delphinat|IIIe Delphinat]], et c'est [[esto|Esto]] qui l'a
+bannie.
 
 ## Ce qui n'est pas documenté
 

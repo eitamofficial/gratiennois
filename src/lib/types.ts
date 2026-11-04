@@ -204,6 +204,27 @@ export interface Session {
   username: string;
   role: UserRole;
   expiresAt: Date;
+  /**
+   * Origine de l'identité : compte local (`WIKI_USERS`) ou connexion Discord.
+   * Les champs suivants ne sont renseignés que dans le second cas, et restent
+   * facultatifs pour que les comptes locaux continuent de fonctionner.
+   */
+  provider?: string;
+  displayName?: string;
+  avatarUrl?: string;
+  discordUserId?: string;
+}
+
+/**
+ * Nom à afficher pour une session.
+ *
+ * Le pseudo Discord quand il existe, l'identifiant de compte sinon. On ne
+ * renvoie jamais une chaîne vide : un commentaire ou une entrée d'audit sans
+ * auteur serait plus gênant qu'un identifiant technique.
+ */
+export function sessionLabel(session: Session): string {
+  const nom = session.displayName?.trim();
+  return nom || session.username;
 }
 
 // ---------------------------------------------------------------------------

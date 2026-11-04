@@ -30,10 +30,42 @@ export function toSeedRevision(article: Article): Revision {
   };
 }
 
+/**
+ * Cache de lecture, invalidé par le fichier lui-même.
+ *
+ * Sans lui, chaque page relisait et reparsait `articles.json` (268 Ko) et
+ * `revisions.json` (684 Ko) — plusieurs fois par requête, puisque la mise en
+ * page et les composants lisent chacun le corpus. Sur la tablette, cela pesait
+ * plus lourd que le rendu lui-même.
+ *
+ * La clé d'invalidation est le couple (date de modification, taille) : une
+ * écriture passe par `writeJson`, qui remplace le fichier — la date change,
+ * donc le cache tombe. Aucun risque de servir une version périmée après une
+ * publication.
+ */
+interface EntreeCache {
+  mtimeMs: number;
+  taille: number;
+  valeur: unknown;
+}
+
+const cacheFichiers = new Map<string, EntreeCache>();
+
 async function readJson<T>(file: string, fallback: T): Promise<T> {
   try {
+    const stat = await fs.stat(file);
+    const cached = cacheFichiers.get(file);
+    if (cached && cached.mtimeMs === stat.mtimeMs && cached.taille === stat.size) {
+      // Copie superficielle pour les tableaux : les appelants trient le
+      // résultat, et trier le tableau du cache le réordonnerait pour tout le
+      // monde.
+      return (Array.isArray(cached.valeur) ? [...cached.valeur] : cached.valeur) as T;
+    }
+
     const raw = await fs.readFile(file, "utf8");
-    return JSON.parse(raw) as T;
+    const valeur = JSON.parse(raw) as T;
+    cacheFichiers.set(file, { mtimeMs: stat.mtimeMs, taille: stat.size, valeur });
+    return (Array.isArray(valeur) ? [...valeur] : valeur) as T;
   } catch {
     return fallback;
   }
@@ -52,6 +84,11 @@ async function writeJson(file: string, value: unknown): Promise<void> {
   }
   await fs.mkdir(DATA_DIR, { recursive: true });
   await fs.writeFile(file, JSON.stringify(value, null, 2), "utf8");
+  // Invalidation explicite : la date de modification suffit presque toujours,
+  // mais deux écritures dans la même milliseconde produiraient la même — et
+  // servir une version périmée après une publication est exactement ce qu'on
+  // ne veut pas.
+  cacheFichiers.delete(file);
 }
 
 export function createJsonDriver(): StorageDriver {

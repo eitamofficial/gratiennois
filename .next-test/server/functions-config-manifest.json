@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "functions": {
+    "/api/ai/analyse": {},
+    "/api/analysis": {},
+    "/api/articles/[slug]/revisions/[revisionId]": {},
+    "/api/ai/proposition": {},
+    "/api/articles/[slug]/revisions/[revisionId]/restore": {},
+    "/api/articles/[slug]/revisions": {},
+    "/api/articles/[slug]": {},
+    "/api/articles/export": {},
+    "/api/articles": {},
+    "/api/auth/discord": {},
+    "/api/auth/discord/callback": {},
+    "/api/auth/recovery": {},
+    "/api/auth/login": {},
+    "/api/auth/logout": {},
+    "/api/auth/verify-2fa": {},
+    "/api/comments/[id]": {},
+    "/api/comments": {},
+    "/api/cron/discord": {},
+    "/api/revisions": {},
+    "/api/health": {},
+    "/api/images": {},
+    "/api/seed": {},
+    "/api/search": {},
+    "/api/sync/bot": {},
+    "/api/sync/discord": {},
+    "/media/[name]": {}
+  }
+}

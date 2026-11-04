@@ -468,3 +468,76 @@ option {
 *::-webkit-scrollbar-thumb:hover {
   background: rgb(var(--night-500));
 }
+
+/* ---------------------------------------------------------------------------
+   Notes de bas de page, sources et bandeaux d'entretien
+   --------------------------------------------------------------------------- */
+
+.note-ref {
+  font-size: 0.72em;
+  line-height: 0;
+  vertical-align: super;
+  margin-left: 0.1em;
+}
+
+.note-ref a {
+  color: rgb(var(--gold-400, 212 175 55));
+  text-decoration: none;
+  padding: 0 0.15em;
+}
+
+.note-ref a:hover {
+  text-decoration: underline;
+}
+
+.note-list {
+  margin-top: 2.5rem;
+  border-top: 1px solid rgb(var(--night-700));
+  padding-top: 1rem;
+  font-size: 0.9em;
+}
+
+.note-list ol {
+  margin-left: 1.25rem;
+  list-style: decimal;
+}
+
+.note-list li {
+  margin-bottom: 0.5rem;
+  scroll-margin-top: 5rem;
+}
+
+.note-back {
+  color: rgb(var(--gold-400, 212 175 55));
+  text-decoration: none;
+  margin-left: 0.35rem;
+}
+
+/* Contrôles de lecture (thème, taille, contraste) */
+.lecture-sepia {
+  --night-950: 250 244 232;
+  --night-900: 244 236 220;
+  --night-800: 232 220 198;
+  --night-700: 214 198 170;
+  --night-600: 176 156 126;
+  --night-400: 120 100 76;
+  --night-300: 90 72 52;
+  --night-200: 62 48 34;
+  --night-100: 40 30 20;
+}
+
+.lecture-contraste {
+  --night-400: 235 235 235;
+  --night-300: 245 245 245;
+  --night-200: 255 255 255;
+  --night-100: 255 255 255;
+  --gold-400: 255 214 64;
+}
+
+html.lecture-texte-grand {
+  font-size: 18px;
+}
+
+html.lecture-texte-tres-grand {
+  font-size: 20px;
+}

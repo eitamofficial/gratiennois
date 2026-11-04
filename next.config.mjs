@@ -14,6 +14,7 @@
 // Referrer-Policy ; `deploy/termux/Caddyfile`.
 
 const nextConfig = {
+  distDir: process.env.WIKI_DIST_DIR || ".next",
   reactStrictMode: true,
   poweredByHeader: false,
 };

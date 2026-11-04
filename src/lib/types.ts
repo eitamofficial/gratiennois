@@ -172,7 +172,59 @@ export interface Article {
   status?: ArticleStatus;
   /** Origine de la rédaction : saisie humaine, ou proposition de l'IA. */
   origin?: ArticleOrigin;
+  /** Protection : `semi` réserve l'écriture aux charges, `full` à l'accès complet. */
+  protection?: ArticleProtection;
+  /** Label « article de qualité », attribué par vote. */
+  quality?: boolean;
+  /** Sources déclarées : bibliographie, citations Discord archivées. */
+  sources?: ArticleSource[];
+  /** Langue du texte (`fr` par défaut). */
+  lang?: string;
+  /** Slug de la version de référence, pour une traduction. */
+  translationOf?: string;
+  /**
+   * Bandeaux d'entretien affichés en tête d'article. Codes fermés, pour que
+   * l'affichage reste maîtrisé : `sources-insuffisantes`, `a-verifier`,
+   * `source-unique`, `en-chantier`, `evenement-recent`.
+   */
+  maintenance?: MaintenanceCode[];
 }
+
+export const ARTICLE_PROTECTIONS = ["semi", "full"] as const;
+export type ArticleProtection = (typeof ARTICLE_PROTECTIONS)[number];
+
+export const MAINTENANCE_CODES = [
+  "sources-insuffisantes",
+  "a-verifier",
+  "source-unique",
+  "en-chantier",
+  "evenement-recent",
+] as const;
+export type MaintenanceCode = (typeof MAINTENANCE_CODES)[number];
+
+export const SOURCE_KINDS = ["discord", "ouvrage", "page", "capture", "autre"] as const;
+export type SourceKind = (typeof SOURCE_KINDS)[number];
+
+/**
+ * Une source citée par un article.
+ *
+ * Le champ `quote` n'est pas décoratif : un lien Discord meurt, un message
+ * supprimé disparaît. Archiver le texte au moment de la citation est ce qui
+ * permet à un lecteur de vérifier l'affirmation dans deux ans.
+ */
+export interface ArticleSource {
+  id: string;
+  kind: SourceKind;
+  title: string;
+  url?: string;
+  quote?: string;
+  author?: string;
+  /** Date ISO de la source (et non de l'ajout au wiki). */
+  date?: string;
+}
+
+export const ARTICLE_LANGS = ["fr", "en"] as const;
+export type ArticleLang = (typeof ARTICLE_LANGS)[number];
 
 export const ARTICLE_STATUSES = ["publie", "proposition"] as const;
 export type ArticleStatus = (typeof ARTICLE_STATUSES)[number];
@@ -212,6 +264,16 @@ export interface ArticleInput {
   status?: ArticleStatus;
   /** Origine déclarée de la rédaction. */
   origin?: ArticleOrigin;
+  /** Protection demandée (`semi` ou `full`) ; absente = non protégé. */
+  protection?: ArticleProtection;
+  /** Sources citées, dans l'ordre de la bibliographie. */
+  sources?: ArticleSource[];
+  /** Langue du texte. */
+  lang?: string;
+  /** Slug de la version de référence pour une traduction. */
+  translationOf?: string;
+  /** Bandeaux d'entretien. */
+  maintenance?: MaintenanceCode[];
   /** Résumé de modification, conservé dans la révision produite par l'écriture. */
   comment?: string;
   /** Modification mineure (forme, orthographe) — indicateur d'historique. */
@@ -262,6 +324,8 @@ export interface RevisionSnapshot {
   tags: string[];
   /** Conservé dans l'historique : restaurer une version restaure aussi l'infobox. */
   infobox?: ArticleInfobox;
+  /** Restaurer une version restaure aussi ses sources. */
+  sources?: ArticleSource[];
 }
 
 export interface Revision {

@@ -73,6 +73,15 @@ function renderInline(escaped: string, linkMap?: Map<string, WikiLink>): string 
     : escaped;
 
   return withWikiLinks
+    // Notes de bas de page : `[^3]` est un renvoi, rendu en exposant cliquable.
+    // Le numéro est attribué en amont par `prepareNotes`, dans l'ordre
+    // d'apparition — jamais par le rédacteur, qui sinon pourrait créer des trous
+    // dans la numérotation.
+    .replace(
+      /\[\^(\d{1,3})\]/g,
+      (_match, numero: string) =>
+        `<sup class="note-ref" id="ref-${numero}"><a href="#note-${numero}" aria-label="Note ${numero}">${numero}</a></sup>`,
+    )
     // Liens [texte](url) — seuls http(s), mailto, /, # et /wiki sont autorisés.
     .replace(
       /\[([^\]]+)\]\(([^)\s]+)\)/g,
@@ -452,6 +461,64 @@ function blockToHtml(
 }
 
 /**
+ * Notes de bas de page.
+ *
+ * Deux syntaxes acceptées, parce que les deux se rencontrent dans une
+ * encyclopédie :
+ *   - `[^id]: texte` en fin d'article, appelée par `[^id]` dans le corps ;
+ *   - `<ref>texte</ref>` directement dans le corps, pour une note ponctuelle.
+ *
+ * Le rendu renumérote dans l'ordre d'apparition : une note déplacée garde son
+ * texte et prend son nouveau rang, sans laisser de trou dans la numérotation.
+ */
+export function prepareNotes(markdown: string): {
+  body: string;
+  notes: Array<{ number: number; text: string }>;
+} {
+  const definitions = new Map<string, string>();
+  const kept: string[] = [];
+
+  for (const line of markdown.split("\n")) {
+    const definition = line.match(/^\[\^([A-Za-z0-9_-]{1,40})\]:\s*(.+)$/);
+    if (definition) {
+      definitions.set(definition[1], definition[2].trim());
+      continue;
+    }
+    kept.push(line);
+  }
+
+  const notes: Array<{ number: number; text: string }> = [];
+  const numbers = new Map<string, number>();
+
+  function attribuer(id: string, texte: string): number {
+    const existing = numbers.get(id);
+    if (existing !== undefined) return existing;
+    const number = notes.length + 1;
+    notes.push({ number, text: texte });
+    numbers.set(id, number);
+    return number;
+  }
+
+  let body = kept.join("\n");
+
+  // `<ref>…</ref>` : note immédiate, sans définition séparée.
+  body = body.replace(/<ref>([\s\S]*?)<\/ref>/g, (_match, texte: string) => {
+    const number = attribuer(`inline-${notes.length + 1}`, texte.trim());
+    return `[^${number}]`;
+  });
+
+  // `[^id]` : renvoi vers une définition nommée. Une note déclarée mais jamais
+  // appelée n'est pas rendue — c'est le comportement attendu d'une note orpheline.
+  body = body.replace(/\[\^([A-Za-z0-9_-]{1,40})\](?!:)/g, (_match, id: string) => {
+    const texte = definitions.get(id);
+    if (!texte) return "";
+    return `[^${attribuer(id, texte)}]`;
+  });
+
+  return { body, notes };
+}
+
+/**
  * Rendu complet d'un document Markdown en HTML.
  *
  * Fonction **pure** et séparée du composant React : c'est elle que le banc
@@ -462,7 +529,8 @@ export function renderMarkdown(
   markdown: string,
   linkMap?: Map<string, WikiLink>,
 ): string {
-  const blocks = groupBlocks(markdown.split("\n"));
+  const { body, notes } = prepareNotes(markdown);
+  const blocks = groupBlocks(body.split("\n"));
   // Un allocateur par document : les titres identiques reçoivent des ancres
   // distinctes, et le même algorithme tourne dans `extractHeadings` pour le
   // sommaire. Les deux ne peuvent donc pas diverger.
@@ -470,11 +538,21 @@ export function renderMarkdown(
   // Le chapeau est le premier paragraphe **de texte** : un titre ou une liste
   // qui le précèderait ne doit pas priver l'article de son accroche.
   const firstParagraph = blocks.findIndex((block) => block.type === "p");
-  return blocks
+  const html = blocks
     .map((block, index) =>
       blockToHtml(block, linkMap, index === firstParagraph, allocateHeadingId),
     )
     .join("\n");
+
+  if (notes.length === 0) return html;
+
+  const liste = notes
+    .map(
+      (note) =>
+        `<li id="note-${note.number}">${renderInline(escapeHtml(note.text), linkMap)} <a href="#ref-${note.number}" class="note-back" aria-label="Revenir au texte">↑</a></li>`,
+    )
+    .join("");
+  return `${html}\n<section class="note-list"><h2 id="notes">Notes</h2><ol>${liste}</ol></section>`;
 }
 
 export default function MarkdownRenderer({

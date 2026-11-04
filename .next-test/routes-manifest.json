@@ -1,0 +1,328 @@
+{
+  "version": 3,
+  "pages404": true,
+  "caseSensitive": false,
+  "basePath": "",
+  "redirects": [
+    {
+      "source": "/:path+/",
+      "destination": "/:path+",
+      "internal": true,
+      "statusCode": 308,
+      "regex": "^(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))/$"
+    }
+  ],
+  "headers": [],
+  "rewrites": {
+    "beforeFiles": [],
+    "afterFiles": [],
+    "fallback": []
+  },
+  "dynamicRoutes": [
+    {
+      "page": "/admin/[slug]/historique",
+      "regex": "^/admin/([^/]+?)/historique(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/admin/(?<nxtPslug>[^/]+?)/historique(?:/)?$"
+    },
+    {
+      "page": "/admin/[slug]/modifier",
+      "regex": "^/admin/([^/]+?)/modifier(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/admin/(?<nxtPslug>[^/]+?)/modifier(?:/)?$"
+    },
+    {
+      "page": "/api/articles/[slug]",
+      "regex": "^/api/articles/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/api/articles/(?<nxtPslug>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/api/articles/[slug]/revisions",
+      "regex": "^/api/articles/([^/]+?)/revisions(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/api/articles/(?<nxtPslug>[^/]+?)/revisions(?:/)?$"
+    },
+    {
+      "page": "/api/articles/[slug]/revisions/[revisionId]",
+      "regex": "^/api/articles/([^/]+?)/revisions/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug",
+        "nxtPrevisionId": "nxtPrevisionId"
+      },
+      "namedRegex": "^/api/articles/(?<nxtPslug>[^/]+?)/revisions/(?<nxtPrevisionId>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/api/articles/[slug]/revisions/[revisionId]/restore",
+      "regex": "^/api/articles/([^/]+?)/revisions/([^/]+?)/restore(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug",
+        "nxtPrevisionId": "nxtPrevisionId"
+      },
+      "namedRegex": "^/api/articles/(?<nxtPslug>[^/]+?)/revisions/(?<nxtPrevisionId>[^/]+?)/restore(?:/)?$"
+    },
+    {
+      "page": "/api/comments/[id]",
+      "regex": "^/api/comments/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/comments/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/la-loba/[id]",
+      "regex": "^/la\\-loba/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/la\\-loba/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/media/[name]",
+      "regex": "^/media/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPname": "nxtPname"
+      },
+      "namedRegex": "^/media/(?<nxtPname>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/tags/[tag]",
+      "regex": "^/tags/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPtag": "nxtPtag"
+      },
+      "namedRegex": "^/tags/(?<nxtPtag>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/wiki/categorie/[category]",
+      "regex": "^/wiki/categorie/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPcategory": "nxtPcategory"
+      },
+      "namedRegex": "^/wiki/categorie/(?<nxtPcategory>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/wiki/[slug]",
+      "regex": "^/wiki/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/wiki/(?<nxtPslug>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/wiki/[slug]/versions",
+      "regex": "^/wiki/([^/]+?)/versions(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/wiki/(?<nxtPslug>[^/]+?)/versions(?:/)?$"
+    }
+  ],
+  "staticRoutes": [
+    {
+      "page": "/",
+      "regex": "^/(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/(?:/)?$"
+    },
+    {
+      "page": "/_not-found",
+      "regex": "^/_not\\-found(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_not\\-found(?:/)?$"
+    },
+    {
+      "page": "/.well-known/security.txt",
+      "regex": "^/\\.well\\-known/security\\.txt(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/\\.well\\-known/security\\.txt(?:/)?$"
+    },
+    {
+      "page": "/admin",
+      "regex": "^/admin(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin(?:/)?$"
+    },
+    {
+      "page": "/admin/activite",
+      "regex": "^/admin/activite(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/activite(?:/)?$"
+    },
+    {
+      "page": "/admin/ia",
+      "regex": "^/admin/ia(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/ia(?:/)?$"
+    },
+    {
+      "page": "/admin/nouveau",
+      "regex": "^/admin/nouveau(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/nouveau(?:/)?$"
+    },
+    {
+      "page": "/bot",
+      "regex": "^/bot(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/bot(?:/)?$"
+    },
+    {
+      "page": "/bot/conditions",
+      "regex": "^/bot/conditions(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/bot/conditions(?:/)?$"
+    },
+    {
+      "page": "/bot/confidentialite",
+      "regex": "^/bot/confidentialite(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/bot/confidentialite(?:/)?$"
+    },
+    {
+      "page": "/bot/liens",
+      "regex": "^/bot/liens(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/bot/liens(?:/)?$"
+    },
+    {
+      "page": "/chronologie",
+      "regex": "^/chronologie(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/chronologie(?:/)?$"
+    },
+    {
+      "page": "/connexion",
+      "regex": "^/connexion(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/connexion(?:/)?$"
+    },
+    {
+      "page": "/constitution",
+      "regex": "^/constitution(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/constitution(?:/)?$"
+    },
+    {
+      "page": "/credits",
+      "regex": "^/credits(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/credits(?:/)?$"
+    },
+    {
+      "page": "/icon.png",
+      "regex": "^/icon\\.png(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/icon\\.png(?:/)?$"
+    },
+    {
+      "page": "/institutions",
+      "regex": "^/institutions(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/institutions(?:/)?$"
+    },
+    {
+      "page": "/la-loba",
+      "regex": "^/la\\-loba(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/la\\-loba(?:/)?$"
+    },
+    {
+      "page": "/manifest.webmanifest",
+      "regex": "^/manifest\\.webmanifest(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/manifest\\.webmanifest(?:/)?$"
+    },
+    {
+      "page": "/manifeste-psrg",
+      "regex": "^/manifeste\\-psrg(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/manifeste\\-psrg(?:/)?$"
+    },
+    {
+      "page": "/personnalites",
+      "regex": "^/personnalites(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/personnalites(?:/)?$"
+    },
+    {
+      "page": "/plan",
+      "regex": "^/plan(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/plan(?:/)?$"
+    },
+    {
+      "page": "/programme",
+      "regex": "^/programme(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/programme(?:/)?$"
+    },
+    {
+      "page": "/recent",
+      "regex": "^/recent(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/recent(?:/)?$"
+    },
+    {
+      "page": "/recherche",
+      "regex": "^/recherche(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/recherche(?:/)?$"
+    },
+    {
+      "page": "/robots.txt",
+      "regex": "^/robots\\.txt(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/robots\\.txt(?:/)?$"
+    },
+    {
+      "page": "/sitemap.xml",
+      "regex": "^/sitemap\\.xml(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/sitemap\\.xml(?:/)?$"
+    },
+    {
+      "page": "/statistiques",
+      "regex": "^/statistiques(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/statistiques(?:/)?$"
+    },
+    {
+      "page": "/tags",
+      "regex": "^/tags(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tags(?:/)?$"
+    },
+    {
+      "page": "/wiki",
+      "regex": "^/wiki(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/wiki(?:/)?$"
+    }
+  ],
+  "dataRoutes": [],
+  "rsc": {
+    "header": "rsc",
+    "varyHeader": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch",
+    "prefetchHeader": "next-router-prefetch",
+    "didPostponeHeader": "x-nextjs-postponed",
+    "contentTypeHeader": "text/x-component",
+    "suffix": ".rsc",
+    "prefetchSuffix": ".prefetch.rsc",
+    "prefetchSegmentHeader": "next-router-segment-prefetch",
+    "prefetchSegmentSuffix": ".segment.rsc",
+    "prefetchSegmentDirSuffix": ".segments"
+  },
+  "rewriteHeaders": {
+    "pathHeader": "x-nextjs-rewritten-path",
+    "queryHeader": "x-nextjs-rewritten-query"
+  }
+}

@@ -6,15 +6,22 @@ import { SEED_ARTICLES, SEED_VERSION } from "./seed-data";
 import { InfoboxValidationError, normalizeInfobox } from "./infobox";
 import { slugify } from "./slug";
 import {
+  ARTICLE_PROTECTIONS,
   ARTICLE_STATUSES,
   CATEGORIES,
+  MAINTENANCE_CODES,
+  SOURCE_KINDS,
   type Article,
   type ArticleInput,
   type ArticleOrigin,
+  type ArticleProtection,
+  type ArticleSource,
   type ArticleStatus,
   type Category,
+  type MaintenanceCode,
   type Revision,
   type RevisionAction,
+  type SourceKind,
 } from "./types";
 import { parseCategory } from "./constants";
 
@@ -103,6 +110,7 @@ function toSnapshot(article: Article) {
     content: article.content,
     tags: article.tags,
     infobox: article.infobox,
+    sources: article.sources,
   };
 }
 
@@ -324,6 +332,11 @@ export async function createArticle(input: ArticleInput): Promise<Article> {
     infobox: input.infobox,
     status: input.status,
     origin: input.origin,
+    protection: input.protection,
+    sources: input.sources,
+    lang: input.lang?.trim() || undefined,
+    translationOf: input.translationOf?.trim() || undefined,
+    maintenance: input.maintenance,
     createdAt: now,
     updatedAt: now,
   };
@@ -357,6 +370,16 @@ export async function updateArticle(slug: string, input: ArticleInput): Promise<
         : existing.discordUserId,
     // `infobox: undefined` explicite = la rédaction veut l'infobox automatique.
     infobox: input.infobox,
+    // `undefined` = champ non transmis, on conserve l'existant ; un tableau vide
+    // explicite efface la protection ou les sources.
+    protection: input.protection,
+    sources: input.sources ?? existing.sources,
+    lang: input.lang?.trim() || existing.lang,
+    translationOf:
+      input.translationOf !== undefined
+        ? input.translationOf.trim() || undefined
+        : existing.translationOf,
+    maintenance: input.maintenance ?? existing.maintenance,
     updatedAt: new Date().toISOString(),
   };
 
@@ -572,6 +595,10 @@ const LIMITES_ARTICLE = {
   etiquettes: 40,
   identifiantDiscord: 25,
   commentaire: 200,
+  sources: 30,
+  sourceTitre: 200,
+  sourceCitation: 2_000,
+  langue: 8,
 } as const;
 
 function borner(valeur: string, maximum: number, champ: string): string {
@@ -652,8 +679,93 @@ export function parseArticleInput(body: unknown): ArticleInput {
     infobox,
     status,
     comment,
+    protection: parseProtection(raw.protection),
+    sources: parseSources(raw.sources),
+    lang: parseLang(raw.lang),
+    translationOf:
+      typeof raw.translationOf === "string" && raw.translationOf.trim()
+        ? raw.translationOf.trim().slice(0, 120)
+        : undefined,
+    maintenance: parseMaintenance(raw.maintenance),
     // Seul un booléen vrai compte : une chaîne « false » ne doit pas devenir
     // une modification mineure par coercition.
     minor: raw.minor === true || undefined,
   };
+}
+
+/** Protection : liste fermée, jamais une chaîne libre. */
+function parseProtection(value: unknown): ArticleInput["protection"] {
+  if (value === undefined || value === null || value === "") return undefined;
+  const candidat = String(value);
+  if (!ARTICLE_PROTECTIONS.includes(candidat as ArticleProtection)) {
+    throw new ValidationError(
+      `Protection inconnue : « ${candidat} ». Valeurs acceptées : ${ARTICLE_PROTECTIONS.join(", ")}.`,
+    );
+  }
+  return candidat as ArticleProtection;
+}
+
+function parseLang(value: unknown): string | undefined {
+  if (typeof value !== "string" || !value.trim()) return undefined;
+  const candidat = value.trim().toLowerCase();
+  if (!/^[a-z]{2}(-[a-z]{2})?$/.test(candidat)) {
+    throw new ValidationError("Langue invalide : code ISO à deux lettres attendu (fr, en…).");
+  }
+  return candidat.slice(0, LIMITES_ARTICLE.langue);
+}
+
+function parseMaintenance(value: unknown): ArticleInput["maintenance"] {
+  if (!Array.isArray(value)) return undefined;
+  const codes = value
+    .map(String)
+    .filter((code): code is MaintenanceCode => MAINTENANCE_CODES.includes(code as MaintenanceCode));
+  return codes.length > 0 ? codes : undefined;
+}
+
+/**
+ * Sources : chacune reçoit un identifiant stable, pour qu'une bibliographie
+ * puisse être citée par renvoi et réordonnée sans casser les liens.
+ */
+function parseSources(value: unknown): ArticleInput["sources"] {
+  if (!Array.isArray(value)) return undefined;
+  if (value.length > LIMITES_ARTICLE.sources) {
+    throw new ValidationError(
+      `Un article ne peut pas citer plus de ${LIMITES_ARTICLE.sources} sources.`,
+    );
+  }
+  const sources: ArticleSource[] = [];
+  for (const entry of value) {
+    if (typeof entry !== "object" || entry === null) continue;
+    const raw = entry as Record<string, unknown>;
+    const titre = borner(String(raw.title ?? "").trim(), LIMITES_ARTICLE.sourceTitre, "titre de source");
+    if (!titre) continue;
+    const kind = SOURCE_KINDS.includes(String(raw.kind) as SourceKind)
+      ? (String(raw.kind) as SourceKind)
+      : "autre";
+    const url = typeof raw.url === "string" ? raw.url.trim().slice(0, 500) : "";
+    // Seuls http(s) : `javascript:` dans une bibliographie serait une injection.
+    const urlSure = /^https?:\/\//i.test(url) ? url : undefined;
+    sources.push({
+      id:
+        typeof raw.id === "string" && /^[a-zA-Z0-9_-]{1,40}$/.test(raw.id)
+          ? raw.id
+          : randomUUID().slice(0, 8),
+      kind,
+      title: titre,
+      url: urlSure,
+      quote:
+        typeof raw.quote === "string" && raw.quote.trim()
+          ? borner(raw.quote.trim(), LIMITES_ARTICLE.sourceCitation, "citation")
+          : undefined,
+      author:
+        typeof raw.author === "string" && raw.author.trim()
+          ? raw.author.trim().slice(0, 120)
+          : undefined,
+      date:
+        typeof raw.date === "string" && /^\d{4}-\d{2}(-\d{2})?$/.test(raw.date.trim())
+          ? raw.date.trim()
+          : undefined,
+    });
+  }
+  return sources.length > 0 ? sources : undefined;
 }

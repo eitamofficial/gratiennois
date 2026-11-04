@@ -18,7 +18,10 @@ export const metadata: Metadata = {
   alternates: { canonical: "/manifeste-psrg" },
 };
 
-export const dynamic = "force-static";
+// Rendu dynamique, et non statique : la CSP pose un nonce par réponse, et une
+// page prérendue à la compilation n'en a aucun. Son script de thème inline
+// était donc bloqué par le navigateur — la page s'affichait sans styles.
+export const dynamic = "force-dynamic";
 
 /**
  * Une décision du parti, avec ses quatre colonnes : ce qui est décidé, ce qui

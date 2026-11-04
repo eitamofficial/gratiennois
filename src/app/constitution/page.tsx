@@ -9,7 +9,10 @@ export const metadata: Metadata = {
     "Aperçu du document officiel Constitution et Hiérarchie du IIIe Delphinat Gratiennois, créé par Esto le 26/09/26.",
 };
 
-export const dynamic = "force-static";
+// Rendu dynamique, et non statique : la CSP pose un nonce par réponse, et une
+// page prérendue à la compilation n'en a aucun. Son script de thème inline
+// était donc bloqué par le navigateur — la page s'affichait sans styles.
+export const dynamic = "force-dynamic";
 
 export default function ConstitutionPage() {
   return (

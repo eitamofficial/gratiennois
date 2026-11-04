@@ -184,3 +184,22 @@ Trois déséquilibres ressortent.
 **Le wiki affirme, il ne prouve pas encore.** La section 3 est presque vide dans l'état actuel. Or la règle éditoriale du wiki — distinguer un fait documenté d'un récit de communauté — n'a de valeur que si le lecteur peut remonter à la source.
 
 **Le wiki est seul.** Une seule tablette, aucun miroir, aucune sonde, aucune alerte. Les fonctions 79, 80, 86, 87 et 88 ne sont pas des améliorations, ce sont des assurances.
+
+---
+
+## État au 4 novembre 2026
+
+Cette section est écrite après coup, en regardant le code livré — pas l'intention. Elle distingue trois états, et le troisième est le plus nombreux : prétendre le contraire serait la seule vraie malhonnêteté de ce document.
+
+**Livré et fonctionnel en production : 56 fonctions.**
+11, 12, 13, 14, 15, 16, 17, 18, 19, 20 · 21, 22, 23, 24, 25, 26, 28, 29, 30 · 31, 32, 33, 34, 37, 39, 40 · 41, 43, 45, 46, 47, 48, 49, 50 · 51, 53, 54, 55, 56, 57 · 71, 72, 75, 76, 77, 80 · 86, 87 · 91, 92, 93, 94, 97, 98, 99, 100.
+
+**À moitié : la mécanique existe, l'interface manque : 12 fonctions.**
+2, 3, 5, 6, 7, 10, 35, 36, 44, 58, 84, 90.
+Par exemple la présence en édition (7) a son API et son stockage, mais l'éditeur ne l'appelle pas encore ; le moteur de recherche sémantique (44) est écrit et testé, mais la page de recherche ne l'utilise pas.
+
+**Pas commencé : 32 fonctions.**
+1, 4, 8, 9, 27, 38, 42, 52, 59, 60, 61 à 70, 73, 74, 78, 79, 81, 82, 83, 85, 88, 89, 95, 96.
+Les dix fonctions Discord (61–70) demandent de modifier le bot, qui tourne dans un autre processus : les livrer à moitié aurait cassé un service qui fonctionne.
+
+**Pourquoi s'arrêter là plutôt que d'aller au bout.** Les 56 livrées sont vérifiées en production, une par une, sur les pages réelles. Les 32 restantes demandent soit une refonte de l'éditeur (1, 4, 8, 9), soit une intervention sur le bot Discord, soit de l'infrastructure (miroir, seconde machine, AVIF). Les ajouter en une passe aurait produit un site plus large et moins sûr — exactement ce qu'il ne faut pas faire avec une encyclopédie dont tout le propos est de distinguer ce qui est vérifié du reste.

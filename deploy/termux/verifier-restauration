@@ -1,0 +1,63 @@
+#!/data/data/com.termux/files/usr/bin/bash
+# Test de restauration.
+#
+# Une sauvegarde jamais restaurée est une croyance, pas une sauvegarde. Ce
+# script déchiffre la plus récente, l'extrait dans un dossier temporaire et
+# vérifie que les données s'y lisent réellement — nombre d'articles, intégrité
+# du JSON, présence de l'historique. Il ne touche pas au wiki en service.
+set -u
+
+SAUVEGARDE_DIR="${SAUVEGARDE_DIR:-$HOME/sauvegardes}"
+CLE="${SAUVEGARDE_CLE:-$HOME/.sauvegarde-cle}"
+TRAVAIL=$(mktemp -d "${TMPDIR:-/tmp}/restauration.XXXXXX")
+
+echec() {
+  echo "ECHEC : $1"
+  rm -rf "$TRAVAIL"
+  exit 1
+}
+
+[ -f "$CLE" ] || echec "phrase de passe absente : $CLE"
+
+archive=$(ls -1t "$SAUVEGARDE_DIR"/wiki-*.tar.gz.enc 2>/dev/null | head -1)
+[ -n "$archive" ] || echec "aucune archive dans $SAUVEGARDE_DIR"
+
+echo "archive   : $(basename "$archive")"
+echo "taille    : $(du -h "$archive" | cut -f1)"
+echo "date      : $(date -r "$archive" '+%Y-%m-%d %H:%M')"
+
+openssl enc -d -aes-256-cbc -pbkdf2 -pass "file:$CLE" -in "$archive" 2>/dev/null \
+  | tar xzf - -C "$TRAVAIL" || echec "déchiffrement ou extraction impossible"
+
+# Le contenu attendu, quel que soit le dossier racine de l'archive.
+articles=$(find "$TRAVAIL" -name articles.json -print -quit)
+[ -n "$articles" ] || echec "articles.json absent de l'archive"
+
+node -e "
+const fs = require('fs');
+const chemin = process.argv[1];
+let liste;
+try { liste = JSON.parse(fs.readFileSync(chemin, 'utf8')); }
+catch (e) { console.log('ECHEC : articles.json illisible — ' + e.message); process.exit(1); }
+if (!Array.isArray(liste) || liste.length === 0) {
+  console.log('ECHEC : articles.json vide ou mal formé'); process.exit(1);
+}
+const sansTitre = liste.filter((a) => !a.title || !a.slug).length;
+if (sansTitre > 0) { console.log('ECHEC : ' + sansTitre + ' article(s) sans titre ou sans slug'); process.exit(1); }
+console.log('articles  : ' + liste.length);
+console.log('dernière  : ' + liste.map((a) => a.updatedAt).sort().pop());
+
+const dossiers = require('path').dirname(chemin);
+const revues = require('path').join(dossiers, 'revisions.json');
+if (fs.existsSync(revues)) {
+  try {
+    const r = JSON.parse(fs.readFileSync(revues, 'utf8'));
+    console.log('révisions : ' + (Array.isArray(r) ? r.length : 'illisible'));
+  } catch { console.log('ECHEC : revisions.json illisible'); process.exit(1); }
+} else {
+  console.log('révisions : absent');
+}
+" "$articles" || { rm -rf "$TRAVAIL"; exit 1; }
+
+rm -rf "$TRAVAIL"
+echo "RESTAURATION VÉRIFIÉE"

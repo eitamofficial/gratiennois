@@ -5,6 +5,7 @@ import { SESSION_COOKIE_NAME, signSessionToken } from "@/lib/jwt";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
 import { checkWriteRequest } from "@/lib/request-security";
 import { envoyerMessagePrive } from "@/lib/discord-dm";
+import { journaliserConnexion } from "@/lib/login-alert";
 import {
   CODE_TTL_MS,
   createChallenge,
@@ -87,6 +88,15 @@ export async function POST(request: Request) {
   }
 
   if (!verifyCredentials(username, password)) {
+    // Journalisé, mais sans alerte : une alerte par échec permettrait de
+    // harceler un compte en tapant des mots de passe au hasard.
+    await journaliserConnexion({
+      username,
+      ok: false,
+      ip,
+      userAgent: request.headers.get("user-agent") ?? "",
+      raison: "identifiants incorrects",
+    });
     return NextResponse.json({ error: "Identifiants incorrects." }, { status: 401 });
   }
 
@@ -96,6 +106,12 @@ export async function POST(request: Request) {
   // A2F désactivée : comportement historique.
   // -------------------------------------------------------------------------
   if (!twoFactorEnabled()) {
+    await journaliserConnexion({
+      username,
+      ok: true,
+      ip,
+      userAgent: request.headers.get("user-agent") ?? "",
+    });
     const token = await signSessionToken(username, role, { provider: "local" });
     const response = NextResponse.json({ ok: true, role, twoFactor: false });
     response.cookies.set(SESSION_COOKIE_NAME, token, SESSION_COOKIE_OPTIONS);

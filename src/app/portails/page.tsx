@@ -97,6 +97,7 @@ export default async function PortailsPage() {
           {[
             { href: "/repertoire", label: "Index alphabétique" },
             { href: "/entites", label: "Entités" },
+            { href: "/arbre", label: "Arborescence" },
             { href: "/chronologie", label: "Chronologie" },
             { href: "/galerie", label: "Galerie" },
             { href: "/homonymie", label: "Homonymies" },

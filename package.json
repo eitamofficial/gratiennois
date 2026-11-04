@@ -41,7 +41,8 @@
     "check:oeuf": "node scripts/check-oeuf.mjs",
     "check:oeuf:navigateur": "node scripts/check-oeuf-navigateur.mjs",
     "check:liens": "node scripts/check-liens.mjs",
-    "check:nav": "node scripts/check-navigateur.mjs"
+    "check:nav": "node scripts/check-navigateur.mjs",
+    "check:perf": "node scripts/check-perf.mjs"
   },
   "dependencies": {
     "next": "^15.5.29",

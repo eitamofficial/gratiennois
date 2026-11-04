@@ -3,6 +3,7 @@ import { getUserRole } from "@/lib/users";
 import { SESSION_COOKIE_OPTIONS } from "@/lib/auth";
 import { SESSION_COOKIE_NAME, signSessionToken } from "@/lib/jwt";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
+import { journaliserConnexion } from "@/lib/login-alert";
 import { checkWriteRequest } from "@/lib/request-security";
 import { MAX_ATTEMPTS, verifyChallenge } from "@/lib/twofactor";
 
@@ -83,6 +84,15 @@ export async function POST(request: Request) {
       { status: 401 },
     );
   }
+
+  // C'est ici que la connexion est réellement complète : l'alerte de nouvel
+  // appareil part après le second facteur, jamais avant.
+  await journaliserConnexion({
+    username: resultat.username,
+    ok: true,
+    ip: clientIp(request),
+    userAgent: request.headers.get("user-agent") ?? "",
+  });
 
   const token = await signSessionToken(resultat.username, role, { provider: "local" });
   const response = NextResponse.json({ ok: true, role });

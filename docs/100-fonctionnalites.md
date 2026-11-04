@@ -226,3 +226,26 @@ Les dix fonctions Discord (61–70) demandent de modifier le bot, qui tourne dan
 Plus : contrôle d'`Origin` sur toutes les écritures, quota et contrôle de format sur `/api/features`, qui n'en avait aucun.
 
 **Reste : 40 fonctions**, dont les dix du bot Discord (61–70) et la refonte de l'éditeur (1, 4, 8, 9). Le détail honnête reste celui de la section précédente, moins ces quatre.
+
+---
+
+## Troisième passe — 4 novembre, soirée
+
+**64 fonctions complètes.** Quatre de plus, plus quatre chantiers transverses.
+
+- **73** — alerte de connexion inhabituelle : après le second facteur, un message privé part si l'adresse n'a jamais été vue. Le journal existait mais n'était branché nulle part : `isNewDevice` répondait toujours « oui ».
+- **89** — budget de performance : `npm run check:perf`, sept pages, 59 Ko compressés et 2,5 s maximum.
+- **90** — sauvegarde chiffrée : elle n'avait **jamais tourné**, faute d'`openssl` sur Termux. Remplacée par AES-256-GCM en Node (authentifié, pas CBC : une archive modifiée est refusée au lieu de se déchiffrer en silence). Première archive produite et vérifiée : 7,6 Mo.
+- **79** — test de restauration : la dernière archive est déchiffrée, extraite dans un dossier temporaire et relue. Résultat : 90 articles, 238 révisions, **RESTAURATION VÉRIFIÉE**.
+- **96** — arborescence : catégories, étiquettes, pages, en `<details>`.
+
+**Performance.** Deux causes réelles, mesurées :
+
+1. `getDiscordSnapshot` bloquait le rendu à chaque expiration du cache. Cache périmé servi immédiatement, rafraîchissement en arrière-plan avec verrou.
+2. Aucun cache de lecture : chaque page relisait et reparsait 268 Ko + 684 Ko, plusieurs fois par requête. Cache invalidé par (date, taille) et explicitement à l'écriture.
+
+Effet mesuré : article 714 → 480 ms, index 668 → 422 ms, sept pages sous budget.
+
+**Sécurité — vérifié, pas supposé.** `npm audit` : 0 vulnérabilité. En-têtes complets (CSP à nonce, HSTS preload, X-Frame-Options DENY, Permissions-Policy, Referrer-Policy). 5 tentatives par défi A2F. Requêtes SQL paramétrées. `robots.txt` exclut `/admin`, `/connexion`, `/api/`. Sitemap sans `/admin`. Export réservé aux rédacteurs.
+
+**Reste : 36 fonctions**, dont les dix du bot Discord et la refonte de l'éditeur. Le compte honnête, encore une fois : ce qui est coché est vérifié en production ; ce qui ne l'est pas est écrit noir sur blanc.

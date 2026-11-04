@@ -64,3 +64,6 @@ DelphinaBotV2/bin/
 DelphinaBotV2/data/
 DelphinaBotV2/tmp/
 DelphinaBotV2/*.log
+
+# Dossiers de vérification de build (artefacts, jamais versionnés)
+.next-*/

@@ -13,11 +13,20 @@
  * remarque.
  */
 
+import { gzipSync } from "node:zlib";
+
 const BASE = process.argv[2] ?? "https://wiki-gratiennois.duckdns.org";
 
-/** Budget par page : octets de HTML et millisecondes. */
+/**
+ * Budget par page.
+ *
+ * On mesure la taille **compressée** : c'est ce qui traverse le réseau. Le
+ * HTML brut fait trois fois plus, mais il n'est jamais transmis tel quel — un
+ * budget sur les octets décompressés punirait un contenu dense sans rien dire
+ * de ce que le visiteur attend.
+ */
 const BUDGET = {
-  html: 120_000,
+  html: 60_000,
   ms: 2_500,
 };
 
@@ -38,6 +47,7 @@ console.log(`budget : ${(BUDGET.html / 1024).toFixed(0)} Ko de HTML, ${BUDGET.ms
 for (const page of PAGES) {
   const debut = Date.now();
   let taille = 0;
+  let brut = 0;
   let statut = 0;
   try {
     const reponse = await fetch(BASE + page.chemin, {
@@ -45,8 +55,9 @@ for (const page of PAGES) {
       signal: AbortSignal.timeout(15_000),
     });
     statut = reponse.status;
-    const corps = await reponse.arrayBuffer();
-    taille = corps.byteLength;
+    const texte = await reponse.text();
+    brut = Buffer.byteLength(texte, "utf8");
+    taille = gzipSync(Buffer.from(texte, "utf8")).length;
   } catch (erreur) {
     console.log(`KO  ${page.nom.padEnd(16)} injoignable (${String(erreur?.message ?? erreur).slice(0, 60)})`);
     depassements += 1;
@@ -60,7 +71,7 @@ for (const page of PAGES) {
   if (!ok) depassements += 1;
   console.log(
     `${ok ? "ok " : "KO "} ${page.nom.padEnd(16)} ${String(statut).padEnd(4)} ` +
-      `${(taille / 1024).toFixed(0).padStart(4)} Ko  ${String(duree).padStart(5)} ms` +
+      `${(taille / 1024).toFixed(0).padStart(4)} Ko compressé (${(brut / 1024).toFixed(0)} brut)  ${String(duree).padStart(5)} ms` +
       `${tropGros ? "  HTML trop lourd" : ""}${tropLent ? "  trop lent" : ""}`,
   );
 }

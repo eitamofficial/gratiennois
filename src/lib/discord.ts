@@ -289,12 +289,20 @@ export async function getDiscordSnapshot(): Promise<DiscordSnapshot | null> {
     return cached;
   }
 
+  // Cache périmé mais présent : on le sert **immédiatement** et on rafraîchit
+  // derrière. Attendre Discord pour afficher l'accueil faisait dépendre la
+  // latence du wiki de celle d'un service tiers — et une panne de Discord
+  // ralentissait toutes les pages, pas seulement les profils.
+  if (cached) {
+    rafraichirEnFond();
+    return cached;
+  }
+
   if (isDiscordConfigured()) {
     try {
       return await refreshDiscordSnapshot();
     } catch {
-      // On retombe sur le cache éventuellement périmé, sinon le widget.
-      if (cached) return cached;
+      // Aucun cache : on retombe sur le widget, puis sur rien.
     }
   }
 
@@ -304,7 +312,25 @@ export async function getDiscordSnapshot(): Promise<DiscordSnapshot | null> {
     if (widget) return widget;
   }
 
-  return cached;
+  return null;
+}
+
+/**
+ * Rafraîchissement en arrière-plan, sans empilement.
+ *
+ * Sans ce verrou, dix visiteurs simultanés sur un cache périmé déclenchaient
+ * dix appels à l'API Discord — et le quota de l'application, lui, ne l'oublie
+ * pas.
+ */
+let rafraichissement: Promise<unknown> | null = null;
+
+function rafraichirEnFond(): void {
+  if (rafraichissement) return;
+  rafraichissement = refreshDiscordSnapshot()
+    .catch(() => undefined)
+    .finally(() => {
+      rafraichissement = null;
+    });
 }
 
 // ---------------------------------------------------------------------------

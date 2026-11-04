@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { redirectToLogin } from "@/lib/redirects";
 import type { Metadata } from "next";
 import { revalidatePath } from "next/cache";
 import { canWrite, getServerSession, hasFullAccess } from "@/lib/auth";
@@ -35,7 +36,7 @@ export const dynamic = "force-dynamic";
 
 export default async function OutilsPage() {
   const session = await getServerSession();
-  if (!session) redirect("/connexion?suite=/admin/outils");
+  if (!session) return redirectToLogin("/admin/outils");
   if (!canWrite(session)) redirect("/admin");
   const complet = hasFullAccess(session);
 

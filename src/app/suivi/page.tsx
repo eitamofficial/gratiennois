@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import { redirectToLogin } from "@/lib/redirects";
 import { getServerSession } from "@/lib/auth";
 import { getPublishedArticles } from "@/lib/articles-store";
 import { watchedSlugs } from "@/lib/features";
@@ -12,7 +13,7 @@ export const dynamic = "force-dynamic";
 
 export default async function SuiviPage() {
   const session = await getServerSession();
-  if (!session) redirect("/connexion?suite=/suivi");
+  if (!session) return redirectToLogin("/suivi");
 
   const [slugs, articles] = await Promise.all([
     watchedSlugs(session.username),

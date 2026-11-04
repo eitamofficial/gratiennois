@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import { redirectToLogin } from "@/lib/redirects";
 import { getServerSession } from "@/lib/auth";
 import { getRevisionPage, listRevisionAuthors } from "@/lib/articles-store";
 import { formatDateTime } from "@/lib/constants";
@@ -36,7 +37,7 @@ export default async function ActivityPage({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const session = await getServerSession();
-  if (!session) redirect("/connexion?next=/admin/activite");
+  if (!session) return redirectToLogin("/admin/activite");
 
   const query = new URLSearchParams();
   for (const [key, value] of Object.entries(await searchParams)) {

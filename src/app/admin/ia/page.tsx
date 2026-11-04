@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import { redirectToLogin } from "@/lib/redirects";
 import { getServerSession, canWrite } from "@/lib/auth";
 import { getProposals } from "@/lib/articles-store";
 import { getGeminiConfig, isGeminiConfigured } from "@/lib/gemini";
@@ -25,7 +26,7 @@ export const dynamic = "force-dynamic";
  */
 export default async function IaReviewPage() {
   const session = await getServerSession();
-  if (!session) redirect("/connexion?next=/admin/ia");
+  if (!session) return redirectToLogin("/admin/ia");
   if (!canWrite(session)) {
     return (
       <div className="mx-auto max-w-2xl py-12 text-center">

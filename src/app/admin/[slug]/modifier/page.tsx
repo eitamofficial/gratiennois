@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
+import { redirectToLogin } from "@/lib/redirects";
 import { getServerSession } from "@/lib/auth";
 import { getArticleBySlug } from "@/lib/articles-store";
 import AdminArticleForm from "@/components/admin/AdminArticleForm";
@@ -19,7 +20,7 @@ export const dynamic = "force-dynamic";
 export default async function EditArticlePage({ params }: Props) {
   const session = await getServerSession();
   const { slug } = await params;
-  if (!session) redirect(`/connexion?next=/admin/${slug}/modifier`);
+  if (!session) return redirectToLogin(`/admin/${slug}/modifier`);
 
   const article = await getArticleBySlug(slug);
   if (!article) notFound();

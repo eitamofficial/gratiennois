@@ -116,6 +116,11 @@ export function requestOrigin(headers: Headers, fallbackHost = ""): string {
 
   const allowed = trustedHosts();
   if (allowed.size === 0 || allowed.has(host.toLowerCase()) || isLocalHost(host)) {
+    // Un hôte de bouclage sur un site dont l'URL publique est configurée n'est
+    // jamais l'adresse du visiteur : c'est le signe d'un proxy qui réécrit
+    // `Host`. Émettre `http://localhost:3000` enverrait le navigateur sur une
+    // adresse qui n'existe que sur la machine — on préfère la valeur déclarée.
+    if (isLocalHost(host) && process.env.SITE_URL?.trim()) return siteUrl();
     return `${proto}://${host}`;
   }
 

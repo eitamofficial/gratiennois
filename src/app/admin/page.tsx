@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import { redirectToLogin } from "@/lib/redirects";
 import { canWrite, getServerSession, isDauphin } from "@/lib/auth";
 import { ROLE_INFO } from "@/lib/types";
 import { getAllArticles, storageName } from "@/lib/articles-store";
@@ -23,7 +24,7 @@ export const dynamic = "force-dynamic";
 
 export default async function AdminPage() {
   const session = await getServerSession();
-  if (!session) redirect("/connexion?next=/admin");
+  if (!session) return redirectToLogin("/admin");
 
   const dauphin = isDauphin(session);
   const writer = canWrite(session);

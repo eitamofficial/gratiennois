@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import { redirectToLogin } from "@/lib/redirects";
 import { getServerSession } from "@/lib/auth";
 import AdminArticleForm from "@/components/admin/AdminArticleForm";
 import TemplateGallery from "@/components/admin/TemplateGallery";
@@ -19,7 +20,7 @@ interface Props {
 
 export default async function NewArticlePage({ searchParams }: Props) {
   const session = await getServerSession();
-  if (!session) redirect("/connexion?next=/admin/nouveau");
+  if (!session) return redirectToLogin("/admin/nouveau");
 
   const { modele } = await searchParams;
   const template = templateById(modele);

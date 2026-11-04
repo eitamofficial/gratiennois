@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
+import { redirectToLogin } from "@/lib/redirects";
 import { getServerSession } from "@/lib/auth";
 import { getArticleBySlug, getRevisionPage, listRevisionAuthors } from "@/lib/articles-store";
 import { formatDateTime } from "@/lib/constants";
@@ -41,7 +42,7 @@ function toSearchParams(raw: Record<string, string | string[] | undefined>): URL
 export default async function RevisionHistoryPage({ params, searchParams }: Props) {
   const session = await getServerSession();
   const { slug } = await params;
-  if (!session) redirect(`/connexion?next=/admin/${slug}/historique`);
+  if (!session) return redirectToLogin(`/admin/${slug}/historique`);
 
   const query = toSearchParams(await searchParams);
   const [article, page, authors] = await Promise.all([

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { redirectToLogin } from "@/lib/redirects";
 import { canWrite, getServerSession } from "@/lib/auth";
 import { ROLE_INFO } from "@/lib/types";
 import RoleBadge from "@/components/RoleBadge";
@@ -19,7 +20,7 @@ export const dynamic = "force-dynamic";
  */
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerSession();
-  if (!session) redirect("/connexion?next=/admin");
+  if (!session) return redirectToLogin("/admin");
 
   if (!canWrite(session)) {
     const info = ROLE_INFO[session.role];

@@ -19,6 +19,7 @@ import DiscordProfileCard from "@/components/DiscordProfileCard";
 import RevisionTimeline from "@/components/RevisionTimeline";
 import ReadingProgress from "@/components/ReadingProgress";
 import MobileNav from "@/components/MobileNav";
+import ClientBoundary from "@/components/ClientBoundary";
 import { isWatched, resolveRedirect } from "@/lib/features";
 import {
   CategoryFooter,
@@ -153,19 +154,22 @@ export default async function ArticlePage({ params }: Props) {
       <StatusBadges article={article} />
 
       {/* Outils de lecture et de contribution. Ils restent discrets : ce sont
-          des réglages, pas le contenu. */}
-      <div className="flex flex-wrap items-center gap-2">
-        <ReadingControls />
-        <AudioReader targetId="article" title={article.title} />
-        <HighlightShare />
-        {session && <WatchButton slug={article.slug} initial={suivi} />}
-        <Link
-          href={`/wiki/${article.slug}/imprimer`}
-          className="rounded-full border border-night-500 px-3 py-1 text-xs text-slate-300 hover:border-gold-500 hover:text-gold-200"
-        >
-          🖨 Version imprimable
-        </Link>
-      </div>
+          des réglages, pas le contenu. La barrière garantit qu'une panne d'un
+          de ces boutons ne remplace pas l'article par une page d'erreur. */}
+      <ClientBoundary>
+        <div className="flex flex-wrap items-center gap-2">
+          <ReadingControls />
+          <AudioReader targetId="article" title={article.title} />
+          <HighlightShare />
+          {session && <WatchButton slug={article.slug} initial={suivi} />}
+          <Link
+            href={`/wiki/${article.slug}/imprimer`}
+            className="rounded-full border border-night-500 px-3 py-1 text-xs text-slate-300 hover:border-gold-500 hover:text-gold-200"
+          >
+            🖨 Version imprimable
+          </Link>
+        </div>
+      </ClientBoundary>
 
       <div className="grid gap-10 xl:grid-cols-[minmax(0,1fr)_290px]">
         {/* `min-w-0` : sans lui, l'article ne peut pas rétrécir sous la largeur

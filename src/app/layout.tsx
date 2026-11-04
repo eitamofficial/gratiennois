@@ -10,6 +10,7 @@ import { verifierStore } from "@/lib/store";
 import StoreUnavailable from "@/components/StoreUnavailable";
 import Oeuf from "@/components/Oeuf";
 import Header from "@/components/Header";
+import ClientBoundary from "@/components/ClientBoundary";
 import Sidebar from "@/components/Sidebar";
 import FramedImage from "@/components/FramedImage";
 import { getSettings } from "@/lib/features";
@@ -150,7 +151,11 @@ export default async function RootLayout({
             <>
               <Sidebar />
               <main id="contenu" className="min-w-0 flex-1">
-                {children}
+                {/* Filet de sécurité global : une exception dans un composant
+                    client ne doit jamais remplacer une page par un écran
+                    d'erreur. Le contenu serveur reste affiché ; seul le
+                    composant fautif disparaît. */}
+                <ClientBoundary>{children}</ClientBoundary>
               </main>
             </>
           )}

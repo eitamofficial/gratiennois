@@ -78,18 +78,35 @@ export function ReadingControls() {
   // Les préférences vivent dans le navigateur : elles suivent la personne, pas
   // le compte, et ne nécessitent donc aucune écriture serveur.
   useEffect(() => {
-    const ambianceStockee = (localStorage.getItem("lecture-ambiance") as Ambiance) ?? "nuit";
-    const tailleStockee = (localStorage.getItem("lecture-taille") as Taille) ?? "normal";
-    setAmbiance(ambianceStockee);
-    setTaille(tailleStockee);
+    try {
+      const ambianceStockee = (localStorage.getItem("lecture-ambiance") as Ambiance) ?? "nuit";
+      const tailleStockee = (localStorage.getItem("lecture-taille") as Taille) ?? "normal";
+      setAmbiance(ambianceStockee);
+      setTaille(tailleStockee);
+    } catch {
+      /* stockage indisponible : on garde les valeurs par défaut */
+    }
   }, []);
 
   useEffect(() => {
     const racine = document.documentElement;
-    for (const option of AMBIANCES) racine.classList.toggle(option.classe, option.classe !== "" && option.id === ambiance);
-    for (const option of TAILLES) racine.classList.toggle(option.classe, option.classe !== "" && option.id === taille);
-    localStorage.setItem("lecture-ambiance", ambiance);
-    localStorage.setItem("lecture-taille", taille);
+    // `classList.toggle("")` lève une SyntaxError : le jeton vide est refusé
+    // par l'API DOM, même avec `force = false`. Les options « Nuit » et « A »
+    // n'ont pas de classe — elles représentent l'absence de classe — il faut
+    // donc les sauter, et non leur passer une chaîne vide.
+    try {
+      for (const option of AMBIANCES) {
+        if (option.classe) racine.classList.toggle(option.classe, option.id === ambiance);
+      }
+      for (const option of TAILLES) {
+        if (option.classe) racine.classList.toggle(option.classe, option.id === taille);
+      }
+      localStorage.setItem("lecture-ambiance", ambiance);
+      localStorage.setItem("lecture-taille", taille);
+    } catch {
+      // Navigation privée, stockage refusé : la préférence ne survivra pas à la
+      // page, mais elle ne doit pas faire tomber l'article.
+    }
   }, [ambiance, taille]);
 
   return (

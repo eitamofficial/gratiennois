@@ -52,7 +52,19 @@ export default function ErrorPage({
         >
           Retour à l&apos;accueil
         </a>
+        <a
+          href="/statut"
+          className="rounded-md border border-night-500 px-5 py-2.5 text-sm text-slate-300 transition hover:border-gold-500/50 hover:text-gold-200"
+        >
+          État du service
+        </a>
       </div>
+
+      <p className="mx-auto mt-6 max-w-md text-xs leading-relaxed text-slate-500">
+        Si l&apos;erreur se répète sur plusieurs pages, l&apos;incident est
+        général : la page « État du service » indique si le stockage répond et si
+        les écritures sont ouvertes.
+      </p>
     </div>
   );
 }

@@ -63,6 +63,10 @@ export const SEED_LORE_ARTICLES: Article[] = [
           value: "Premier Ministre de Gratianopolis",
         },
         {
+          label: "Sécurité du wiki",
+          value: "A2F par MP Discord, HTTPS/HSTS, sauvegardes chiffrées, filtrage des entrées",
+        },
+        {
           label: "Distinction rapportée",
           value: "Seul membre à avoir porté les boosts au niveau 3 (14 boosts)",
         },
@@ -101,6 +105,34 @@ est le résultat de ce travail : c'est précisément parce qu'il en est
 l'auteur qu'il est tenu d'en documenter la provenance — d'où la règle
 éditoriale appliquée à chaque page, qui distingue un fait documenté d'un
 récit de communauté.
+
+## La sécurité du wiki
+
+Eitam est aussi l'auteur de l'architecture de sécurité du wiki. C'est un choix
+éditorial autant que technique : une encyclopédie qui raconte l'histoire d'un
+Delphinat doit être aussi difficile à falsifier qu'à consulter.
+
+Quatre dispositions la structurent :
+
+- **double authentification** — les comptes d'édition ne s'ouvrent qu'après un
+  code à six chiffres envoyé en message privé Discord par le bot du wiki. Un mot
+  de passe volé ne suffit donc pas : il faut aussi accéder au compte Discord.
+  Les codes expirent au bout de cinq minutes, ne servent qu'une fois, et le défi
+  est détruit après cinq tentatives ;
+- **chiffrement du transport** — le site n'est servi qu'en HTTPS, avec un
+  certificat renouvelé automatiquement et une politique HSTS qui interdit au
+  navigateur de revenir au HTTP ;
+- **sauvegardes chiffrées** — le contenu, les comptes et la configuration sont
+  archivés chaque jour en AES-256, vérifiés par relecture, puis recopiés sur une
+  seconde machine. Une archive volée reste illisible ;
+- **filtrage des entrées** — le Markdown des articles est échappé avant d'être
+  converti, jamais interprété ; les liens à schéma actif et les redirections
+  vers un domaine tiers sont refusés ; les champs d'article sont bornés en
+  longueur.
+
+Le wiki est en outre tenu à jour : les dépendances sont auditées à chaque
+version, et l'API d'optimisation d'images de Next.js — que le site n'utilise
+pas — est désactivée plutôt que laissée exposée.
 
 ## Le Parti Révolutionnaire Socialiste Gratiennois
 

@@ -1,0 +1,44 @@
+#!/data/data/com.termux/files/usr/bin/bash
+# Service Termux : sauvegarde quotidienne du wiki.
+#
+# ## Pourquoi une boucle plutôt qu'un cron
+#
+# Android n'a pas de cron pour les applications ordinaires, et `termux-job-scheduler`
+# est tué quand le système décide de récupérer de la mémoire. Une boucle qui dort
+# 24 heures, elle, survit tant que Termux tourne — et Termux tourne déjà en
+# permanence puisque le wiki y est hébergé. Le service partage donc le sort du
+# site : si le wiki est en ligne, les sauvegardes tournent.
+#
+# ## Le délai initial
+#
+# On attend dix minutes après le démarrage avant la première sauvegarde. Au
+# boot, Android ouvre les services en même temps que le reste : lancer une
+# lecture complète de `data/` pendant que le sync Discord écrit dedans produit
+# une archive incohérente, et surtout inutile.
+#
+# À installer dans $PREFIX/var/service/sauvegarde/run, ou à lancer depuis le
+# script de boot.
+
+set -u
+
+: "${WIKI_DIR:=$HOME/wiki}"
+: "${SAUVEGARDE_PERIODE:=86400}"
+: "${SAUVEGARDE_DELAI:=600}"
+
+journal() {
+  printf '%s %s\n' "$(date -u '+%Y-%m-%dT%H:%M:%SZ')" "$*"
+}
+
+journal "service de sauvegarde démarré (toutes les ${SAUVEGARDE_PERIODE}s)"
+sleep "$SAUVEGARDE_DELAI"
+
+while true; do
+  if bash "$WIKI_DIR/deploy/termux/sauvegarde" >> "$HOME/sauvegarde.log" 2>&1; then
+    journal "sauvegarde quotidienne réussie"
+  else
+    # On ne quitte pas : une nuit ratée (disque plein, clé absente) doit être
+    # rattrapée le lendemain, pas transformée en service mort.
+    journal "sauvegarde en échec — voir $HOME/sauvegarde.log"
+  fi
+  sleep "$SAUVEGARDE_PERIODE"
+done

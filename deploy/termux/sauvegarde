@@ -1,0 +1,146 @@
+#!/data/data/com.termux/files/usr/bin/bash
+# Sauvegarde chiffrée du wiki.
+#
+# ## Ce qui est sauvegardé, et pourquoi ces fichiers-là
+#
+#   - `data/`            → tout le contenu éditorial, les révisions, les images
+#                          téléversées et le cache Discord. C'est le wiki.
+#   - `.env`             → la configuration du site (identifiants Discord, A2F).
+#   - `.env.secrets`     → les comptes d'édition, séparés de `.env` pour que
+#                          Next ne mange pas les `$` des empreintes scrypt.
+#   - `shared/roster.json` → le lien entre les rôles Discord et les pages.
+#
+# Ce qui n'est **pas** sauvegardé : `node_modules/`, `.next/` (reconstructibles
+# par `npm ci && npm run build`) et les PDF de `public/`, qui sont dans le
+# dépôt Git. Une sauvegarde qui embarque 400 Mo de dépendances se copie mal et
+# se teste encore moins.
+#
+# ## Pourquoi chiffrer
+#
+# L'archive contient `.env.secrets` : les empreintes des mots de passe et le
+# jeton du bot. La poser en clair sur un disque, un cloud ou une clé USB, c'est
+# déplacer le secret hors du serveur sans rien gagner. AES-256 avec une phrase
+# de passe conservée ailleurs rend l'archive inutilisable si elle fuit.
+#
+# ## La phrase de passe
+#
+# Dans `~/.sauvegarde-cle` (chmod 600), créée une fois :
+#
+#   head -c 48 /dev/urandom | base64 > ~/.sauvegarde-cle
+#   chmod 600 ~/.sauvegarde-cle
+#
+# Elle doit être **recopiée ailleurs** (gestionnaire de mots de passe) : sans
+# elle, les archives sont définitivement illisibles. C'est le principe, et
+# c'est aussi le piège — une sauvegarde dont on a perdu la clé n'est pas une
+# sauvegarde.
+#
+# ## Usage
+#
+#   bash deploy/termux/sauvegarde              # archive du jour
+#   bash deploy/termux/sauvegarde --verifier   # vérifie la dernière archive
+#
+# Code de sortie 0 si l'archive est créée **et** relue sans erreur.
+
+set -u
+
+: "${WIKI_DIR:=$HOME/wiki}"
+: "${SAUVEGARDE_DIR:=$HOME/sauvegardes}"
+: "${SAUVEGARDE_CLE:=$HOME/.sauvegarde-cle}"
+: "${SAUVEGARDE_GARDER:=14}"
+
+journal() {
+  printf '%s %s\n' "$(date -u '+%Y-%m-%dT%H:%M:%SZ')" "$*"
+}
+
+echec() {
+  printf '%s ERREUR : %s\n' "$(date -u '+%Y-%m-%dT%H:%M:%SZ')" "$*" >&2
+  exit 1
+}
+
+cd "$WIKI_DIR" || echec "répertoire introuvable : $WIKI_DIR"
+
+# ---------------------------------------------------------------------------
+# Vérification d'une archive existante
+# ---------------------------------------------------------------------------
+
+verifier() {
+  local archive="$1"
+  [ -f "$archive" ] || echec "archive absente : $archive"
+  if openssl enc -d -aes-256-cbc -pbkdf2 -pass "file:$SAUVEGARDE_CLE" -in "$archive" \
+      | tar tzf - >/dev/null 2>&1; then
+    journal "archive lisible : $(basename "$archive")"
+    return 0
+  fi
+  echec "archive illisible ou corrompue : $(basename "$archive")"
+}
+
+if [ "${1:-}" = "--verifier" ]; then
+  derniere=$(ls -1t "$SAUVEGARDE_DIR"/wiki-*.tar.gz.enc 2>/dev/null | head -1)
+  [ -n "$derniere" ] || echec "aucune archive dans $SAUVEGARDE_DIR"
+  verifier "$derniere"
+  exit 0
+fi
+
+# ---------------------------------------------------------------------------
+# Création
+# ---------------------------------------------------------------------------
+
+[ -f "$SAUVEGARDE_CLE" ] || echec "phrase de passe absente : $SAUVEGARDE_CLE (voir l'en-tête de ce script)"
+
+# Un fichier de clé lisible par tous annule le chiffrement : on refuse.
+permissions=$(stat -c '%a' "$SAUVEGARDE_CLE" 2>/dev/null || echo "?")
+case "$permissions" in
+  600|400) : ;;
+  *) echec "permissions trop larges sur $SAUVEGARDE_CLE ($permissions) — exécutez : chmod 600 $SAUVEGARDE_CLE" ;;
+esac
+
+mkdir -p "$SAUVEGARDE_DIR"
+
+horodatage=$(date -u '+%Y-%m-%d_%H%M%S')
+archive="$SAUVEGARDE_DIR/wiki-$horodatage.tar.gz.enc"
+temporaire="$archive.partiel"
+
+# Ce qui entre dans l'archive. `--warning=no-file-changed` évite un code de
+# sortie non nul quand un fichier bouge pendant la lecture — ce qui arrive : le
+# sync Discord écrit dans `data/` toutes les heures.
+INCLUS=""
+for chemin in data .env .env.secrets shared; do
+  [ -e "$chemin" ] && INCLUS="$INCLUS $chemin"
+done
+[ -n "$INCLUS" ] || echec "rien à sauvegarder dans $WIKI_DIR"
+
+journal "création de l'archive"
+# shellcheck disable=SC2086
+if ! tar czf - --warning=no-file-changed $INCLUS 2>/dev/null \
+    | openssl enc -aes-256-cbc -pbkdf2 -salt -pass "file:$SAUVEGARDE_CLE" -out "$temporaire"; then
+  rm -f "$temporaire"
+  echec "échec de la création de l'archive"
+fi
+
+# On ne publie l'archive qu'une fois relue : une sauvegarde qu'on n'a pas
+# vérifiée n'est qu'une promesse.
+if ! openssl enc -d -aes-256-cbc -pbkdf2 -pass "file:$SAUVEGARDE_CLE" -in "$temporaire" \
+    | tar tzf - >/dev/null 2>&1; then
+  rm -f "$temporaire"
+  echec "l'archive relue est corrompue — rien n'a été publié"
+fi
+
+mv "$temporaire" "$archive"
+taille=$(du -h "$archive" | cut -f1)
+journal "archive vérifiée : $archive ($taille)"
+
+# ---------------------------------------------------------------------------
+# Rotation
+# ---------------------------------------------------------------------------
+
+total=$(ls -1 "$SAUVEGARDE_DIR"/wiki-*.tar.gz.enc 2>/dev/null | wc -l)
+if [ "$total" -gt "$SAUVEGARDE_GARDER" ]; then
+  a_supprimer=$((total - SAUVEGARDE_GARDER))
+  # `ls -1t` trie du plus récent au plus ancien : la queue est la plus vieille.
+  ls -1t "$SAUVEGARDE_DIR"/wiki-*.tar.gz.enc | tail -n "$a_supprimer" | while read -r vieille; do
+    rm -f "$vieille"
+    journal "rotation : $(basename "$vieille") supprimée"
+  done
+fi
+
+journal "terminé — $SAUVEGARDE_GARDER archives conservées au maximum"

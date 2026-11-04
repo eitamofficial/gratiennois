@@ -77,8 +77,17 @@ function renderInline(escaped: string, linkMap?: Map<string, WikiLink>): string 
     .replace(
       /\[([^\]]+)\]\(([^)\s]+)\)/g,
       (_match, text: string, href: string) => {
+        // `//exemple.test` est une URL **protocole-relative** : le navigateur
+        // la traite comme `https://exemple.test`. Sans le test ci-dessous, un
+        // rédacteur peut donc fabriquer un lien qui ressemble à un lien interne
+        // et emmène ailleurs — du hameçonnage, pas de l'exécution de code, mais
+        // une redirection ouverte tout de même. `/\exemple.test` est équivalent
+        // pour la plupart des navigateurs, qui normalisent la barre oblique
+        // inverse en barre oblique.
         const isSafe =
-          /^(https?:\/\/|mailto:|\/|#)/i.test(href) && !/[\s"']/.test(href);
+          /^(https?:\/\/|mailto:|\/|#)/i.test(href) &&
+          !/[\s"']/.test(href) &&
+          !/^\/[\\/]/.test(href);
         if (!isSafe) return text;
         const external = /^https?:\/\//i.test(href);
         const attrs = external

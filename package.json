@@ -36,12 +36,13 @@
     "check:manifeste": "node scripts/check-manifeste.mjs",
     "check:sql": "node scripts/check-sql.mjs",
     "check:xss": "node scripts/check-xss.mjs",
+    "check:2fa": "node scripts/check-2fa.mjs",
     "assets:manifeste": "node scripts/generate_manifeste_pdf.mjs",
     "check:oeuf": "node scripts/check-oeuf.mjs",
     "check:oeuf:navigateur": "node scripts/check-oeuf-navigateur.mjs"
   },
   "dependencies": {
-    "next": "^15.1.6",
+    "next": "^15.5.29",
     "pdf-lib": "^1.17.1",
     "pg": "^8.23.0",
     "react": "^19.0.0",
@@ -54,7 +55,7 @@
     "@types/react-dom": "^19.0.2",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.5.23",
-    "sharp": "^0.35.4",
+    "sharp": "^0.35.5",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.7.3"
   },

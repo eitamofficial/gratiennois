@@ -14,6 +14,21 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const isMutation = request.method !== "GET" && request.method !== "HEAD";
 
+  // L'API d'optimisation d'images de Next.js est **fermée**.
+  //
+  // Le wiki n'utilise nulle part `next/image` : cette route ne sert donc à
+  // personne, mais elle reste montée par le framework. Or c'est une surface
+  // d'attaque lourde — une exécution de code à distance non authentifiée a été
+  // publiée contre elle (GHSA-2464-fhr4-w9xw, correctif 15.5.28), et d'autres
+  // suivront : elle décode des images fournies par l'appelant.
+  //
+  // On ne se contente donc pas de mettre à jour Next : on éteint la route. Une
+  // dépendance à jour protège des CVE connues, une route absente protège aussi
+  // des suivantes.
+  if (pathname.startsWith("/_next/image")) {
+    return secured(new NextResponse("Not Found", { status: 404 }), request);
+  }
+
   // Défense CSRF légère : toute mutation doit venir de notre propre origine.
   if (isMutation) {
     const origin = request.headers.get("origin");
@@ -91,6 +106,9 @@ export const config = {
   matcher: [
     // Tout, sauf les ressources statiques publiques et les artefacts Next.
     "/((?!_next/static|_next/image|media/|avatars/|.*\\.(?:png|jpg|jpeg|gif|svg|webp|ico|pdf|css|js|woff2?)$).*)",
+    // L'optimiseur d'images est exclu du motif ci-dessus pour ne pas ralentir
+    // chaque image : on le réinclut explicitement ici afin de pouvoir le fermer.
+    "/_next/image",
     // Les routes soumises à contrôle d'accès, y compris leurs fichiers.
     "/admin",
     "/admin/:path*",

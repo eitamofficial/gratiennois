@@ -324,6 +324,101 @@ tar czf ~/sauvegarde-wiki-$(date +%F).tar.gz -C ~/wiki data
 Si vous utilisez PostgreSQL, utilisez `pg_dump` — les fichiers JSON ne
 contiendraient alors rien.
 
+## Double authentification (A2F)
+
+Les comptes d'édition sont protégés par un code à six chiffres envoyé en
+**message privé Discord** par le bot du wiki.
+
+### Configuration
+
+Dans `~/wiki/.env.secrets` (jamais `.env` : Next y interprète les `$`) :
+
+```bash
+WIKI_2FA="eitam:1377681054550196295,esto:1467301113710514309+1470468669866774632"
+WIKI_2FA_RECOVERY="scrypt\$…"
+```
+
+- les entrées sont séparées par des virgules, au format `compte:idDiscord` ;
+- un compte peut porter plusieurs identifiants séparés par `+` : le code part
+  vers tous, le premier qui aboutit suffit (cas d'Esto, qui a deux comptes) ;
+- dès que `WIKI_2FA` est renseignée, **tous** les comptes de `WIKI_USERS`
+  doivent y figurer. Un compte oublié se voit refuser la connexion : un oubli
+  de configuration ne doit pas devenir une porte ouverte.
+
+Le code de secours se génère haché :
+
+```bash
+node scripts/hash-password.mjs "votre code de secours"
+```
+
+Conservez le code en clair **hors du serveur** (gestionnaire de mots de passe).
+Il sert quand Discord est injoignable ou que les MP du compte sont fermés.
+
+### Ce qui est garanti
+
+| Propriété | Mise en œuvre |
+| --- | --- |
+| Durée de vie | 5 minutes |
+| Usage | unique — le défi est détruit après succès |
+| Tentatives | 5 par défi, puis destruction |
+| Stockage | empreinte HMAC liée au défi, jamais le code |
+| Comparaison | temps constant |
+| Rejeu | impossible : l'empreinte dépend du `challengeId` |
+
+Vérification du moteur, sans navigateur :
+
+```bash
+npm run check:2fa
+```
+
+## Sauvegardes chiffrées
+
+```bash
+# Une fois : la phrase de passe, conservée AUSSI ailleurs
+head -c 48 /dev/urandom | base64 > ~/.sauvegarde-cle
+chmod 600 ~/.sauvegarde-cle
+
+# Sauvegarde manuelle
+bash deploy/termux/sauvegarde
+
+# Contrôler la dernière archive
+bash deploy/termux/sauvegarde --verifier
+```
+
+Chaque archive est **relue avant d'être publiée** : une sauvegarde non vérifiée
+n'est qu'une promesse. La rotation conserve 14 archives.
+
+Contenu : `data/`, `.env`, `.env.secrets`, `shared/`. Ni `node_modules/`, ni
+`.next/` — reconstructibles.
+
+### Planification
+
+```bash
+cp deploy/termux/run-sauvegarde $PREFIX/var/service/sauvegarde/run
+chmod +x $PREFIX/var/service/sauvegarde/run
+cp deploy/termux/env.exemple $PREFIX/var/service/sauvegarde/env
+sv-enable sauvegarde
+sv up sauvegarde
+```
+
+### Copie externe
+
+Une sauvegarde sur la machine qu'elle protège ne protège de rien. Depuis le PC,
+avec la tablette en USB :
+
+```powershell
+.\deploy\windows\recuperer-sauvegardes.ps1
+```
+
+Le script empaquette les archives sur la tablette, les rapatrie, les extrait
+dans `%USERPROFILE%\Sauvegardes\WikiGratiennois`, puis nettoie le stockage
+partagé. Planification quotidienne à 3 h :
+
+```powershell
+schtasks /Create /SC DAILY /ST 03:00 /TN "Sauvegarde wiki" ^
+  /TR "powershell -ExecutionPolicy Bypass -File \"%CD%\deploy\windows\recuperer-sauvegardes.ps1\""
+```
+
 ## Dépannage
 
 **« Caddy n'obtient pas de certificat »** — le port 80 n'atteint pas la

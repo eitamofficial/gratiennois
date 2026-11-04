@@ -216,6 +216,35 @@ console.log(
     `${CHARGES_STOCKEES.length - failles} neutralisées.`,
 );
 
+// ---------------------------------------------------------------------------
+// Redirection ouverte
+// ---------------------------------------------------------------------------
+//
+// Ce n'est pas de la XSS, mais c'est la faille voisine : un lien qui *paraît*
+// interne et emmène sur un domaine tiers. Le détecteur de balises ne la voit
+// pas — la balise est légitime —, d'où ce contrôle séparé sur le schéma.
+
+console.log("\n=== Redirections ouvertes ===\n");
+
+const REDIRECTIONS = [
+  ["protocole-relative", "[clic](//evil.test/phish)", /href\s*=\s*["']\/\//i],
+  ["barre oblique inverse", "[clic](/\\evil.test/phish)", /href\s*=\s*["']\/[\\/]/i],
+  ["schéma javascript", "[clic](javascript:alert(1))", /href\s*=\s*["'][^"']*javascript:/i],
+];
+
+let redirectionsFautives = 0;
+for (const [nom, markdown, motifInterdit] of REDIRECTIONS) {
+  const sortie = renderMarkdown(markdown);
+  if (motifInterdit.test(sortie)) {
+    console.log(`  FAILLE  ${nom} — ${sortie.slice(0, 120)}`);
+    redirectionsFautives += 1;
+    failles += 1;
+  }
+}
+if (redirectionsFautives === 0) {
+  console.log(`  ${REDIRECTIONS.length} variantes neutralisées.`);
+}
+
 if (BASE) {
   console.log(`\n=== Étage 2 : charges réfléchies sur ${BASE} ===\n`);
   let reflets = 0;

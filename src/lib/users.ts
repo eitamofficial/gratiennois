@@ -82,6 +82,17 @@ function checkPassword(candidate: string, stored: string): boolean {
   return timingSafeEqual(digest(candidate), digest(stored));
 }
 
+/**
+ * Vérifie un secret face à une valeur stockée (clair ou `scrypt$sel$empreinte`).
+ *
+ * Exporté pour que l'A2F puisse réutiliser exactement le même contrôle que les
+ * mots de passe — deux implémentations de scrypt finiraient par diverger, et
+ * c'est la plus faible des deux qui protégerait.
+ */
+export function verifyHashedSecret(candidate: string, stored: string): boolean {
+  return checkPassword(candidate, stored);
+}
+
 /** Comparaison en temps constant (SHA-256 + timingSafeEqual), scrypt si hashé. */
 export function verifyCredentials(username: string, password: string): boolean {
   const users = parseUsers();

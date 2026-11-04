@@ -543,6 +543,33 @@ export async function installSeedArticles(
 }
 
 /** Parse et normalise un payload JSON en ArticleInput ; lance ValidationError si invalide. */
+/**
+ * Bornes des champs d'un article.
+ *
+ * Le plafond global de 512 Ko (`request-security.ts`) protège la mémoire du
+ * serveur, mais il laisse passer un titre de 400 Ko : le disque se remplit, la
+ * page d'accueil devient illisible, et le sommaire explose. Chaque champ a donc
+ * sa propre limite, calée sur l'usage réel — un titre d'article est court, un
+ * contenu peut être long.
+ */
+const LIMITES_ARTICLE = {
+  titre: 200,
+  resume: 800,
+  contenu: 200_000,
+  etiquette: 60,
+  etiquettes: 40,
+  identifiantDiscord: 25,
+} as const;
+
+function borner(valeur: string, maximum: number, champ: string): string {
+  if (valeur.length > maximum) {
+    throw new ValidationError(
+      `Le champ « ${champ} » dépasse ${maximum} caractères (${valeur.length} reçus).`,
+    );
+  }
+  return valeur;
+}
+
 export function parseArticleInput(body: unknown): ArticleInput {
   if (typeof body !== "object" || body === null) {
     throw new ValidationError("Corps de requête invalide.");
@@ -550,6 +577,14 @@ export function parseArticleInput(body: unknown): ArticleInput {
   const raw = body as Record<string, unknown>;
 
   const tags = Array.isArray(raw.tags) ? raw.tags.map(String) : [];
+  if (tags.length > LIMITES_ARTICLE.etiquettes) {
+    throw new ValidationError(
+      `Un article ne peut pas porter plus de ${LIMITES_ARTICLE.etiquettes} étiquettes.`,
+    );
+  }
+  for (const etiquette of tags) {
+    borner(etiquette, LIMITES_ARTICLE.etiquette, "étiquette");
+  }
 
   let infobox: ArticleInput["infobox"];
   try {
@@ -572,13 +607,24 @@ export function parseArticleInput(body: unknown): ArticleInput {
     status = candidat as ArticleStatus;
   }
 
+  // L'identifiant Discord est repris tel quel dans le rattachement au serveur :
+  // on n'accepte que la forme d'un snowflake, jamais une chaîne libre.
+  let discordUserId: string | undefined;
+  if (typeof raw.discordUserId === "string" && raw.discordUserId.trim()) {
+    const candidat = raw.discordUserId.trim();
+    if (!/^\d{5,25}$/.test(candidat)) {
+      throw new ValidationError("Identifiant Discord invalide (chiffres uniquement).");
+    }
+    discordUserId = candidat;
+  }
+
   return {
-    title: String(raw.title ?? ""),
+    title: borner(String(raw.title ?? ""), LIMITES_ARTICLE.titre, "titre"),
     category: parseCategory(String(raw.category ?? "")),
-    summary: String(raw.summary ?? ""),
-    content: String(raw.content ?? ""),
+    summary: borner(String(raw.summary ?? ""), LIMITES_ARTICLE.resume, "résumé"),
+    content: borner(String(raw.content ?? ""), LIMITES_ARTICLE.contenu, "contenu"),
     tags,
-    discordUserId: typeof raw.discordUserId === "string" ? raw.discordUserId : undefined,
+    discordUserId,
     infobox,
     status,
   };

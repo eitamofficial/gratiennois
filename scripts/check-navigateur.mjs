@@ -85,6 +85,9 @@ let problemes = 0;
 
 for (const route of ROUTES) {
   erreurs.length = 0;
+  // Repartir d'une page blanche : sans cela, la navigation suivante peut
+  // interrompre l'hydratation en cours et produire un faux #418.
+  await page.goto("about:blank").catch(() => undefined);
   let statut = 0;
   try {
     const reponse = await page.goto(BASE + route, {

@@ -511,11 +511,56 @@ export interface Webhook {
   lastAt?: string;
 }
 
+/**
+ * Un webhook sortant doit viser l'internet public, pas le réseau local.
+ *
+ * Sans ce filtre, un compte compromis pouvait enregistrer une URL pointant vers
+ * `https://127.0.0.1:3000/...` ou vers la box : le serveur, lui, a accès au
+ * réseau interne. C'est la définition d'une requête forgée côté serveur (SSRF),
+ * et le wiki est hébergé sur une tablette posée sur ce réseau.
+ */
+export function webhookAutorise(url: string): boolean {
+  let cible: URL;
+  try {
+    cible = new URL(url);
+  } catch {
+    return false;
+  }
+  if (cible.protocol !== "https:") return false;
+
+  const hote = cible.hostname.toLowerCase().replace(/^\[|\]$/g, "");
+  if (!hote) return false;
+  if (hote === "localhost" || /\.(localhost|local|internal|home\.arpa)$/.test(hote)) return false;
+
+  // Adresses littérales privées, de bouclage, de lien local, ou de métadonnées
+  // de fournisseur cloud.
+  if (/^(\d{1,3}\.){3}\d{1,3}$/.test(hote)) {
+    const [a, b] = hote.split(".").map(Number);
+    if (
+      a === 0 ||
+      a === 10 ||
+      a === 127 ||
+      (a === 169 && b === 254) ||
+      (a === 192 && b === 168) ||
+      (a === 172 && b >= 16 && b <= 31)
+    ) {
+      return false;
+    }
+  }
+  if (hote === "::1" || /^(fc|fd|fe80)/i.test(hote)) return false;
+
+  // Un nom sans point ne se résout pas sur l'internet public.
+  return hote.includes(".") || hote.includes(":");
+}
+
 export async function listWebhooks(): Promise<Webhook[]> {
   return list<Webhook>(COLLECTIONS.webhooks);
 }
 
 export async function addWebhook(url: string, events: string[]): Promise<Webhook> {
+  if (!webhookAutorise(url)) {
+    throw new Error("Cette adresse n'est pas autorisée : un webhook doit viser un hôte public en HTTPS.");
+  }
   return add<Webhook>(COLLECTIONS.webhooks, {
     url,
     events,
@@ -531,7 +576,7 @@ export async function deleteWebhook(id: string): Promise<boolean> {
 /** Notifie les abonnés. Les échecs sont enregistrés, jamais propagés. */
 export async function fireWebhooks(event: string, payload: unknown): Promise<void> {
   const hooks = (await list<Webhook>(COLLECTIONS.webhooks)).filter(
-    (hook) => hook.active && hook.events.includes(event),
+    (hook) => hook.active && hook.events.includes(event) && webhookAutorise(hook.url),
   );
   await Promise.all(
     hooks.map(async (hook) => {

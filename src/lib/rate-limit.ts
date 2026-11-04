@@ -54,6 +54,17 @@ export function rateLimit(key: string, limit: number, windowMs: number): RateLim
 /** Adresse IP du client (meilleur effort derrière un proxy). */
 export function clientIp(request: Request): string {
   const forwarded = request.headers.get("x-forwarded-for");
-  if (forwarded) return forwarded.split(",")[0].trim();
-  return request.headers.get("x-real-ip") ?? "inconnu";
+  if (forwarded) {
+    const sauts = forwarded
+      .split(",")
+      .map((saut) => saut.trim())
+      .filter(Boolean);
+    // Le **dernier** saut est celui ajouté par notre portier. Les précédents
+    // viennent du client et sont falsifiables : les lire permettrait à un
+    // attaquant de changer d'adresse à chaque essai et de contourner le quota
+    // de connexion, qui est indexé sur cette valeur.
+    const dernier = sauts[sauts.length - 1];
+    if (dernier) return dernier;
+  }
+  return request.headers.get("x-real-ip")?.trim() || "inconnu";
 }

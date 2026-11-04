@@ -211,49 +211,71 @@
   ],
   "roleMapping": [
     {
-      "roleDiscord": "Dauphin",
+      "roleDiscord": "🐬|Dauphin",
+      "roleIds": [
+        "1551626713144889402",
+        "1560573300760117269"
+      ],
       "charge": "dauphin",
       "articleSlug": "le-dauphin",
       "libelle": "Dauphin"
     },
     {
+      "roleDiscord": "🔱|Premier Ministre",
+      "roleIds": [
+        "1551626713144889396",
+        "1563159128829071470"
+      ],
+      "charge": "premier-ministre",
+      "articleSlug": "le-gouvernement",
+      "libelle": "Premier Ministre"
+    },
+    {
       "roleDiscord": "Régent",
+      "roleIds": [],
       "charge": "regent",
       "articleSlug": "le-dauphin",
       "libelle": "Régent"
     },
     {
-      "roleDiscord": "Conseil Delphinal",
+      "roleDiscord": "🐬|Conseil Ministériel du Delphinat",
+      "roleIds": [
+        "1551626713132441686"
+      ],
       "charge": "conseil",
       "articleSlug": "le-conseil-delphinal",
       "libelle": "Conseil Delphinal"
     },
     {
       "roleDiscord": "Baillit",
+      "roleIds": [],
       "charge": "baillit",
       "articleSlug": "les-baillits",
       "libelle": "Baillit"
     },
     {
-      "roleDiscord": "Premier Ministre",
-      "charge": "premier-ministre",
-      "articleSlug": "le-gouvernement",
-      "libelle": "Premier Ministre"
-    },
-    {
-      "roleDiscord": "Ministre",
+      "roleDiscord": "🧸|Ministre",
+      "roleIds": [
+        "1551626713144889395"
+      ],
       "charge": "ministre",
       "articleSlug": "le-gouvernement",
       "libelle": "Ministre"
     },
     {
-      "roleDiscord": "Représentant de l'Assemblée",
+      "roleDiscord": "🎓|Représentant de l'Assemblé",
+      "roleIds": [
+        "1551626713132441689"
+      ],
       "charge": "representant",
       "articleSlug": "lassemblee",
       "libelle": "Représentant de l'Assemblée"
     },
     {
-      "roleDiscord": "Député",
+      "roleDiscord": "🧸|Député",
+      "roleIds": [
+        "1551626713132441688"
+      ],
       "charge": "depute",
       "articleSlug": "lassemblee",
       "libelle": "Député"

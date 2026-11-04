@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { canWrite, getServerSession, hasFullAccess } from "@/lib/auth";
 import { requestContext } from "@/lib/request-context";
+import { checkWriteRequest } from "@/lib/request-security";
+import { clientIp, rateLimit } from "@/lib/rate-limit";
 import { auditFromRequest } from "@/lib/audit";
 import {
   activeBan,
@@ -201,6 +203,19 @@ export async function POST(request: Request, { params }: Contexte) {
 
   if (await activeBan(session.username)) {
     return erreur("Ce compte est suspendu.", 403);
+  }
+  // Même garde que les routes d'articles : JSON obligatoire (ce qui bloque
+  // les formulaires tiers), taille plafonnée, et quota par compte pour qu'une
+  // session volée ne puisse pas saturer le disque.
+  const formatError = checkWriteRequest(request);
+  if (formatError) return erreur(formatError, 415);
+
+  const quota = rateLimit(`features:${session.username}`, 120, 15 * 60_000);
+  if (!quota.allowed) {
+    return NextResponse.json(
+      { error: "Trop d'écritures en peu de temps. Réessayez dans quelques minutes." },
+      { status: 429, headers: { "Retry-After": String(quota.retryAfterSeconds) } },
+    );
   }
 
   const body = await corps(request);

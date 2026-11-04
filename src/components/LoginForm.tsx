@@ -21,7 +21,14 @@ type Etape = "identifiants" | "code" | "secours";
 export default function LoginForm({ discord = false }: { discord?: boolean }) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const nextPath = searchParams.get("next") || "/admin";
+  // `next` vient de l'URL : sans contrôle, `/connexion?next=https://exemple.test`
+  // transformerait la page de connexion en tremplin vers un site tiers, avec le
+  // nom du wiki comme caution. On n'accepte qu'un chemin interne.
+  const demande = searchParams.get("next") ?? "";
+  const nextPath =
+    demande.startsWith("/") && !demande.startsWith("//") && !demande.startsWith("/\\")
+      ? demande
+      : "/admin";
 
   const [etape, setEtape] = useState<Etape>("identifiants");
   // Un retour d'OAuth arrive avec `?erreur=…` : sans ce décodage, le visiteur
@@ -31,11 +38,17 @@ export default function LoginForm({ discord = false }: { discord?: boolean }) {
     const code = searchParams.get("erreur");
     if (!code) return null;
     const messages: Record<string, string> = {
+      // Codes renvoyés par /api/auth/discord (départ).
       discord_indisponible: "La connexion Discord n'est pas configurée sur ce serveur.",
       trop_de_tentatives: "Trop de tentatives. Réessayez dans quelques minutes.",
-      session_expiree: "Votre session a expiré. Reconnectez-vous.",
+      // Codes renvoyés par /api/auth/discord/callback (retour).
+      refus: "Vous avez annulé l'autorisation Discord.",
+      session_expiree: "Le parcours a expiré. Recommencez la connexion.",
+      state_invalide: "Vérification de sécurité échouée. Recommencez la connexion.",
+      echange_refuse: "Discord a refusé l'échange du code. Vérifiez l'identifiant et le secret de l'application.",
+      secret_manquant: "Le secret client Discord n'est pas configuré sur ce serveur.",
+      profil_illisible: "Le profil Discord n'a pas pu être lu. Réessayez.",
       acces_refuse: "Ce compte Discord n'a pas de charge sur le wiki.",
-      etat_invalide: "La vérification Discord a échoué. Réessayez.",
     };
     return messages[code] ?? "La connexion a échoué. Réessayez.";
   });

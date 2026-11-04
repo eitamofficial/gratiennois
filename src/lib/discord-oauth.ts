@@ -274,6 +274,11 @@ function normalize(value: string): string {
   return value
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
+    // Les rôles du serveur sont décorés : « 🐬|Dauphin », « ==MINISTRE== »,
+    // « 🧸|Député ». Sans ce nettoyage, la comparaison par nom échouait sur
+    // tous les rôles réels — les 66 membres entraient en lecture seule.
+    .replace(/[^\p{L}\p{N}\s]/gu, " ")
+    .replace(/\s+/g, " ")
     .toLowerCase()
     .trim();
 }
@@ -297,7 +302,13 @@ export function chargeFromRoles(roleIds: string[], roleNames: string[]): UserRol
   const mapping = getRoster().roleMapping;
   const found = new Set<UserRole>();
   const ids = new Set(roleIds);
-  const noms = new Set(roleNames.map(normalize));
+  // Les rôles de séparation du serveur (« ==MINISTRE== », « ==CONSEIL== »)
+  // servent à ranger la liste des rôles : ils ne doivent jamais conférer une
+  // charge. Sans ce filtre, « ==MINISTRE== » se normalise en « ministre » et
+  // donnerait l'écriture à quiconque porte le séparateur.
+  const noms = new Set(
+    roleNames.filter((nom) => !/^\s*=/.test(nom)).map(normalize),
+  );
 
   for (const entry of mapping) {
     if (!(USER_ROLES as readonly string[]).includes(entry.charge)) continue;

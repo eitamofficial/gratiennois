@@ -67,6 +67,12 @@ export default async function AdminPage() {
             Analyse automatique
           </Link>
           <Link
+            href="/admin/import"
+            className="rounded-md border border-night-500 px-3 py-2.5 text-sm text-slate-300 transition hover:border-gold-500/50 hover:text-gold-200"
+          >
+            Importer
+          </Link>
+          <Link
             href="/admin/outils"
             className="rounded-md border border-night-500 px-3 py-2.5 text-sm text-slate-300 transition hover:border-gold-500/50 hover:text-gold-200"
           >

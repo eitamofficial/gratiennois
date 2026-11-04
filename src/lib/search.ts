@@ -1,7 +1,7 @@
 import { getPublishedArticles } from "./articles-store";
 import { CATEGORIES, type Article, type Category } from "./types";
 
-export type MatchField = "titre" | "tags" | "résumé" | "catégorie" | "contenu";
+export type MatchField = "titre" | "tags" | "résumé" | "catégorie" | "infobox" | "contenu";
 
 export interface SearchHit extends Omit<Article, "content"> {
   /** Extrait du contenu avec les termes surlignés (<mark>). */
@@ -46,6 +46,10 @@ const FIELD_WEIGHTS = {
   tagContains: 7,
   category: 6,
   summary: 5,
+  // Une valeur d'infobox est une donnée saisie exprès : « 1998 », un nom de
+  // parti, une date. Elle pèse plus que le corps du texte, où le terme peut
+  // n'apparaître qu'une fois par hasard.
+  infobox: 8,
   content: 2,
 } as const;
 
@@ -147,6 +151,9 @@ function scoreArticle(article: Article, tokens: string[]): ScoredArticle | null 
   const summary = normalizeText(article.summary);
   const content = normalizeText(article.content);
   const category = normalizeText(article.category);
+  const infobox = normalizeText(
+    (article.infobox?.fields ?? []).map((champ) => `${champ.label} ${champ.value}`).join(" "),
+  );
 
   let score = 0;
   const matchedIn = new Set<MatchField>();
@@ -176,6 +183,12 @@ function scoreArticle(article: Article, tokens: string[]): ScoredArticle | null 
     } else if (tags.some((tag) => tag.includes(token))) {
       tokenScore += FIELD_WEIGHTS.tagContains;
       matchedIn.add("tags");
+      tokenMatched = true;
+    }
+
+    if (infobox && infobox.includes(token)) {
+      tokenScore += FIELD_WEIGHTS.infobox;
+      matchedIn.add("infobox");
       tokenMatched = true;
     }
 

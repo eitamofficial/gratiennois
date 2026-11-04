@@ -96,6 +96,7 @@ export default async function PortailsPage() {
         <div className="mt-3 flex flex-wrap gap-2 text-sm">
           {[
             { href: "/repertoire", label: "Index alphabétique" },
+            { href: "/entites", label: "Entités" },
             { href: "/chronologie", label: "Chronologie" },
             { href: "/galerie", label: "Galerie" },
             { href: "/homonymie", label: "Homonymies" },

@@ -42,6 +42,7 @@ const ROUTES = [
   "/calendrier",
   "/sondages",
   "/comparer",
+  "/entites",
   "/wiki/categorie/histoire",
   "/wiki/eitam",
   "/wiki/style",

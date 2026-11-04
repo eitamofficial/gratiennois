@@ -1,6 +1,9 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { searchArticles } from "@/lib/search";
+import { getPublishedArticles } from "@/lib/articles-store";
+import { buildSemanticIndex, semanticSearch } from "@/lib/semantic";
+import type { Article } from "@/lib/types";
 import { CATEGORY_INFO } from "@/lib/constants";
 import { CATEGORIES, type Category } from "@/lib/types";
 import MobileNav from "@/components/MobileNav";
@@ -29,6 +32,20 @@ export default async function SearchPage({ searchParams }: Props) {
   const outcome = query
     ? await searchArticles(query, { category: activeCategory })
     : { results: [], facets: [], total: 0, suggestions: [] };
+
+  // Repli sémantique. La recherche littérale compare des mots ; elle ne peut pas
+  // deviner qu'un lecteur qui tape « scrutin delphinal » cherche une page
+  // intitulée « Élections de 1998 ». Quand elle ne rend rien, on interroge le
+  // corpus par proximité de vocabulaire (TF-IDF) et on propose les pages les
+  // plus proches — en le disant, plutôt qu'en faisant semblant d'avoir trouvé.
+  let proches: Article[] = [];
+  if (query && outcome.total === 0) {
+    const corpus = await getPublishedArticles();
+    const index = buildSemanticIndex(corpus);
+    proches = semanticSearch(index, query, 6)
+      .map((hit) => corpus.find((article) => article.slug === hit.slug))
+      .filter((article): article is Article => Boolean(article));
+  }
 
   return (
     <div className="space-y-8">
@@ -86,7 +103,33 @@ export default async function SearchPage({ searchParams }: Props) {
         </div>
       )}
 
-      {query && outcome.total === 0 && (
+      {query && outcome.total === 0 && proches.length > 0 && (
+        <section className="rounded-xl border border-gold-500/30 bg-night-800/50 p-6">
+          <h2 className="font-display text-lg font-semibold text-gold-200">
+            Aucun résultat exact — pages les plus proches
+          </h2>
+          <p className="mt-1 text-xs text-slate-400">
+            Ces pages ne contiennent pas vos mots, mais leur vocabulaire est
+            proche. Le classement est calculé sur le corpus entier, pas sur une
+            correspondance littérale.
+          </p>
+          <ul className="mt-3 space-y-2">
+            {proches.map((article) => (
+              <li key={article.slug}>
+                <Link
+                  href={`/wiki/${article.slug}`}
+                  className="text-sm font-medium text-slate-200 hover:text-gold-200"
+                >
+                  {article.title}
+                </Link>
+                <span className="ml-2 text-xs text-slate-500">{article.summary}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {query && outcome.total === 0 && proches.length === 0 && (
         <div className="rounded-xl border border-night-600 bg-night-800/50 p-6 text-sm text-slate-400">
           <p>Aucun article ne correspond à « {query} ».</p>
           {outcome.suggestions.length > 0 && (

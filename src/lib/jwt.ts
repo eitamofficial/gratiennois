@@ -4,23 +4,50 @@
  */
 
 export const SESSION_COOKIE_NAME = "gratianopolis_session";
-/** Durée de vie d'une session : 8 heures. */
+/** Durée de vie d'une session locale : 8 heures. */
 export const SESSION_MAX_AGE_SECONDS = 60 * 60 * 8;
+
+/**
+ * Durée de vie d'une session ouverte via Discord.
+ *
+ * Plus courte que la session locale, et pour une raison précise : le rôle d'un
+ * membre Discord est lu **au moment de la connexion**, puis figé dans le jeton.
+ * Contrairement à un compte local, dont la charge est relue dans `WIKI_USERS` à
+ * chaque requête, une rétrogradation sur le serveur ne peut pas être constatée
+ * sans réinterroger l'API Discord. Quatre heures bornent donc la fenêtre pendant
+ * laquelle un rôle retiré reste actif sur le wiki.
+ */
+export const SESSION_DISCORD_MAX_AGE_SECONDS = 60 * 60 * 4;
 
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
+
+/** Fournisseur d'identité à l'origine de la session. */
+export type SessionProvider = "local" | "discord";
 
 interface SessionTokenPayload {
   sub: string;
   role: string;
   iat: number;
   exp: number;
+  /** `local` (identifiant du wiki) ou `discord` (OAuth2). Absent = local. */
+  p?: SessionProvider;
+  /** Nom affiché, plus lisible que l'identifiant technique. */
+  dn?: string;
+  /** Photo de profil Discord (URL du CDN), si le compte en a une. */
+  av?: string;
+  /** Identifiant Discord, conservé pour rattacher l'auteur à sa fiche. */
+  did?: string;
 }
 
 export interface VerifiedSessionToken {
   username: string;
   role: string;
   exp: number;
+  provider: SessionProvider;
+  displayName: string;
+  avatarUrl: string;
+  discordUserId: string;
 }
 
 function base64UrlEncode(bytes: Uint8Array): string {
@@ -48,8 +75,22 @@ async function importKey(secret: string): Promise<CryptoKey> {
   );
 }
 
+/** Champs facultatifs d'une session : ils distinguent un compte Discord d'un compte local. */
+export interface SessionExtras {
+  provider?: SessionProvider;
+  displayName?: string;
+  avatarUrl?: string;
+  discordUserId?: string;
+  /** Durée de vie ; par défaut celle d'une session locale. */
+  maxAgeSeconds?: number;
+}
+
 /** Signe une session (identifiant + rôle) et renvoie le token JWT sérialisé. */
-export async function signSessionToken(username: string, role: string): Promise<string> {
+export async function signSessionToken(
+  username: string,
+  role: string,
+  extras: SessionExtras = {},
+): Promise<string> {
   const secret = process.env.AUTH_SECRET;
   if (!secret) throw new Error("AUTH_SECRET n'est pas défini dans l'environnement.");
 
@@ -58,8 +99,13 @@ export async function signSessionToken(username: string, role: string): Promise<
     sub: username,
     role,
     iat: issuedAt,
-    exp: issuedAt + SESSION_MAX_AGE_SECONDS,
+    exp: issuedAt + (extras.maxAgeSeconds ?? SESSION_MAX_AGE_SECONDS),
   };
+
+  if (extras.provider) payload.p = extras.provider;
+  if (extras.displayName) payload.dn = extras.displayName;
+  if (extras.avatarUrl) payload.av = extras.avatarUrl;
+  if (extras.discordUserId) payload.did = extras.discordUserId;
 
   const header = base64UrlEncode(encoder.encode(JSON.stringify({ alg: "HS256", typ: "JWT" })));
   const body = base64UrlEncode(encoder.encode(JSON.stringify(payload)));
@@ -93,7 +139,18 @@ export async function verifySessionToken(
     if (typeof payload.exp !== "number" || payload.exp * 1000 < Date.now()) return null;
     if (typeof payload.sub !== "string" || !payload.sub) return null;
     if (typeof payload.role !== "string" || !payload.role) return null;
-    return { username: payload.sub, role: payload.role, exp: payload.exp };
+
+    const provider: SessionProvider = payload.p === "discord" ? "discord" : "local";
+
+    return {
+      username: payload.sub,
+      role: payload.role,
+      exp: payload.exp,
+      provider,
+      displayName: typeof payload.dn === "string" && payload.dn ? payload.dn : payload.sub,
+      avatarUrl: typeof payload.av === "string" ? payload.av : "",
+      discordUserId: typeof payload.did === "string" ? payload.did : "",
+    };
   } catch {
     return null;
   }

@@ -52,21 +52,30 @@ next-env.d.ts
 # --- Dépendances -------------------------------------------------------------
 node_modules/
 bot/node_modules/
-delphinabot/node_modules/
+DelphinaBotV2/node_modules/
 
 # --- Artefacts des bots Discord ---------------------------------------------
 # Ni le site ni Vercel n'exécutent ces deux bots : ils tournent sur la machine
 # d'accueil, via les tâches planifiées de `deploy/windows`. Leurs dossiers de
 # travail sont donc de purs artefacts de compilation.
 #
-# `delphinabot/.env` est bien plus qu'un artefact : il contient le jeton du bot.
-# C'est le motif le plus important de ce fichier, et il est listé explicitement
-# plutôt que compté sur un `*.env` — parce qu'un motif trop général, le jour où
-# quelqu'un ajoute un `.env` ailleurs, redeviendrait une faille silencieuse.
+# `DelphinaBotV2/.env` est bien plus qu'un artefact : il contient le jeton du
+# bot. C'est le motif le plus important de ce fichier, et il est listé
+# explicitement plutôt que compté sur un `*.env` — parce qu'un motif trop
+# général, le jour où quelqu'un ajoute un `.env` ailleurs, redeviendrait une
+# faille silencieuse.
+#
+# `DelphinaBotV2/data/` (réglages, ducats, avertissements) et `bin/` (yt-dlp,
+# environ 17 Mio) sont propres à une installation : régénérés au premier
+# démarrage, jamais utiles au site. Seul le code du bot reste transmissible,
+# parce que c'est la source que cite le wiki — et que `DelphinaBotV2` est lu
+# localement par `check-manifeste`, jamais par Vercel.
 bot/dist/
-delphinabot/dist/
 bot/.env
-delphinabot/.env
+DelphinaBotV2/dist/
+DelphinaBotV2/.env
+DelphinaBotV2/data/
+DelphinaBotV2/bin/
 
 # --- Divers -----------------------------------------------------------------
 # Trace de session Neon : elle contient des jetons d'accès.

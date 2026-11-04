@@ -11,7 +11,7 @@
 #
 #   Wiki DelphinaBot — le bot Discord, au démarrage, relancé s'il tombe.
 #                     Créée seulement avec -DelphinaBot, et seulement si le
-#                     dossier delphinabot existe : une tâche qui démarre un bot
+#                     dossier DelphinaBotV2 existe : une tâche qui démarre un bot
 #                     absent ne fait que remplir le journal d'erreurs.
 #
 # Ce n'est pas « termux-services pour Windows » : le Planificateur ne relance
@@ -148,16 +148,16 @@ Creer -Nom "Wiki DuckDNS" `
 # PC, et le Planificateur ne relance pas un script qui a rendu la main. C'est
 # `demarrer-delphinabot.bat` qui boucle, exactement comme pour le wiki.
 if ($DelphinaBot) {
-  if (Test-Path "$racine\delphinabot\package.json") {
+  if (Test-Path "$racine\DelphinaBotV2\package.json") {
     Creer -Nom "Wiki DelphinaBot" `
       -Commande "`"$fenetre\demarrer-delphinabot.bat`""
     Write-Host ""
     Write-Host "  [A FAIRE] Avant de demarrer la tache, compilez le bot une fois :"
-    Write-Host "      cd delphinabot ; npm install ; npm run build"
-    Write-Host "  et renseignez delphinabot\.env (jeton, identifiant, base)."
+    Write-Host "      cd DelphinaBotV2 ; npm install"
+    Write-Host "  et renseignez DelphinaBotV2\.env (jeton, serveur, wiki)."
   }
   else {
-    Write-Host "  [A FAIRE] Dossier delphinabot absent : tache du bot non creee."
+    Write-Host "  [A FAIRE] Dossier DelphinaBotV2 absent : tache du bot non creee."
   }
 }
 

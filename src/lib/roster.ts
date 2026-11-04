@@ -30,6 +30,16 @@ interface RoleMapping {
   charge: string;
   articleSlug: string;
   libelle: string;
+  /**
+   * Identifiants des rôles Discord correspondants.
+   *
+   * Quand cette liste n'est pas vide, elle **fait autorité** : le
+   * rapprochement se fait par identifiant et le libellé n'est plus consulté.
+   * C'est la différence entre « le rôle qui s'appelle Dauphin » et « le rôle
+   * qui EST le Dauphin » — un serveur qui contient deux rôles homonymes, l'un
+   * ancien et l'autre en vigueur, ne peut pas être distingué par le nom seul.
+   */
+  roleIds: string[];
 }
 
 interface HistoryEntry {
@@ -102,6 +112,9 @@ function load(): Roster {
         charge: item.charge,
         articleSlug: typeof item.articleSlug === "string" ? item.articleSlug : "",
         libelle: typeof item.libelle === "string" ? item.libelle : item.roleDiscord,
+        roleIds: isStringArray((item as RoleMapping).roleIds)
+          ? (item as RoleMapping).roleIds.filter((id) => /^[0-9]{5,25}$/.test(id))
+          : [],
       })),
     historique: history
       .filter(

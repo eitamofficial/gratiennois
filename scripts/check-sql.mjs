@@ -10,8 +10,9 @@
  *
  *   npm run check:sql
  *
- * Le wiki (`src/`) et le bot (`delphinabot/src/`) sont analysés ensemble. Seules
- * les requêtes écrites en clair sont retenues : un SQL assemblé par
+ * Seul le wiki (`src/`) écrit du SQL. Le bot Discord (`DelphinaBotV2/`) range
+ * ses données dans un fichier JSON : il n'a aucune requête à vérifier ici.
+ * Seules les requêtes écrites en clair sont retenues : un SQL assemblé par
  * concaténation n'est pas vérifiable statiquement, et le script le dit plutôt
  * que de prétendre avoir tout couvert.
  */
@@ -19,7 +20,7 @@
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 
-const RACINES = ["src", "delphinabot/src"];
+const RACINES = ["src"];
 const EXTENSIONS = [".ts", ".tsx", ".js", ".mjs"];
 const APPELS = /\b(requete|ligne|executer|query)\s*(<[^>]*>)?\s*\(/g;
 

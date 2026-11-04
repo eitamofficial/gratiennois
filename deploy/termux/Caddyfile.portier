@@ -1,0 +1,118 @@
+# Caddyfile — portier HTTPS unique de la tablette.
+#
+# Deux domaines DuckDNS pointent vers la même IP publique et la même tablette.
+# Un seul processus peut tenir les ports 80 et 443 : c'est donc Caddy qui les
+# prend, et qui répartit selon le nom demandé (SNI / en-tête Host).
+#
+#   wiki-gratiennois.duckdns.org  → 127.0.0.1:3000  (Next.js, le wiki)
+#   syn-streaming.duckdns.org     → 127.0.0.1:3001  (SYNHUB, serveur applicatif)
+#
+# ## Pourquoi `bind 192.168.1.10`
+#
+# Android fait déjà écouter un service système sur 127.0.0.1:80 et :443. Une
+# écoute sur 0.0.0.0 échouerait en EADDRINUSE. On lie donc explicitement
+# l'adresse du réseau local, celle que la box peut joindre.
+#
+# Conséquence : cette adresse doit rester stable. Réservez 192.168.1.10 pour la
+# tablette dans les baux DHCP de la box, sinon la redirection de port pointera
+# dans le vide au prochain redémarrage.
+#
+# ## Les certificats
+#
+# Caddy obtient et renouvelle seul les certificats des deux domaines, par
+# validation HTTP-01 sur le port 80. Aucune action manuelle, aucun cron.
+# Les fichiers vivent dans /data/adb/caddy/data (voir le script de démarrage).
+
+{
+	# Pas d'API d'administration : rien à piloter à chaud, et un port de moins
+	# exposé. Un changement de configuration se fait par redémarrage du service.
+	admin off
+
+	# Let's Encrypt envoie un avis d'expiration à cette adresse en cas de
+	# problème de renouvellement. Facultatif, mais utile sur un hébergement
+	# qu'on ne surveille pas.
+	email contact@wiki-gratiennois.duckdns.org
+}
+
+# ---------------------------------------------------------------------------
+# Le wiki
+# ---------------------------------------------------------------------------
+
+wiki-gratiennois.duckdns.org {
+	bind 192.168.1.10
+	encode zstd gzip
+
+	# HTTPS forcé, en deux couches.
+	#
+	# 1. Caddy redirige déjà le port 80 vers le 443 en 308 permanent, parce que
+	#    le nom de domaine figure dans ce fichier (HTTPS automatique). Rien à
+	#    écrire pour cela : une clause `http://` dédiée entrerait en concurrence
+	#    avec le défi ACME du renouvellement de certificat.
+	# 2. HSTS ci-dessous : une fois la première visite faite en HTTPS, le
+	#    navigateur refuse de lui-même toute tentative en clair vers ce domaine.
+	#    C'est la seule partie que l'application ne peut pas assurer seule, car
+	#    elle ne voit que des requêtes déjà chiffrées par ce portier.
+	#
+	# `preload` n'a d'effet qu'après inscription sur hstspreload.org ; il est
+	# inoffensif avant, et évite d'y revenir plus tard.
+	header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
+
+	# Les autres en-têtes de sécurité (CSP, X-Frame-Options) ne sont pas posés
+	# ici : l'application les pose elle-même dans src/middleware.ts, seule à
+	# connaître le protocole réel de la requête. Les redéclarer ici créerait
+	# deux sources de vérité qui divergeraient.
+	reverse_proxy 127.0.0.1:3000 {
+		# L'application pose elle aussi un HSTS (dans src/middleware.ts). Sans
+		# cette ligne, la réponse porterait DEUX en-têtes Strict-Transport-Security
+		# — un par couche — et les analyseurs de sécurité le signalent. On retire
+		# celui de l'amont : la politique ci-dessus devient l'unique source.
+		header_down -Strict-Transport-Security
+
+		# La page d'accueil interroge le stockage à chaque visite. Sans ce
+		# délai, une lecture lente ferait expirer la requête du navigateur
+		# alors que le serveur répond encore.
+		transport http {
+			read_timeout 60s
+			write_timeout 60s
+		}
+	}
+
+	log {
+		output file /data/adb/caddy/logs/wiki.log
+		format console
+	}
+}
+
+# ---------------------------------------------------------------------------
+# SYNHUB (déjà présent sur la tablette)
+# ---------------------------------------------------------------------------
+
+syn-streaming.duckdns.org {
+	bind 192.168.1.10
+	encode zstd gzip
+
+	# Même politique HSTS que le wiki : le navigateur refuse le clair après la
+	# première visite. La redirection du port 80 vers le 443 est, ici encore,
+	# assurée automatiquement par Caddy.
+	header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
+
+	# Les flux vidéo passent en continu : on ne met rien en tampon et on ne
+	# coupe pas une requête longue. `flush_interval -1` vide le tampon à chaque
+	# écriture, ce qui évite une lecture qui saccade.
+	reverse_proxy 127.0.0.1:3001 {
+		# Même raison que pour le wiki : SYNHUB pose son propre HSTS, on garde
+		# uniquement celui de ce portier.
+		header_down -Strict-Transport-Security
+
+		flush_interval -1
+		transport http {
+			read_timeout 0
+			write_timeout 0
+		}
+	}
+
+	log {
+		output file /data/adb/caddy/logs/syn.log
+		format console
+	}
+}

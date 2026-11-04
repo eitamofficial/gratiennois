@@ -91,8 +91,8 @@ export const CREDITS = {
 export const DELPHINABOT = {
   nom: "DelphinaBot",
   resume:
-    "Bot Discord du IIIe Delphinat de Gratianopolis : sécurité, modération, anti-raid, divertissement, économie et musique. Entièrement francophone, écrit en TypeScript, hébergé sur le même serveur que ce wiki.",
-  dossier: "delphinabot",
+    "Bot Discord du IIIe Delphinat de Gratianopolis : sécurité, modération, wiki, divertissement, économie et musique. Entièrement francophone, écrit en JavaScript pour discord.js 14, hébergé sur le même serveur que ce wiki.",
+  dossier: "DelphinaBotV2",
   /** Les quatre emplacements du portail développeur Discord. */
   adresses: [
     {

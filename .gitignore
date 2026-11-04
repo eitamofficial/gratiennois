@@ -10,6 +10,8 @@ next-env.d.ts
 # Environnement (identifiants admin — ne jamais commit)
 .env
 .env*.local
+.env.secrets
+.env*.secrets
 
 # Contenu édité à l'exécution (auto-généré au premier lancement)
 data/
@@ -25,8 +27,14 @@ data/uploads/
 # Dépendances des bots Discord (le site ne les utilise pas)
 bot/node_modules/
 bot/dist/
-delphinabot/node_modules/
-delphinabot/dist/
+DelphinaBotV2/node_modules/
+
+# Données du bot (réglages, niveaux, ducats, avertissements) : propres à
+# l'installation, régénérées au premier démarrage.
+DelphinaBotV2/data/
+
+# Binaires téléchargés (yt-dlp, ~17 Mio) : chaque poste a le sien.
+DelphinaBotV2/bin/
 
 # Compilations temporaires des scripts de vérification
 .tmp-check-*/
@@ -42,3 +50,17 @@ deploy/windows/duckdns-ipv6.txt
 # Divers
 .DS_Store
 .neon
+
+# Mémoire de travail de l'assistant : notes locales, pas du contenu du wiki
+.workbuddy-ai/
+
+# Fichiers temporaires de travail
+tmp/
+*.applique
+tmp_*.py
+
+# Binaires et données d'exécution du bot
+DelphinaBotV2/bin/
+DelphinaBotV2/data/
+DelphinaBotV2/tmp/
+DelphinaBotV2/*.log

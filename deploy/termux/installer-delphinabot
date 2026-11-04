@@ -1,0 +1,199 @@
+#!/data/data/com.termux/files/usr/bin/bash
+# Installateur de DelphinaBot V2 sur Termux (tablette ou téléphone Android).
+#
+#     bash deploy/termux/installer-delphinabot
+#
+# Le script installe ce qu'il faut, vérifie que le bot peut réellement tourner
+# sur cette machine, et pose le service Termux. Il ne demande aucun droit
+# administrateur et ne modifie rien hors de Termux : le dépôt, ses dépendances
+# et le service du bot.
+#
+# Ce qu'il vérifie, et pourquoi :
+#
+#  - **Node.js 20 ou plus.** discord.js 14 refuse de tourner en dessous, avec
+#    une erreur qui ne dit pas la version.
+#  - **yt-dlp et ffmpeg présents.** Le binaire embarqué par `ffmpeg-static` est
+#    compilé pour GNU/Linux : Android ne l'exécute pas. C'est celui de Termux qui
+#    sert, et le bot le trouve tout seul dans `$PREFIX/bin` (voir le `PATH` de
+#    `src/config.js`) — encore faut-il qu'il y soit.
+#  - **Le module natif DAVE propre à la plate-forme.** `@snazzah/davey` est
+#    fourni par des paquets de plate-forme : si `npm install` a été lancé sur une
+#    autre machine, ou avant une mise à jour d'Android, la bonne variante peut
+#    manquer et Discord fermerait alors chaque connexion vocale.
+#
+# Le script est idempotent : le relancer ne casse rien.
+
+set -u
+
+RACINE="$(cd "$(dirname "$0")/../.." && pwd)"
+BOT="$RACINE/DelphinaBotV2"
+PREFIX_TERMUX="${PREFIX:-/data/data/com.termux/files/usr}"
+SERVICES="$PREFIX_TERMUX/var/service"
+
+etape() { printf '\n== %s\n' "$*"; }
+info() { printf '   %s\n' "$*"; }
+grave() { printf '\n[ERREUR] %s\n' "$*" >&2; }
+
+if [ ! -d "$BOT" ]; then
+  grave "DelphinaBotV2 est introuvable sous $RACINE."
+  info "Lancez ce script depuis le dépôt cloné, ou corrigez le chemin."
+  exit 1
+fi
+
+# ---------------------------------------------------------------------------
+# 1. Les paquets
+# ---------------------------------------------------------------------------
+
+etape "Paquets Termux"
+# `termux-services` remplace systemd : sans lui, un bot arrêté l'est jusqu'au
+# prochain redémarrage de la tablette. `termux-api` apporte termux-wake-lock.
+for paquet in nodejs-lts python ffmpeg git termux-services termux-tools; do
+  if dpkg -s "$paquet" >/dev/null 2>&1; then
+    info "$paquet : déjà installé"
+  else
+    info "installation de $paquet…"
+    pkg install -y "$paquet" || {
+      grave "l'installation de $paquet a échoué."
+      info "Vérifiez le réseau, puis relancez : pkg update && pkg install $paquet"
+      exit 1
+    }
+  fi
+done
+
+# ---------------------------------------------------------------------------
+# 2. yt-dlp
+# ---------------------------------------------------------------------------
+
+etape "yt-dlp"
+if command -v yt-dlp >/dev/null 2>&1; then
+  info "yt-dlp : $(command -v yt-dlp) — version $(yt-dlp --version 2>/dev/null)"
+else
+  # `pip install -U yt-dlp` donne une version plus fraîche que le paquet
+  # Termux, et YouTube change souvent : c'est la voie recommandée ici.
+  info "installation de yt-dlp par pip…"
+  if ! pip install -U yt-dlp; then
+    grave "pip a échoué. Essayez : pkg install yt-dlp"
+    exit 1
+  fi
+  hash -r
+  command -v yt-dlp >/dev/null 2>&1 || {
+    grave "yt-dlp reste introuvable après installation."
+    info "Fermez et rouvrez Termux, puis relancez ce script."
+    exit 1
+  }
+  info "yt-dlp : $(command -v yt-dlp)"
+fi
+
+# Le bot cherche ffmpeg dans le PATH quand celui de la dépendance npm n'est pas
+# exécutable ici : ce contrôle dit si la musique a une chance de fonctionner.
+if command -v ffmpeg >/dev/null 2>&1; then
+  info "ffmpeg : $(command -v ffmpeg)"
+else
+  grave "ffmpeg est introuvable : la musique ne pourra pas jouer."
+  info "pkg install ffmpeg"
+fi
+
+# ---------------------------------------------------------------------------
+# 3. Node et les dépendances
+# ---------------------------------------------------------------------------
+
+etape "Node.js"
+MAJEURE="$(node -p 'process.versions.node.split(".")[0]' 2>/dev/null || echo 0)"
+if [ "$MAJEURE" -lt 20 ] 2>/dev/null; then
+  grave "Node.js $MAJEURE est trop ancien : il faut la version 20 ou plus récente."
+  info "pkg install nodejs-lts"
+  exit 1
+fi
+info "Node.js $(node -v) — suffisant pour discord.js 14"
+
+etape "Dépendances du bot"
+cd "$BOT" || exit 1
+
+# Un module natif compilé pour une autre architecture que celle de la tablette
+# est pire qu'absent : il se charge puis échoue au premier appel. On le retire
+# pour forcer npm à reprendre la bonne variante.
+if [ -d node_modules/@snazzah ]; then
+  info "modules natifs DAVE retirés (ils seront repris pour cette architecture)"
+  rm -rf node_modules/@snazzah
+fi
+
+if [ -f package-lock.json ]; then
+  npm ci || npm install
+else
+  npm install
+fi
+
+# ---------------------------------------------------------------------------
+# 4. Contrôle par le bot lui-même
+# ---------------------------------------------------------------------------
+
+etape "Contrôle des dépendances"
+if [ -f .env ]; then
+  node --input-type=module -e "
+    import { lireConfiguration, avertissements } from './src/config.js';
+    import { verifierDependances } from './src/dependances.js';
+    const configuration = lireConfiguration();
+    const remarques = [...avertissements(configuration), ...verifierDependances(configuration)];
+    console.log('   yt-dlp  :', configuration.chemins.ytdlp);
+    console.log('   ffmpeg  :', configuration.chemins.ffmpeg || '(aucun)');
+    for (const remarque of remarques) console.log('   [à corriger]', remarque);
+    if (remarques.length === 0) console.log('   tout est en place.');
+  " || grave "le contrôle a échoué : lisez les lignes ci-dessus."
+else
+  info "pas encore de .env : copiez .env.example en .env, puis renseignez"
+  info "DISCORD_BOT_TOKEN et DISCORD_GUILD_ID avant de démarrer le bot."
+  cp -n "$BOT/.env.example" "$BOT/.env" 2>/dev/null && info "un .env vide vient d'être créé à partir du modèle."
+fi
+
+# ---------------------------------------------------------------------------
+# 5. Le service
+# ---------------------------------------------------------------------------
+
+etape "Service Termux delphinabot"
+mkdir -p "$SERVICES/delphinabot"
+cp "$RACINE/deploy/termux/run-delphinabot" "$SERVICES/delphinabot/run"
+chmod +x "$SERVICES/delphinabot/run"
+
+ENV_SERVICE="$SERVICES/delphinabot/env"
+if [ -f "$ENV_SERVICE" ]; then
+  info "un env existe déjà : il est conservé tel quel"
+else
+  cat > "$ENV_SERVICE" <<EOF
+# Variables du service delphinabot, lues par run-delphinabot.
+# Ce fichier décrit la machine, pas le bot : la configuration du bot reste dans
+# DelphinaBotV2/.env.
+BOT_DIR=$BOT
+BOT_RETRY=20
+BOT_WAKE=1
+EOF
+  info "env écrit : BOT_DIR=$BOT"
+fi
+
+info "activation du service…"
+# `sv-enable` n'existe pas toujours selon la version de termux-services : le
+# lien symbolique vers le répertoire d'activation fait la même chose.
+if command -v sv-enable >/dev/null 2>&1; then
+  sv-enable delphinabot >/dev/null 2>&1 || sv up delphinabot
+else
+  mkdir -p "$PREFIX_TERMUX/var/service/enabled" 2>/dev/null || true
+  sv up delphinabot 2>/dev/null || true
+fi
+
+# ---------------------------------------------------------------------------
+# Conclusion
+# ---------------------------------------------------------------------------
+
+printf '\n'
+info "─────────────────────────────────────────────────────────────"
+info "Installation terminée."
+info ""
+info "1. Renseignez $BOT/.env (jeton, serveur, wiki)."
+info "2. Enregistrez les commandes :  cd $BOT && npm run commandes"
+info "3. Démarrez :                  sv up delphinabot"
+info "4. Suivez le journal :         tail -f $SERVICES/delphinabot/log/x"
+info ""
+info "Pour survivre à l'écran éteint : termux-wake-lock, et dans les"
+info "réglages Android, « Applications → Termux → Batterie → Sans restriction »."
+info "Sur une tablette rootée, ce réglage devient permanent :"
+info "   su -c \"dumpsys deviceidle whitelist +com.termux\""
+info "─────────────────────────────────────────────────────────────"

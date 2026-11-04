@@ -1,0 +1,91 @@
+#!/data/data/com.termux/files/usr/bin/bash
+# Service Termux de DelphinaBot V2.
+#
+# À installer dans $PREFIX/var/service/delphinabot/run, puis `sv-enable delphinabot`.
+#
+# Trois particularités de Termux expliquent la forme de ce script.
+#
+# D'abord, un service doit rester au premier plan : termux-services surveille le
+# processus, et un script qui rend la main est considéré comme terminé — le
+# service s'éteindrait aussitôt. Ensuite, il n'y a pas de systemd : c'est cette
+# boucle qui relance le bot après un plantage, une coupure de réseau ou un
+# `process.exit` inattendu. La boucle du service et la boucle interne du bot ne
+# font pas double emploi : `sv` relance le script, le script relance Node.
+#
+# Enfin, Android suspend les applications en arrière-plan dès que l'écran
+# s'éteint, ce qui tuerait la connexion vocale en pleine écoute. D'où le verrou
+# d'écran (`termux-wake-lock`), repris à chaque tour : après une mise à jour de
+# Termux, il est perdu, et le bot s'arrête sans rien dire d'autre.
+#
+# Variables lues dans l'environnement du service (voir env.exemple) :
+#   BOT_DIR    répertoire de DelphinaBotV2
+#   BOT_RETRY  délai avant relance, en secondes
+#   BOT_WAKE   1 pour poser le verrou d'écran (défaut), 0 pour ne rien faire
+
+set -u
+
+: "${BOT_DIR:=$HOME/wiki/DelphinaBotV2}"
+: "${BOT_RETRY:=20}"
+: "${BOT_WAKE:=1}"
+
+journalier() {
+  printf '%s %s\n' "$(date -u '+%Y-%m-%dT%H:%M:%SZ')" "$*"
+}
+
+verrouEcran() {
+  [ "$BOT_WAKE" = "1" ] || return 0
+  if command -v termux-wake-lock >/dev/null 2>&1; then
+    termux-wake-lock 2>/dev/null && journalier "verrou d'écran posé" \
+      || journalier "verrou d'écran refusé — Android suspendra le bot à l'écran éteint"
+  else
+    journalier "termux-wake-lock introuvable : installez termux-tools"
+  fi
+}
+
+cd "$BOT_DIR" 2>/dev/null || {
+  journalier "IMPOSSIBLE d'entrer dans $BOT_DIR — corrigez BOT_DIR dans l'env du service"
+  # Sortir en erreur ferait croire à un plantage du script lui-même. La boucle
+  # ci-dessous reprend indéfiniment, et l'erreur reste visible dans le journal.
+  while true; do sleep 60; done
+}
+
+if [ ! -f .env ]; then
+  journalier "AUCUN fichier .env dans $BOT_DIR — le bot refusera de démarrer"
+  journalier "Copiez .env.example en .env, puis renseignez DISCORD_BOT_TOKEN et DISCORD_GUILD_ID."
+fi
+
+# Les trois outils sans lesquels la musique ne peut pas fonctionner. Le bot le
+# dit déjà au démarrage ; le dire ici évite de chercher dans le journal du bot
+# une panne qui se voit d'un coup d'œil sur la ligne de commande.
+for outil in node yt-dlp ffmpeg; do
+  if command -v "$outil" >/dev/null 2>&1; then
+    journalier "$outil : $(command -v "$outil")"
+  else
+    journalier "$outil INTROUVABLE — pkg install ffmpeg yt-dlp (et nodejs-lts pour node)"
+  fi
+done
+
+if command -v termux-wake-lock >/dev/null 2>&1; then
+  journalier "démarrage de DelphinaBot V2 depuis $BOT_DIR"
+fi
+
+while true; do
+  verrouEcran
+
+  npm start
+  code=$?
+
+  # Le code 1 est celui d'une configuration refusée ou d'un verrou déjà pris :
+  # relancer dans la seconde ne ferait que répéter le même message. On attend
+  # plus longtemps pour laisser le temps de corriger, sans jamais abandonner —
+  # un service Termux qui sort ne redémarre pas tout seul.
+  if [ "$code" = "1" ]; then
+    journalier "DelphinaBot s'est arrêté sur une erreur de configuration (code 1)"
+    journalier "Lisez les lignes ci-dessus : elles disent quoi corriger. Nouvel essai dans 120s."
+    sleep 120
+    continue
+  fi
+
+  journalier "DelphinaBot s'est arrêté (code $code), nouvel essai dans ${BOT_RETRY}s"
+  sleep "$BOT_RETRY"
+done

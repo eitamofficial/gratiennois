@@ -8,7 +8,7 @@
  * Une contrainte éditoriale gouverne ce fichier : rien n'y est énoncé qui ne
  * soit exécutable sur le serveur Discord du Delphinat. Chaque mesure porte un
  * opérateur et un outil, et `npm run check:manifeste` vérifie que toute
- * commande citée existe réellement dans `delphinabot/`.
+ * commande citée existe réellement dans `DelphinaBotV2/`.
  */
 
 import contenu from "@/content/manifeste-psrg.json";

@@ -7,21 +7,45 @@
     "reference": "Manifeste-PSRG.pdf",
     "resume": "Le manifeste du Parti Socialiste Révolutionnaire Gratiennois : socialisme d'État, souveraineté absolue, affirmation nationale et rejet du pacifisme, unité et ordre. Chaque décision est assortie de son mécanisme Discord et de l'outil qui l'applique."
   },
-
   "identite": [
-    { "label": "Nom complet", "valeur": "Parti Socialiste Révolutionnaire Gratiennois" },
-    { "label": "Sigle", "valeur": "PSRG" },
-    { "label": "Statut", "valeur": "Premier parti du régime du IIIe Delphinat de Gratianopolis" },
-    { "label": "Position politique", "valeur": "Pro-Esto" },
-    { "label": "Nature", "valeur": "Parti de gouvernement — il exercise le pouvoir, il ne le conteste pas" },
-    { "label": "Champ d'application", "valeur": "Le serveur Discord du Delphinat et l'encyclopédie qui l'atteste" },
-    { "label": "Outillage", "valeur": "DelphinaBot, 58 commandes, un seul processus et une seule base de données" },
-    { "label": "Autorité de référence", "valeur": "La Constitution du IIIe Delphinat, texte fondateur créé par Esto le 26/09/26" },
-    { "label": "Document de coalition", "valeur": "Programme de financement des boosts et d'outillage du wiki" }
+    {
+      "label": "Nom complet",
+      "valeur": "Parti Socialiste Révolutionnaire Gratiennois"
+    },
+    {
+      "label": "Sigle",
+      "valeur": "PSRG"
+    },
+    {
+      "label": "Statut",
+      "valeur": "Premier parti du régime du IIIe Delphinat de Gratianopolis"
+    },
+    {
+      "label": "Position politique",
+      "valeur": "Pro-Esto"
+    },
+    {
+      "label": "Nature",
+      "valeur": "Parti de gouvernement — il exercise le pouvoir, il ne le conteste pas"
+    },
+    {
+      "label": "Champ d'application",
+      "valeur": "Le serveur Discord du Delphinat et l'encyclopédie qui l'atteste"
+    },
+    {
+      "label": "Outillage",
+      "valeur": "DelphinaBot, 83 commandes, un seul processus et une seule base de données"
+    },
+    {
+      "label": "Autorité de référence",
+      "valeur": "La Constitution du IIIe Delphinat, texte fondateur créé par Esto le 26/09/26"
+    },
+    {
+      "label": "Document de coalition",
+      "valeur": "Programme de financement des boosts et d'outillage du wiki"
+    }
   ],
-
   "avertissement": "Ce manifeste ne contient aucune mesure qui ne serait pas exécutable sur le serveur Discord du Delphinat par l'un des trois acteurs connus : le bot, l'équipe de modération, ou le membre lui-même. Toute disposition qu'il énonce est une disposition d'outillage — un réglage, une commande, une permission, une cadence de contrôle. Lorsqu'une décision relève d'un arbitrage politique qui n'a pas d'ancrage technique, elle est déclarée comme telle et renvoyée aux charges constitutionnelles plutôt que présentée comme acquise.",
-
   "sections": [
     {
       "numero": "Préambule",
@@ -37,7 +61,7 @@
           "decision": "Toute ligne du manifeste doit correspondre à une commande, un réglage ou une permission réellement existants sur le serveur.",
           "mecanisme": "Rédaction contraignante : la colonne « Outil » de chaque mesure cite la commande exacte. Une mesure sans outil cité est retirée du texte.",
           "operateur": "Le parti",
-          "outil": "Les 58 commandes de DelphinaBot, inventaire reproduit en annexe I"
+          "outil": "Les 83 commandes de DelphinaBot, inventaire reproduit en annexe I"
         },
         {
           "intitule": "Le programme est l'outillage, pas l'intention",
@@ -52,7 +76,6 @@
         "Ne pas présenter une intention comme une réalisation : le wiki, le bot et le serveur sont les seules preuves recevables."
       ]
     },
-
     {
       "numero": "Article I",
       "titre": "Socialisme d'État",
@@ -111,7 +134,6 @@
         "Aucune augmentation d'un solde d'un membre sans passage par une commande journalisée."
       ]
     },
-
     {
       "numero": "Article II",
       "titre": "Souveraineté absolue",
@@ -159,9 +181,9 @@
         {
           "intitule": "L'indépendance des données du bot",
           "decision": "Le bot et le wiki partagent une base, jamais une table. Le bot ne peut pas altérer le contenu du pays.",
-          "mecanisme": "Toutes les tables de DelphinaBot sont préfixées delphinabot_. Aucune écriture du bot n'atteint une table du site. La synchronisation est signée : seule la requête authentifiée par le secret partagé est acceptée, et l'authentification utilisateur reste requise sur toutes les autres voies d'écriture.",
+          "mecanisme": "DelphinaBot n'ouvre aucune connexion à la base du wiki : il conserve ses réglages, ses niveaux, ses ducats et ses avertissements dans son propre fichier, data/delphinabot.json, écrit de façon atomique. Aucune écriture du bot n'atteint une table du site. La synchronisation est signée : seule la requête authentifiée par le secret partagé est acceptée, et l'authentification utilisateur reste requise sur toutes les autres voies d'écriture.",
           "operateur": "Le système",
-          "outil": "Préfixe de tables delphinabot_ ; secret de synchronisation vérifié côté serveur"
+          "outil": "Stockage JSON propre au bot ; secret de synchronisation vérifié côté serveur"
         },
         {
           "intitule": "L'identité du membre est adossée au pays",
@@ -177,7 +199,6 @@
         "Aucun bannissement automatique, même si la configuration l'autorise."
       ]
     },
-
     {
       "numero": "Article III",
       "titre": "Affirmation nationale et rejet du pacifisme",
@@ -244,7 +265,6 @@
         "Aucune conservation de contenu au-delà de l'extrait nécessaire."
       ]
     },
-
     {
       "numero": "Article IV",
       "titre": "Unité et Ordre",
@@ -303,7 +323,6 @@
         "Aucune règle appliquée qui ne puisse être relue par le membre concerné."
       ]
     },
-
     {
       "numero": "Article V",
       "titre": "Application, contrôle et responsabilité",
@@ -355,7 +374,6 @@
         "Aucune semaine sans audit, aucune journée sans traitement de la file de signalements."
       ]
     },
-
     {
       "numero": "Article VI",
       "titre": "Les limites assumées",
@@ -400,202 +418,875 @@
       ]
     }
   ],
-
   "annexes": [
     {
       "numero": "Annexe I",
       "titre": "Inventaire des capacités de DelphinaBot",
       "intro": "Les cinquante-huit commandes, par module et par niveau de permission. « membre » : tout membre du serveur. « modération » : l'équipe de modération. « dj » : le rôle de disqueuse. « admin » : l'administration. Cet inventaire est l'état réel du bot au jour de l'édition ; il vaut plafond de ce que le manifeste peut demander. Une commande qui n'existe pas dans le bot n'a pas sa place ici, et le dépôt le vérifie à chaque compilation.",
-      "colonnes": ["Commande", "Module", "Niveau", "Usage"],
+      "colonnes": [
+        "Commande",
+        "Module",
+        "Niveau",
+        "Usage"
+      ],
       "groupes": [
         {
-          "module": "Sécurité — 7 commandes",
+          "module": "Sécurité — 8 commandes",
           "lignes": [
-            ["/alertes", "Sécurité", "moderation", "/alertes"],
-            ["/audit", "Sécurité", "admin", "/audit"],
-            ["/configurer", "Sécurité", "admin", "/configurer <salons|roles|proteger|progression|musique|domaines|mots|afficher>"],
-            ["/deverrouiller", "Sécurité", "admin", "/deverrouiller"],
-            ["/lien", "Sécurité", "membre", "/lien <page du wiki>"],
-            ["/valider-lien", "Sécurité", "moderation", "/valider-lien <membre>"],
-            ["/verrouiller", "Sécurité", "admin", "/verrouiller [raison]"]
+            [
+              "/alertes",
+              "Sécurité",
+              "moderation",
+              "/alertes"
+            ],
+            [
+              "/audit",
+              "Sécurité",
+              "admin",
+              "/audit"
+            ],
+            [
+              "/configurer",
+              "Sécurité",
+              "admin",
+              "/configurer <voir|journal|alertes|bienvenue|depart|autorole|niveaux|recompense|silence|verifie>"
+            ],
+            [
+              "/deverrouiller",
+              "Sécurité",
+              "admin",
+              "/deverrouiller"
+            ],
+            [
+              "/lien",
+              "Sécurité",
+              "moderation",
+              "/lien <membre>"
+            ],
+            [
+              "/valider-lien",
+              "Sécurité",
+              "moderation",
+              "/valider-lien <membre>"
+            ],
+            [
+              "/verrouiller",
+              "Sécurité",
+              "admin",
+              "/verrouiller [raison]"
+            ],
+            [
+              "/wiki-etat",
+              "Sécurité",
+              "membre",
+              "/wiki-etat"
+            ]
           ]
         },
         {
-          "module": "Modération — 14 commandes",
+          "module": "Modération — 17 commandes",
           "lignes": [
-            ["/avertir", "Modération", "moderation", "/avertir <membre> [motif]"],
-            ["/bannir", "Modération", "moderation", "/bannir <identifiant> [motif]"],
-            ["/debannir", "Modération", "moderation", "/debannir <identifiant>"],
-            ["/delai", "Modération", "moderation", "/delai <membre> <durée> [motif]"],
-            ["/exclure", "Modération", "moderation", "/exclure <membre> [motif]"],
-            ["/historique", "Modération", "moderation", "/historique [membre]"],
-            ["/purger", "Modération", "moderation", "/purger [nombre]"],
-            ["/ralentir", "Modération", "moderation", "/ralentir <secondes>"],
-            ["/regles", "Modération", "membre", "/regles"],
-            ["/resoudre-signalement", "Modération", "moderation", "/resoudre-signalement <numéro> [résolu|rejeté]"],
-            ["/revoquer", "Modération", "moderation", "/revoquer <membre> [type]"],
-            ["/signalements", "Modération", "moderation", "/signalements"],
-            ["/signaler", "Modération", "membre", "/signaler <membre> [motif]"],
-            ["/sourdine", "Modération", "moderation", "/sourdine <membre> [motif]"]
+            [
+              "/avertir",
+              "Modération",
+              "moderation",
+              "/avertir <membre> [motif]"
+            ],
+            [
+              "/avertissements",
+              "Modération",
+              "moderation",
+              "/avertissements [membre]"
+            ],
+            [
+              "/bannir",
+              "Modération",
+              "moderation",
+              "/bannir <identifiant> [motif]"
+            ],
+            [
+              "/debannir",
+              "Modération",
+              "moderation",
+              "/debannir <identifiant>"
+            ],
+            [
+              "/delai",
+              "Modération",
+              "moderation",
+              "/delai <membre> <durée> [motif]"
+            ],
+            [
+              "/deplacer",
+              "Modération",
+              "moderation",
+              "/deplacer <membres>"
+            ],
+            [
+              "/exclure",
+              "Modération",
+              "moderation",
+              "/exclure <membre> [motif]"
+            ],
+            [
+              "/historique",
+              "Modération",
+              "moderation",
+              "/historique [membre]"
+            ],
+            [
+              "/purger",
+              "Modération",
+              "moderation",
+              "/purger [nombre]"
+            ],
+            [
+              "/ralentir",
+              "Modération",
+              "moderation",
+              "/ralentir <secondes>"
+            ],
+            [
+              "/regles",
+              "Modération",
+              "membre",
+              "/regles"
+            ],
+            [
+              "/resoudre-signalement",
+              "Modération",
+              "moderation",
+              "/resoudre-signalement <numéro> [résolu|rejeté]"
+            ],
+            [
+              "/retirer-avertissement",
+              "Modération",
+              "moderation",
+              "/retirer-avertissement <membre> <identifiant>"
+            ],
+            [
+              "/revoquer",
+              "Modération",
+              "moderation",
+              "/revoquer <membre> [type]"
+            ],
+            [
+              "/signalements",
+              "Modération",
+              "moderation",
+              "/signalements"
+            ],
+            [
+              "/signaler",
+              "Modération",
+              "membre",
+              "/signaler <membre> [motif]"
+            ],
+            [
+              "/sourdine",
+              "Modération",
+              "moderation",
+              "/sourdine <membre> [motif]"
+            ]
           ]
         },
         {
           "module": "Économie — 11 commandes",
           "lignes": [
-            ["/acheter", "Économie", "membre", "/acheter <article>"],
-            ["/boutique", "Économie", "membre", "/boutique"],
-            ["/classement-ducats", "Économie", "membre", "/classement-ducats"],
-            ["/donner", "Économie", "admin", "/donner <membre> <montant>"],
-            ["/epargner", "Économie", "membre", "/epargner <montant>"],
-            ["/recompense", "Économie", "membre", "/recompense"],
-            ["/retirer-epargne", "Économie", "membre", "/retirer-epargne <montant>"],
-            ["/solde", "Économie", "membre", "/solde [membre]"],
-            ["/taxer", "Économie", "moderation", "/taxer <membre> <montant> [motif]"],
-            ["/transferer", "Économie", "membre", "/transferer <membre> <montant>"],
-            ["/travailler", "Économie", "membre", "/travailler"]
+            [
+              "/acheter",
+              "Économie",
+              "membre",
+              "/acheter <article>"
+            ],
+            [
+              "/boutique",
+              "Économie",
+              "membre",
+              "/boutique"
+            ],
+            [
+              "/classement-ducats",
+              "Économie",
+              "membre",
+              "/classement-ducats"
+            ],
+            [
+              "/donner",
+              "Économie",
+              "admin",
+              "/donner <membre> <montant>"
+            ],
+            [
+              "/epargner",
+              "Économie",
+              "membre",
+              "/epargner <montant>"
+            ],
+            [
+              "/recompense",
+              "Économie",
+              "membre",
+              "/recompense"
+            ],
+            [
+              "/retirer-epargne",
+              "Économie",
+              "membre",
+              "/retirer-epargne <montant>"
+            ],
+            [
+              "/solde",
+              "Économie",
+              "membre",
+              "/solde [membre]"
+            ],
+            [
+              "/taxer",
+              "Économie",
+              "moderation",
+              "/taxer <membre> <montant> [motif]"
+            ],
+            [
+              "/transferer",
+              "Économie",
+              "membre",
+              "/transferer <membre> <montant>"
+            ],
+            [
+              "/travailler",
+              "Économie",
+              "membre",
+              "/travailler"
+            ]
           ]
         },
         {
-          "module": "Système — 6 commandes",
+          "module": "Système — 12 commandes",
           "lignes": [
-            ["/aide", "Système", "membre", "/aide [commande]"],
-            ["/bienvenue", "Système", "membre", "/bienvenue"],
-            ["/journal", "Système", "admin", "/journal"],
-            ["/simuler", "Système", "admin", "/simuler <accueil|depart|quarantaine>"],
-            ["/statistiques", "Système", "membre", "/statistiques"],
-            ["/synchroniser", "Système", "admin", "/synchroniser [page] [membre]"]
+            [
+              "/aide",
+              "Système",
+              "membre",
+              "/aide [commande]"
+            ],
+            [
+              "/bienvenue",
+              "Système",
+              "admin",
+              "/bienvenue [salon] [message] [role]"
+            ],
+            [
+              "/botinfo",
+              "Système",
+              "membre",
+              "/botinfo"
+            ],
+            [
+              "/invite",
+              "Système",
+              "membre",
+              "/invite"
+            ],
+            [
+              "/journal",
+              "Système",
+              "admin",
+              "/journal"
+            ],
+            [
+              "/page",
+              "Système",
+              "membre",
+              "/page <slug>"
+            ],
+            [
+              "/ping",
+              "Système",
+              "membre",
+              "/ping"
+            ],
+            [
+              "/simuler",
+              "Système",
+              "admin",
+              "/simuler"
+            ],
+            [
+              "/statistiques",
+              "Système",
+              "membre",
+              "/statistiques"
+            ],
+            [
+              "/support",
+              "Système",
+              "membre",
+              "/support [probleme]"
+            ],
+            [
+              "/synchroniser",
+              "Système",
+              "admin",
+              "/synchroniser [simulation]"
+            ],
+            [
+              "/wiki",
+              "Système",
+              "membre",
+              "/wiki <recherche> [categorie]"
+            ]
           ]
         },
         {
-          "module": "Divertissement — 9 commandes",
+          "module": "Divertissement — 14 commandes",
           "lignes": [
-            ["/choisir", "Divertissement", "membre", "/choisir <a | b | c>"],
-            ["/citation", "Divertissement", "membre", "/citation"],
-            ["/classement", "Divertissement", "membre", "/classement"],
-            ["/de", "Divertissement", "membre", "/de <notation> [nombre]"],
-            ["/decret", "Divertissement", "membre", "/decret"],
-            ["/niveau", "Divertissement", "membre", "/niveau [membre]"],
-            ["/pile-ou-face", "Divertissement", "membre", "/pile-ou-face"],
-            ["/quiz", "Divertissement", "membre", "/quiz"],
-            ["/reponse", "Divertissement", "membre", "/reponse <A|B|C|D>"]
+            [
+              "/bisous",
+              "Divertissement",
+              "membre",
+              "/bisous <membre>"
+            ],
+            [
+              "/calin",
+              "Divertissement",
+              "membre",
+              "/calin <membre>"
+            ],
+            [
+              "/choisir",
+              "Divertissement",
+              "membre",
+              "/choisir <a | b | c>"
+            ],
+            [
+              "/citation",
+              "Divertissement",
+              "membre",
+              "/citation"
+            ],
+            [
+              "/classement",
+              "Divertissement",
+              "membre",
+              "/classement"
+            ],
+            [
+              "/concours",
+              "Divertissement",
+              "moderation",
+              "/concours <prix> <duree> [salon]"
+            ],
+            [
+              "/de",
+              "Divertissement",
+              "membre",
+              "/de [faces] [nombre]"
+            ],
+            [
+              "/decret",
+              "Divertissement",
+              "membre",
+              "/decret"
+            ],
+            [
+              "/niveau",
+              "Divertissement",
+              "membre",
+              "/niveau [membre]"
+            ],
+            [
+              "/pile-ou-face",
+              "Divertissement",
+              "membre",
+              "/pile-ou-face"
+            ],
+            [
+              "/quiz",
+              "Divertissement",
+              "membre",
+              "/quiz"
+            ],
+            [
+              "/reponse",
+              "Divertissement",
+              "membre",
+              "/reponse"
+            ],
+            [
+              "/tirage",
+              "Divertissement",
+              "membre",
+              "/tirage [liste] [gagnants]"
+            ],
+            [
+              "/xp",
+              "Divertissement",
+              "moderation",
+              "/xp <ajouter|retirer|definir> <membre> <points>"
+            ]
           ]
         },
         {
-          "module": "Musique — 11 commandes",
+          "module": "Musique — 14 commandes",
           "lignes": [
-            ["/arreter", "Musique", "dj", "/arreter"],
-            ["/boucle", "Musique", "dj", "/boucle [aucune|piste|file]"],
-            ["/deplacer", "Musique", "dj", "/deplacer <position>"],
-            ["/en-cours", "Musique", "membre", "/en-cours"],
-            ["/file", "Musique", "membre", "/file"],
-            ["/jouer", "Musique", "dj", "/jouer <recherche ou lien> [nombre]"],
-            ["/pause", "Musique", "dj", "/pause"],
-            ["/reprendre", "Musique", "dj", "/reprendre"],
-            ["/retirer", "Musique", "dj", "/retirer <position>"],
-            ["/suivant", "Musique", "dj", "/suivant"],
-            ["/volume", "Musique", "dj", "/volume <0-100>"]
+            [
+              "/arreter",
+              "Musique",
+              "membre",
+              "/arreter [rester]"
+            ],
+            [
+              "/boucle",
+              "Musique",
+              "membre",
+              "/boucle [aucune|piste|file]"
+            ],
+            [
+              "/deplacer-morceau",
+              "Musique",
+              "membre",
+              "/deplacer-morceau <position>"
+            ],
+            [
+              "/en-cours",
+              "Musique",
+              "membre",
+              "/en-cours"
+            ],
+            [
+              "/file",
+              "Musique",
+              "membre",
+              "/file"
+            ],
+            [
+              "/jouer",
+              "Musique",
+              "membre",
+              "/jouer <recherche ou lien> [resultats]"
+            ],
+            [
+              "/lastfm",
+              "Musique",
+              "membre",
+              "/lastfm [utilisateur]"
+            ],
+            [
+              "/melanger",
+              "Musique",
+              "membre",
+              "/melanger"
+            ],
+            [
+              "/paroles",
+              "Musique",
+              "membre",
+              "/paroles [morceau]"
+            ],
+            [
+              "/pause",
+              "Musique",
+              "membre",
+              "/pause"
+            ],
+            [
+              "/reprendre",
+              "Musique",
+              "membre",
+              "/reprendre"
+            ],
+            [
+              "/retirer",
+              "Musique",
+              "membre",
+              "/retirer <position>"
+            ],
+            [
+              "/suivant",
+              "Musique",
+              "membre",
+              "/suivant"
+            ],
+            [
+              "/volume",
+              "Musique",
+              "membre",
+              "/volume <0-100>"
+            ]
+          ]
+        },
+        {
+          "module": "Utilitaires — 8 commandes",
+          "lignes": [
+            [
+              "/avatar",
+              "Utilitaires",
+              "membre",
+              "/avatar [membre] [serveur]"
+            ],
+            [
+              "/dire",
+              "Utilitaires",
+              "moderation",
+              "/dire <texte> [salon]"
+            ],
+            [
+              "/lmgtfy",
+              "Utilitaires",
+              "membre",
+              "/lmgtfy <recherche>"
+            ],
+            [
+              "/maths",
+              "Utilitaires",
+              "membre",
+              "/maths <expression>"
+            ],
+            [
+              "/meteo",
+              "Utilitaires",
+              "membre",
+              "/meteo <ville>"
+            ],
+            [
+              "/serveur",
+              "Utilitaires",
+              "membre",
+              "/serveur"
+            ],
+            [
+              "/sondage",
+              "Utilitaires",
+              "membre",
+              "/sondage <question> [propositions]"
+            ],
+            [
+              "/utilisateur",
+              "Utilitaires",
+              "membre",
+              "/utilisateur [membre]"
+            ]
           ]
         }
       ]
     },
-
     {
       "numero": "Annexe II",
       "titre": "Réglages du serveur et valeurs par défaut",
       "intro": "Ce que le serveur applique tant que l'administration n'a rien décidé autrement. Toutes ces valeurs sont modifiables par la commande de configuration, sans redémarrage, et se relisent par la commande d'affichage.",
-      "colonnes": ["Réglage", "Valeur par défaut", "Commande"],
+      "colonnes": [
+        "Réglage",
+        "Valeur par défaut",
+        "Commande"
+      ],
       "groupes": [
         {
           "module": "Défense du territoire",
           "lignes": [
-            ["Anti-raid", "activé", "/configurer proteger anti-raid:True"],
-            ["Seuil de raid", "5 arrivées", "/configurer proteger seuil-raid:5"],
-            ["Fenêtre d'observation", "10 secondes", "/configurer proteger fenetre-raid:10"],
-            ["Bannissement automatique des comptes attaquants", "désactivé — le bot ne banni jamais seul", "/configurer proteger raidBannirComptes:False"],
-            ["Âge minimum des comptes", "aucun filtre", "/configurer proteger avec raidAgeMinimumJours"]
+            [
+              "Anti-raid",
+              "activé",
+              "/configurer proteger anti-raid:True"
+            ],
+            [
+              "Seuil de raid",
+              "5 arrivées",
+              "/configurer proteger seuil-raid:5"
+            ],
+            [
+              "Fenêtre d'observation",
+              "10 secondes",
+              "/configurer proteger fenetre-raid:10"
+            ],
+            [
+              "Bannissement automatique des comptes attaquants",
+              "désactivé — le bot ne banni jamais seul",
+              "/configurer proteger raidBannirComptes:False"
+            ],
+            [
+              "Âge minimum des comptes",
+              "aucun filtre",
+              "/configurer proteger avec raidAgeMinimumJours"
+            ]
           ]
         },
         {
           "module": "Filtres de message",
           "lignes": [
-            ["Anti-mentions", "activé", "/configurer proteger anti-mentions:True"],
-            ["Mentions maximales par message", "5 — au-delà, délai de 10 minutes", "/configurer proteger max-mentions:5"],
-            ["Anti-flood", "activé", "/configurer proteger anti-flood:True"],
-            ["Messages en rafale", "8 — au-delà, délai de 5 minutes", "/configurer proteger max-flood:8"],
-            ["Anti-liens", "activé", "/configurer proteger anti-liens:True"],
-            ["Anti-mots", "activé", "/configurer proteger anti-mots:True"],
-            ["Domaines autorisés", "discord.gg, youtu.be, github.com, wiki-gratiennois.duckdns.org", "/configurer domaines <domaine>"],
-            ["Mots surveillés", "aucun", "/configurer mots <mot>"]
+            [
+              "Anti-mentions",
+              "activé",
+              "/configurer proteger anti-mentions:True"
+            ],
+            [
+              "Mentions maximales par message",
+              "5 — au-delà, délai de 10 minutes",
+              "/configurer proteger max-mentions:5"
+            ],
+            [
+              "Anti-flood",
+              "activé",
+              "/configurer proteger anti-flood:True"
+            ],
+            [
+              "Messages en rafale",
+              "8 — au-delà, délai de 5 minutes",
+              "/configurer proteger max-flood:8"
+            ],
+            [
+              "Anti-liens",
+              "activé",
+              "/configurer proteger anti-liens:True"
+            ],
+            [
+              "Anti-mots",
+              "activé",
+              "/configurer proteger anti-mots:True"
+            ],
+            [
+              "Domaines autorisés",
+              "discord.gg, youtu.be, github.com, wiki-gratiennois.duckdns.org",
+              "/configurer domaines <domaine>"
+            ],
+            [
+              "Mots surveillés",
+              "aucun",
+              "/configurer mots <mot>"
+            ]
           ]
         },
         {
           "module": "Économie et progression",
           "lignes": [
-            ["Expérience", "active", "/configurer progression xp:True"],
-            ["Multiplicateur d'expérience", "1", "/configurer progression multiplicateur-xp:1"],
-            ["Ducats gagnés par message", "1", "/configurer progression ducats:1"],
-            ["Plafond quotidien de gains", "300", "/configurer progression plafond:300"],
-            ["Économie", "active", "/configurer progression economie:True"]
+            [
+              "Expérience",
+              "active",
+              "/configurer progression xp:True"
+            ],
+            [
+              "Multiplicateur d'expérience",
+              "1",
+              "/configurer progression multiplicateur-xp:1"
+            ],
+            [
+              "Ducats gagnés par message",
+              "1",
+              "/configurer progression ducats:1"
+            ],
+            [
+              "Plafond quotidien de gains",
+              "300",
+              "/configurer progression plafond:300"
+            ],
+            [
+              "Économie",
+              "active",
+              "/configurer progression economie:True"
+            ]
           ]
         },
         {
           "module": "Salons, rôles et musique",
           "lignes": [
-            ["Salon du journal", "aucun", "/configurer salons journal #journal"],
-            ["Salon des alertes", "aucun", "/configurer salons alertes #alertes"],
-            ["Salon d'accueil", "aucun", "/configurer salons accueil #accueil"],
-            ["Salon des signalements", "aucun", "/configurer salons signalements #signalements"],
-            ["Salon des sanctions", "aucun", "/configurer salons punitions #sanctions"],
-            ["Rôle d'administration", "aucun", "/configurer roles administration @Administration"],
-            ["Rôle de modération", "aucun", "/configurer roles moderation @Moderation"],
-            ["Rôle de sourdine", "aucun", "/configurer roles sourdine @Sourdine"],
-            ["Rôle de disqueuse", "aucun", "/configurer roles dj @DJ"],
-            ["Rôle de quarantaine", "aucun", "/configurer roles quarantaine @Quarantaine"],
-            ["Rôle d'accueil", "aucun", "/configurer roles accueil @Accueil"],
-            ["Rôle de vérification", "aucun", "/configurer roles verification @Verifie"],
-            ["Rôle automatique", "aucun", "/configurer roles automatique @Membre"],
-            ["Musique", "autorisée", "/configurer musique autorisee:True"],
-            ["Volume par défaut", "40", "/configurer musique volume:40"]
+            [
+              "Salon du journal",
+              "aucun",
+              "/configurer salons journal #journal"
+            ],
+            [
+              "Salon des alertes",
+              "aucun",
+              "/configurer salons alertes #alertes"
+            ],
+            [
+              "Salon d'accueil",
+              "aucun",
+              "/configurer salons accueil #accueil"
+            ],
+            [
+              "Salon des signalements",
+              "aucun",
+              "/configurer salons signalements #signalements"
+            ],
+            [
+              "Salon des sanctions",
+              "aucun",
+              "/configurer salons punitions #sanctions"
+            ],
+            [
+              "Rôle d'administration",
+              "aucun",
+              "/configurer roles administration @Administration"
+            ],
+            [
+              "Rôle de modération",
+              "aucun",
+              "/configurer roles moderation @Moderation"
+            ],
+            [
+              "Rôle de sourdine",
+              "aucun",
+              "/configurer roles sourdine @Sourdine"
+            ],
+            [
+              "Rôle de disqueuse",
+              "aucun",
+              "/configurer roles dj @DJ"
+            ],
+            [
+              "Rôle de quarantaine",
+              "aucun",
+              "/configurer roles quarantaine @Quarantaine"
+            ],
+            [
+              "Rôle d'accueil",
+              "aucun",
+              "/configurer roles accueil @Accueil"
+            ],
+            [
+              "Rôle de vérification",
+              "aucun",
+              "/configurer roles verification @Verifie"
+            ],
+            [
+              "Rôle automatique",
+              "aucun",
+              "/configurer roles automatique @Membre"
+            ],
+            [
+              "Musique",
+              "autorisée",
+              "/configurer musique autorisee:True"
+            ],
+            [
+              "Volume par défaut",
+              "40",
+              "/configurer musique volume:40"
+            ]
           ]
         }
       ]
     },
-
     {
       "numero": "Annexe III",
       "titre": "Chaîne d'alerte et de sanction",
       "intro": "Le parcours complet d'une faute, de la détection à la levée. Chaque étape est une commande existante et une écriture journalisée.",
-      "colonnes": ["Étape", "Ce qui se passe", "Opérateur", "Outil"],
+      "colonnes": [
+        "Étape",
+        "Ce qui se passe",
+        "Opérateur",
+        "Outil"
+      ],
       "lignes": [
-        ["1. Détection", "Un filtre automatique qualifie le message : mentions en masse, rafale, lien non autorisé, terme surveillé, ou pseudo proche d'une institution.", "Le bot", "/configurer proteger"],
-        ["2. Sanction automatique", "Un délai de dix minutes, un délai de cinq minutes, ou un avertissement est appliqué et journalisé, avec son motif. Aucune exclusion, aucun bannissement.", "Le bot", "SANCTIONS du module de protection"],
-        ["3. Information du membre", "Le membre sanctionné est prévenu, motif et durée compris.", "Le bot", "Notification au membre"],
-        ["4. Escalade", "Au-delà de trois sanctions actives, une alerte part dans le salon des sanctions. C'est un signal, pas une décision.", "Le bot", "Seuil d'escalade : 3"],
-        ["5. Instruction", "La modération examine le dossier de sanctions du membre.", "La modération", "/historique <membre>"],
-        ["6. Décision", "Avertissement, délai, sourdine, exclusion ou bannissement, avec motif obligatoire.", "La modération", "/avertir, /delai, /sourdine, /exclure, /bannir"],
-        ["7. Prise de sanction pécuniaire", "La taxation prend sur le solde, jamais sur l'épargne.", "La modération", "/taxer <membre> <montant> [motif]"],
-        ["8. Trace", "L'événement est inscrit au journal du serveur, horodaté.", "Le bot", "/journal"],
-        ["9. Levée", "La sanction est levée ; la trace demeure. Un bannissement se lève même pour un compte parti.", "La modération", "/revoquer, /debannir, /sourdine"]
+        [
+          "1. Détection",
+          "Un filtre automatique qualifie le message : mentions en masse, rafale, lien non autorisé, terme surveillé, ou pseudo proche d'une institution.",
+          "Le bot",
+          "/configurer proteger"
+        ],
+        [
+          "2. Sanction automatique",
+          "Un délai de dix minutes, un délai de cinq minutes, ou un avertissement est appliqué et journalisé, avec son motif. Aucune exclusion, aucun bannissement.",
+          "Le bot",
+          "SANCTIONS du module de protection"
+        ],
+        [
+          "3. Information du membre",
+          "Le membre sanctionné est prévenu, motif et durée compris.",
+          "Le bot",
+          "Notification au membre"
+        ],
+        [
+          "4. Escalade",
+          "Au-delà de trois sanctions actives, une alerte part dans le salon des sanctions. C'est un signal, pas une décision.",
+          "Le bot",
+          "Seuil d'escalade : 3"
+        ],
+        [
+          "5. Instruction",
+          "La modération examine le dossier de sanctions du membre.",
+          "La modération",
+          "/historique <membre>"
+        ],
+        [
+          "6. Décision",
+          "Avertissement, délai, sourdine, exclusion ou bannissement, avec motif obligatoire.",
+          "La modération",
+          "/avertir, /delai, /sourdine, /exclure, /bannir"
+        ],
+        [
+          "7. Prise de sanction pécuniaire",
+          "La taxation prend sur le solde, jamais sur l'épargne.",
+          "La modération",
+          "/taxer <membre> <montant> [motif]"
+        ],
+        [
+          "8. Trace",
+          "L'événement est inscrit au journal du serveur, horodaté.",
+          "Le bot",
+          "/journal"
+        ],
+        [
+          "9. Levée",
+          "La sanction est levée ; la trace demeure. Un bannissement se lève même pour un compte parti.",
+          "La modération",
+          "/revoquer, /debannir, /sourdine"
+        ]
       ]
     },
-
     {
       "numero": "Annexe IV",
       "titre": "Répartition des charges constitutionnelles",
       "intro": "Le PSRG ne s'approprie aucun pouvoir que la Constitution ne prévoit pas. Les droits d'écriture sur l'encyclopédie sont ci-dessous tels qu'ils découlent du texte fondateur, avec la citation qui les justifie. Un membre du parti qui n'occupe aucune de ces charges n'écrit pas dans l'encyclopédie : il y contribue en participant au débat.",
-      "colonnes": ["Charge", "Droit sur le wiki", "Fondement dans la Constitution"],
+      "colonnes": [
+        "Charge",
+        "Droit sur le wiki",
+        "Fondement dans la Constitution"
+      ],
       "lignes": [
-        ["Dauphin", "Écrit, restaure et supprime", "« Le Dauphin possède tous les pouvoirs et également le droit de véto. »"],
-        ["Régent", "Écrit et restaure", "« Sa participation est obligatoire dans la création, la modification et la suppression de lois au conseil. »"],
-        ["Conseil Delphinal", "Écrit et restaure", "« Ils sont les suppléants du Dauphin, ils disposent du droit d'administration du serveur. »"],
-        ["Baillit", "Écrit et restaure", "« Ce sont les modérateurs, ils assurent une surveillance permanente du serveur. »"],
-        ["Premier Ministre", "Aucun droit d'écriture", "« Le Premier Ministre peut nommer un Gouvernement. »"],
-        ["Ministre", "Aucun droit d'écriture", "« Le Ministère est nommé par le Premier Ministre. »"],
-        ["Représentant de l'Assemblée", "Aucun droit d'écriture", "« Le Représentant de l'Assemblée représente l'assemblée de Gratianopolis. »"],
-        ["Député", "Aucun droit d'écriture", "« L'objectif des députés est de discuter des problèmes de Gratianopolis… »"]
+        [
+          "Dauphin",
+          "Écrit, restaure et supprime",
+          "« Le Dauphin possède tous les pouvoirs et également le droit de véto. »"
+        ],
+        [
+          "Régent",
+          "Écrit et restaure",
+          "« Sa participation est obligatoire dans la création, la modification et la suppression de lois au conseil. »"
+        ],
+        [
+          "Conseil Delphinal",
+          "Écrit et restaure",
+          "« Ils sont les suppléants du Dauphin, ils disposent du droit d'administration du serveur. »"
+        ],
+        [
+          "Baillit",
+          "Écrit et restaure",
+          "« Ce sont les modérateurs, ils assurent une surveillance permanente du serveur. »"
+        ],
+        [
+          "Premier Ministre",
+          "Aucun droit d'écriture",
+          "« Le Premier Ministre peut nommer un Gouvernement. »"
+        ],
+        [
+          "Ministre",
+          "Aucun droit d'écriture",
+          "« Le Ministère est nommé par le Premier Ministre. »"
+        ],
+        [
+          "Représentant de l'Assemblée",
+          "Aucun droit d'écriture",
+          "« Le Représentant de l'Assemblée représente l'assemblée de Gratianopolis. »"
+        ],
+        [
+          "Député",
+          "Aucun droit d'écriture",
+          "« L'objectif des députés est de discuter des problèmes de Gratianopolis… »"
+        ]
       ]
     }
   ],
-
   "cloture": "Le IIIe Delphinat de Gratianopolis ne demande pas à ses membres de croire en sa puissance. Il leur demande de l'organiser. Ce manifeste est cette organisation, écrite en commandes et en seuils, vérifiable par n'importe quel membre à n'importe quel moment. Ce qui n'est pas outillé n'est pas décidé. Ce qui n'est pas vérifié n'est pas cru."
 }

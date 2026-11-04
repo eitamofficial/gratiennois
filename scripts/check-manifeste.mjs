@@ -4,23 +4,29 @@
  * Une page de doctrine qui promet une commande inexistante est une page
  * fausse, et le bot est la seule source de vérité possible : on va le lire.
  * Ce contrôle échoue si le manifeste cite une commande absente de
- * `delphinabot/src/commandes`, ou si ses inventaires ne correspondent plus
+ * `DelphinaBotV2/src/commandes`, ou si ses inventaires ne correspondent plus
  * à l'état réel du bot.
  */
 
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
-const DOSSIER = "delphinabot/src/commandes";
+const DOSSIER = "DelphinaBotV2/src/commandes";
 const MANIFESTE = "src/content/manifeste-psrg.json";
 
-/** Commandes réellement déclarées par le bot. */
+/**
+ * Commandes réellement déclarées par le bot.
+ *
+ * Le bot nomme ses commandes par la propriété `nom` de chaque objet de
+ * commande : c'est une chaîne, présente une seule fois par commande, que
+ * l'on peut lire sans exécuter le code.
+ */
 function commandesDuBot() {
   const trouvees = new Set();
   for (const fichier of readdirSync(DOSSIER)) {
-    if (!fichier.endsWith(".ts")) continue;
+    if (!fichier.endsWith(".js")) continue;
     const texte = readFileSync(join(DOSSIER, fichier), "utf8");
-    for (const m of texte.matchAll(/commande\(\s*"([^"]+)"/g)) trouvees.add(m[1]);
+    for (const m of texte.matchAll(/nom:\s*"([^"]+)"/g)) trouvees.add(m[1]);
   }
   return trouvees;
 }

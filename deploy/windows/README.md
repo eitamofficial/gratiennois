@@ -280,33 +280,52 @@ même rôle.
 
 ## 9. DelphinaBot
 
-Le bot Discord du Delphinat vit dans [`delphinabot/`](../../delphinabot/) et
+Le bot Discord du Delphinat vit dans [`DelphinaBotV2/`](../../DelphinaBotV2/) et
 tourne sur cette machine, comme le wiki. C'est le même pari : un bot de cette
-taille n'a besoin d'aucun cluster, et il répond aussi vite en local.
+taille n'a besoin d'aucun cluster, et il répond aussi vite en local — ni base de
+données à part (il range ses données dans `data/delphinabot.json`), ni service
+intermédiaire.
 
 ### Ce qui n'est pas fait pour vous
 
 Aucune tâche n'est installée sans que vous le demandiez, et le dossier
-`delphinabot/` peut ne pas exister du tout sur une copie fraîche du dépôt. Le
+`DelphinaBotV2/` peut ne pas exister du tout sur une copie fraîche du dépôt. Le
 lancer à l'aveugle ne produirait qu'un journal d'erreurs toutes les vingt
 secondes.
 
 Avant la première fois :
 
 ```powershell
-cd .\delphinabot
+cd .\DelphinaBotV2
 npm install
-npm run build
 ```
 
-Puis **`delphinabot\.env`**, qui n'est jamais versionné et n'existe pas tout
+Puis **`DelphinaBotV2\.env`**, qui n'est jamais versionné et n'existe pas tout
 seul. Copiez `.env.example` et renseignez au minimum :
 
 | Variable | Rôle |
 |---|---|
 | `DISCORD_BOT_TOKEN` | le jeton du bot, dans le portail développeur |
-| `DISCORD_CLIENT_ID` | pour `npm run deploy` (enregistrement des 57 commandes) |
-| `DATABASE_URL` | la même base Neon que le wiki, ou une seconde base dédiée |
+| `DISCORD_CLIENT_ID` | pour `npm run commandes` (enregistrement des commandes) |
+| `DISCORD_GUILD_ID` | le serveur où le bot travaille |
+| `WIKI_URL` | l'adresse publique du wiki, sans barre finale |
+| `BOT_SYNC_SECRET` | le **même** secret que dans le `.env` du wiki |
+
+Deux intents privilégiés doivent être activés sur la page *Bot* du portail
+développeur, sinon la connexion est refusée : **Server Members Intent** et
+**Message Content Intent**.
+
+Le binaire `yt-dlp` est nécessaire à la musique. Il se place dans
+`DelphinaBotV2\bin\yt-dlp.exe` (ou son chemin se règle par `CHEMIN_YTDLP`) ;
+FFmpeg, lui, vient avec `ffmpeg-static`, installé par `npm install`.
+
+Le **vocal** réclame deux paquets de plus, déclarés par le dépôt et installés par
+le même `npm install` : `libsodium-wrappers` (chiffrement de l'audio) et
+`@snazzah/davey`, apporté par la couche vocale à partir de la version 0.19
+(chiffrement de bout en bout imposé par Discord). Sans eux, la connexion au salon
+s'ouvre et se referme aussitôt : la musique répond « salon vocal inaccessible »
+alors que tout le reste est en place. Le bot vérifie ces paquets au démarrage et
+le signale dans son journal.
 
 `DISCORD_CLIENT_ID` ne se copie pas : il se déduit du jeton. L'endpoint
 `GET /oauth2/applications/@me` renvoie l'identifiant d'application, qui est
@@ -322,7 +341,7 @@ signaler quoi que ce soit, puisque le bot peut tout de toute façon.
 
 La Constitution confie la surveillance aux Baillits, pas le gouvernement à
 l'outil. Le rôle porte donc les permissions nommées du `README.md` de
-`delphinabot/` : `Manage Roles`, `Manage Messages`, `Kick Members`,
+`DelphinaBotV2/` : `Manage Roles`, `Manage Messages`, `Kick Members`,
 `Ban Members`, `Moderate Members`, `Mute Members`, `Move Members`,
 `Manage Nicknames`, `View Channel`, `Send Messages`, `Embed Links`,
 `Attach Files`, `Connect`, `Speak`, `Use External Emoji`,
@@ -396,22 +415,25 @@ Le créateur du wiki et du bot y figure. Son identifiant n'est pas devinable
 depuis le serveur sans le chercher : `/aide` ne le liste pas, et le bot ne
 publie nulle part la liste de ses proprietaires.
 
-Le bot partage la base du wiki mais jamais ses tables : tout est préfixé
-`delphinabot_`. Partager `DATABASE_URL` est donc sans risque, et évite de
-payer une seconde base pour quelques tables.
+DelphinaBot V2 ne touche **pas** à la base du wiki : il range ses réglages,
+ses niveaux, ses ducats et ses avertissements dans un fichier JSON,
+`DelphinaBotV2\data\delphinabot.json`, écrit de façon atomique. C'est une
+décision, pas une économie : le bot n'a aucune requête SQL, donc aucune prise
+sur le contenu du pays. `DATABASE_URL` ne le concerne pas.
 
 ### Les deux intentions à cocher
 
 Dans le portail développeur, section **Bot → Privileged Gateway Intents** :
 
-- **Presence Intent** : nécessaire pour savoir qui a quitté un salon vocal et
-  stopper la musique abandonnée ;
-- **Server Members Intent** : nécessaire pour l'anti-raid, qui compte les
-  arrivées sur une fenêtre glissante.
+- **Server Members Intent** : sans lui, le bot ne voit ni les arrivées, ni les
+  départs, ni les rôles — donc rien du rattachement au wiki ;
+- **Message Content Intent** : sans lui, il ne lit pas le texte des messages —
+  donc ni l'expérience, ni l'épingle achetée.
 
-Sans le second, le bot démarre mais l'anti-raid ne compte rien et le laisse
-croire que tout va bien — c'est le pire des deux mondes, car la protection
-semble active. L'avertissement au démarrage vise exactement ce cas.
+Sans le premier, le bot se connecte mais les membres lui restent invisibles :
+le rattachement au wiki ne part jamais, et rien ne le signale à l'écran. Sans
+le second, la progression des niveaux reste à zéro. Le bot refuse de démarrer
+si Discord rejette ces intentions, en expliquant quoi cocher et où.
 
 ### La musique a des dépendances système
 

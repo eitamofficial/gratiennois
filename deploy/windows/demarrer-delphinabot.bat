@@ -1,6 +1,6 @@
 @echo off
 REM ============================================================================
-REM demarrer-delphinabot.bat - fait tourner DelphinaBot, et le relance s'il tombe.
+REM demarrer-delphinabot.bat - fait tourner DelphinaBot V2, et le relance s'il tombe.
 REM
 REM A installer comme tache planifiee, demarrage automatique, avec privileges
 REM eleves (voir installer-services.ps1 -DelphinaBot). N'est pas prevu pour etre
@@ -28,7 +28,7 @@ REM au-dessus. On le deduit plutot que de le coder en dur : un chemin fige
 REM dans une tache planifiee casse des que le dossier est deplace ou renomme.
 set "PROJET=%~dp0..\.."
 for %%i in ("%PROJET%") do set "PROJET=%%~fi"
-set "BOT=%PROJET%\delphinabot"
+set "BOT=%PROJET%\DelphinaBotV2"
 
 if not exist "%BOT%\package.json" goto :introuvable
 
@@ -54,38 +54,37 @@ if errorlevel 1 (
 )
 
 REM --- Configuration ---------------------------------------------------------
-REM Sans DISCORD_BOT_TOKEN, le bot refuse de demarrer et le dit en clair.
-REM On le verifie ici pour que le journal Windows indique la cause exacte,
-REM plutot que de laisser le bot se taire toutes les dix minutes.
+REM Sans DISCORD_BOT_TOKEN ni DISCORD_GUILD_ID, le bot refuse de demarrer et le
+REM dit en clair. On le verifie ici pour que le journal Windows indique la cause
+REM exacte, plutot que de laisser le bot se taire toutes les dix minutes.
 if not exist "%BOT%\.env" (
   echo [ERREUR] %BOT%\.env est absent.
   echo.
-  echo Copiez delphinabot\.env.example en delphinabot\.env et renseignez au
-  echo minimum DISCORD_BOT_TOKEN, DISCORD_CLIENT_ID et DATABASE_URL.
+  echo Copiez DelphinaBotV2\.env.example en DelphinaBotV2\.env et renseignez
+  echo DISCORD_BOT_TOKEN et DISCORD_GUILD_ID (WIKI_URL et BOT_SYNC_SECRET
+  echo pour la liaison avec le wiki).
   goto :attendre
 )
 
 REM --- FFmpeg et yt-dlp ------------------------------------------------------
-REM winget installe ces deux programmes dans le PATH de l'UTILISATEUR, jamais
-REM dans celui de la machine. La tache tourne sous SYSTEM : elle ne voit que le
-REM PATH machine, ou ffmpeg n'est pas. Sans ce bloc, tout le bot fonctionne et
-REM seule la musique manque - un echec difficile a relier a sa cause, puisque
-REM rien d'autre n'est casse.
+REM yt-dlp est livre avec le bot (DelphinaBotV2\bin\yt-dlp.exe), et FFmpeg vient
+REM de la dependance ffmpeg-static installee par npm. Aucun des deux n'est donc
+REM indispensable dans le PATH.
 REM
-REM On les cherche donc comme Caddy est cherche dans demarrer-caddy.bat, en
-REM parcourant tous les profils sous C:\Users\*, puis on exporte les chemins
-REM absolus. Le .env ne peut pas les ecraser : chargerEnv() (src/env.ts) ne
-REM remplace jamais une variable deja presente dans l'environnement.
+REM On les cherche malgre tout sous C:\Users\*, par prudence : si quelqu'un
+REM installe une version plus recente avec winget, elle sera preferee. Ce
+REM chemin est exporte dans l'environnement de la tache, et le .env ne peut pas
+REM l'ecraser : chargerEnv() (src/env.js) ne remplace jamais une variable deja
+REM presente dans l'environnement.
 set "CHEMIN_FFMPEG="
 set "CHEMIN_YTDLP="
 call :chercher_outils
 
-if not defined CHEMIN_FFMPEG echo [AVERTISSEMENT] FFmpeg est introuvable : la lecture vocale echouera.
-if not defined CHEMIN_YTDLP  echo [AVERTISSEMENT] yt-dlp est introuvable : la recherche de morceaux echouera.
+if not defined CHEMIN_YTDLP echo [INFO] yt-dlp du PATH introuvable : le bot utilisera DelphinaBotV2\bin\yt-dlp.exe.
 
 REM Le flux principal reprend ici : le bloc ci-dessous est une sous-routine, et
-REM y entrer par defilement lancerait la recherche au lieu du build.
-goto :build
+REM y entrer par defilement lancerait la recherche au lieu du demarrage.
+goto :boucle
 
 REM Cherche FFmpeg et yt-dlp, et ecrit leurs chemins dans CHEMIN_FFMPEG et
 REM CHEMIN_YTDLP.
@@ -128,7 +127,7 @@ call :dans_paquet "%LOCALAPPDATA%\Microsoft\WinGet\Packages" "%PROG%" "%EXE%"
 if defined OUTIL goto :eof
 
 for /f "delims=" %%u in ('dir /b /ad "%SystemDrive%\Users" 2^>nul') do (
-  if not defined !OUTIL! call :dans_paquet "%SystemDrive%\Users\%%u\AppData\Local\\Microsoft\WinGet\Packages" "%PROG%" "%EXE%"
+  if not defined !OUTIL! call :dans_paquet "%SystemDrive%\Users\%%u\AppData\Local\Microsoft\WinGet\Packages" "%PROG%" "%EXE%"
 )
 if defined OUTIL goto :eof
 
@@ -148,28 +147,18 @@ for /f "delims=" %%d in ('dir /b /ad "%~1\%~2*" 2^>nul') do (
 )
 goto :eof
 
-REM Le bot s'execute depuis dist\, produit par `npm run build`. Si le PC a
-REM redemarre sans que la compilation ait eu lieu, le demarrage echouerait sur
-REM un module introuvable. On compile donc au besoin, et on repete tant que
-REM l'echec persiste : une compilation cassee ne doit pas empecher la tache de
-REM redemarrer plus tard, une fois le probleme corrige.
-:build
-if exist "%BOT%\dist\index.js" goto :boucle
-echo [INFO] Pas de compilation prealable, lancement du build...
-call npm run build
-if not errorlevel 1 goto :boucle
-echo [ERREUR] La compilation a echoue. Nouvelle tentative dans 60s.
-timeout /t 60 /nobreak > nul
-
 REM --- Boucle ----------------------------------------------------------------
 REM Windows n'a pas d'equivalent de termux-services : c'est cette boucle qui
 REM relance le bot s'il s'arrete, comme pour le wiki et pour Caddy.
+REM
+REM DelphinaBot V2 est ecrit en JavaScript directement executable : il n'y a
+REM plus de compilation prealable, `npm start` suffit.
 :boucle
-echo [INFO] DelphinaBot demarre depuis %BOT%
+echo [INFO] DelphinaBot V2 demarre depuis %BOT%
 if defined CHEMIN_FFMPEG echo [INFO] ffmpeg  : %CHEMIN_FFMPEG%
-if defined CHEMIN_YTDLP echo [INFO] yt-dlp : %CHEMIN_YTDLP%
+if defined CHEMIN_YTDLP echo [INFO] yt-dlp  : %CHEMIN_YTDLP%
 call npm start
-echo [INFO] DelphinaBot s'est arrete (code %ERRORLEVEL%). Nouvelle tentative dans 20s.
+echo [INFO] DelphinaBot V2 s'est arrete (code %ERRORLEVEL%). Nouvelle tentative dans 20s.
 timeout /t 20 /nobreak > nul
 goto :boucle
 
@@ -179,7 +168,7 @@ REM Planificateur de taches en attente indefiniment, et l'arret suivant de
 REM Windows ne serait plus jamais propre. On affiche, on attend, on sort avec
 REM un code de succes pour que l'evenement paraisse normal.
 :introuvable
-echo [ERREUR] Le dossier delphinabot est introuvable sous %PROJET%.
+echo [ERREUR] Le dossier DelphinaBotV2 est introuvable sous %PROJET%.
 goto :attendre
 
 :attendre

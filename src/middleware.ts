@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { SESSION_COOKIE_NAME, verifySessionToken } from "@/lib/jwt";
+import { requestOrigin } from "@/lib/site-url";
 import {
   applySecurityHeaders,
   contentSecurityPolicyValue,
@@ -97,10 +98,13 @@ export async function middleware(request: NextRequest) {
 
   // Pages d'administration → redirection vers la connexion.
   if (pathname === "/admin" || pathname.startsWith("/admin/")) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/connexion";
-    url.search = `?next=${encodeURIComponent(pathname)}`;
-    return secured(NextResponse.redirect(url));
+    // `request.nextUrl` porte l'adresse **interne** du serveur : derrière le
+    // portier, c'est `127.0.0.1:3000`, et le navigateur recevait un
+    // `Location: https://localhost:3000/connexion` qui ne mène nulle part
+    // ailleurs que sur la tablette. On repart de l'origine publique.
+    const origine = requestOrigin(request.headers);
+    const cible = `${origine}/connexion?next=${encodeURIComponent(pathname)}`;
+    return secured(NextResponse.redirect(cible));
   }
 
   // Synchronisation Discord, installation du jeu de données et flux d'activité

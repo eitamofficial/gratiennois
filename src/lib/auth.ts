@@ -37,6 +37,19 @@ export function isDauphin(session: Session | null): boolean {
   return session ? ROLE_INFO[session.role].isDauphin : false;
 }
 
+/**
+ * Accès complet : suppression, synchronisation Discord, jeu de données et
+ * modération des commentaires. Porté par le Dauphin **et** le Premier Ministre.
+ */
+export function hasFullAccess(session: Session | null): boolean {
+  return session ? ROLE_INFO[session.role].fullAccess : false;
+}
+
+/** Écriture de commentaires : tout compte connecté, quelle que soit sa charge. */
+export function canComment(session: Session | null): boolean {
+  return Boolean(session);
+}
+
 export const SESSION_COOKIE_OPTIONS = {
   httpOnly: true,
   sameSite: "lax",

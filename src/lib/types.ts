@@ -38,6 +38,15 @@ export interface RoleInfo {
   canWrite: boolean;
   /** Peut en outre supprimer un article et lancer la synchronisation Discord. */
   isDauphin: boolean;
+  /**
+   * Accès complet : suppression, synchronisation Discord, jeu de données et
+   * modération des commentaires. Porté par le Dauphin et le Premier Ministre.
+   *
+   * Doublonne `isDauphin` volontairement : le nom historique est conservé pour
+   * les routes existantes, et `fullAccess` décrit mieux ce qu'il recouvre
+   * désormais (les commentaires n'existaient pas quand il a été nommé).
+   */
+  fullAccess: boolean;
 }
 
 export const ROLE_INFO: Record<UserRole, RoleInfo> = {
@@ -46,48 +55,60 @@ export const ROLE_INFO: Record<UserRole, RoleInfo> = {
     basis: "« Le Dauphin possède tous les pouvoirs et également le droit de véto. »",
     canWrite: true,
     isDauphin: true,
+    fullAccess: true,
   },
   regent: {
     label: "Régent",
     basis: "« Sa participation est obligatoire dans la création, la modification et la suppression de lois au conseil. »",
     canWrite: true,
     isDauphin: false,
+    fullAccess: false,
   },
   conseil: {
     label: "Conseil Delphinal",
     basis: "« Ils sont les suppléants du Dauphin, ils disposent du droit d'administration du serveur. »",
     canWrite: true,
     isDauphin: false,
+    fullAccess: false,
   },
   baillit: {
     label: "Baillit",
     basis: "« Ce sont les modérateurs, ils assurent une surveillance permanente du serveur. »",
     canWrite: true,
     isDauphin: false,
+    fullAccess: false,
   },
   "premier-ministre": {
     label: "Premier Ministre",
     basis: "« Le Premier Ministre peut nommer un Gouvernement. »",
-    canWrite: false,
+    // Le Premier Ministre écrit : sans cela, le chef du Gouvernement ne peut
+    // pas ouvrir l'espace d'édition du wiki qu'il administre, ce qui rendait la
+    // fonction inutilisable pour son titulaire. Il conserve en outre l'accès
+    // complet (suppression, synchronisation, modération des commentaires).
+    canWrite: true,
     isDauphin: false,
+    fullAccess: true,
   },
   ministre: {
     label: "Ministre",
     basis: "« Le Ministère est nommé par le Premier Ministre. »",
     canWrite: false,
     isDauphin: false,
+    fullAccess: false,
   },
   representant: {
     label: "Représentant de l'Assemblée",
     basis: "« Le Représentant de l'Assemblée représente l'assemblée de Gratianopolis. »",
     canWrite: false,
     isDauphin: false,
+    fullAccess: false,
   },
   depute: {
     label: "Député",
     basis: "« L'objectif des députés est de discuter des problème de Gratianopolis… »",
     canWrite: false,
     isDauphin: false,
+    fullAccess: false,
   },
 };
 

@@ -152,11 +152,12 @@ qui évite qu'une page du wiki serve à charger un contenu tiers.
 
 ### Qui peut écrire
 
-Quatre charges disposent du droit d'écriture, par ordre de l'article P-1 :
-**Dauphin**, **Régent**, **Conseil Delphinal** et **Baillit**. Les autres —
-Premier Ministre, ministre, représentant de l'Assemblée, député — consultent le
-wiki sans le modifier. La répartition n'est pas une règle du logiciel : elle
-recopie la hiérarchie constitutionnelle.
+Cinq charges disposent du droit d'écriture : **Dauphin**, **Régent**,
+**Conseil Delphinal**, **Baillit** et **Premier Ministre**. Les autres —
+ministre, représentant de l'Assemblée, député — consultent le wiki sans le
+modifier. Le Dauphin et le Premier Ministre disposent en outre de l'accès
+complet : suppression d'article, synchronisation Discord et modération des
+commentaires.
 
 ### Les modèles de page
 

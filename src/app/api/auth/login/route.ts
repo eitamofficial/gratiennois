@@ -96,7 +96,7 @@ export async function POST(request: Request) {
   // A2F désactivée : comportement historique.
   // -------------------------------------------------------------------------
   if (!twoFactorEnabled()) {
-    const token = await signSessionToken(username, role);
+    const token = await signSessionToken(username, role, { provider: "local" });
     const response = NextResponse.json({ ok: true, role, twoFactor: false });
     response.cookies.set(SESSION_COOKIE_NAME, token, SESSION_COOKIE_OPTIONS);
     return response;

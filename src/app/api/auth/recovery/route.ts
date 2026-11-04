@@ -85,7 +85,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Ce compte n'existe plus." }, { status: 401 });
   }
 
-  const token = await signSessionToken(username, role);
+  const token = await signSessionToken(username, role, { provider: "local" });
   const response = NextResponse.json({ ok: true, role, viaRecovery: true });
   response.cookies.set(SESSION_COOKIE_NAME, token, SESSION_COOKIE_OPTIONS);
   return response;

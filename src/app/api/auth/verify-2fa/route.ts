@@ -84,7 +84,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const token = await signSessionToken(resultat.username, role);
+  const token = await signSessionToken(resultat.username, role, { provider: "local" });
   const response = NextResponse.json({ ok: true, role });
   response.cookies.set(SESSION_COOKIE_NAME, token, SESSION_COOKIE_OPTIONS);
   return response;

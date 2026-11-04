@@ -241,9 +241,22 @@ export function parseCategory(value: string): Category {
   return (CATEGORIES as readonly string[]).includes(value) ? (value as Category) : "histoire";
 }
 
+/**
+ * Fuseau d'affichage, fixé volontairement.
+ *
+ * Sans lui, le serveur formate en UTC et le navigateur en heure locale : deux
+ * textes différents pour la même date, donc un conflit d'hydratation React
+ * (#418) sur toute page qui affiche une heure. Le Delphinat est à Paris ;
+ * l'affichage l'est aussi, quel que soit l'endroit d'où l'on consulte.
+ */
+export const FUSEAU = "Europe/Paris";
+
 export function formatDate(iso: string): string {
   try {
-    return new Intl.DateTimeFormat("fr-FR", { dateStyle: "long" }).format(new Date(iso));
+    return new Intl.DateTimeFormat("fr-FR", {
+      dateStyle: "long",
+      timeZone: FUSEAU,
+    }).format(new Date(iso));
   } catch {
     return iso;
   }
@@ -254,6 +267,7 @@ export function formatDateTime(iso: string): string {
     return new Intl.DateTimeFormat("fr-FR", {
       dateStyle: "long",
       timeStyle: "short",
+      timeZone: FUSEAU,
     }).format(new Date(iso));
   } catch {
     return iso;

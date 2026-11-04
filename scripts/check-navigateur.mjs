@@ -44,6 +44,9 @@ const ROUTES = [
   "/comparer",
   "/wiki/categorie/histoire",
   "/wiki/eitam",
+  "/wiki/style",
+  "/wiki/veynav",
+  "/wiki/la-constitution",
   "/wiki/eitam/versions",
   "/wiki/eitam/imprimer",
   "/connexion",
@@ -85,11 +88,11 @@ for (const route of ROUTES) {
   let statut = 0;
   try {
     const reponse = await page.goto(BASE + route, {
-      waitUntil: "domcontentloaded",
+      waitUntil: "load",
       timeout: 45_000,
     });
     statut = reponse?.status() ?? 0;
-    await page.waitForTimeout(350);
+    await page.waitForTimeout(700);
   } catch (erreur) {
     erreurs.push(`navigation : ${String(erreur?.message ?? erreur).slice(0, 120)}`);
   }

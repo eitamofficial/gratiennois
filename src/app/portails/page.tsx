@@ -95,7 +95,7 @@ export default async function PortailsPage() {
         <h2 className="font-display text-lg font-semibold text-gold-200">Autres entrées</h2>
         <div className="mt-3 flex flex-wrap gap-2 text-sm">
           {[
-            { href: "/index", label: "Index alphabétique" },
+            { href: "/repertoire", label: "Index alphabétique" },
             { href: "/chronologie", label: "Chronologie" },
             { href: "/galerie", label: "Galerie" },
             { href: "/homonymie", label: "Homonymies" },

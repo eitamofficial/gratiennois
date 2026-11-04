@@ -6,6 +6,7 @@ import { getDiscordSnapshot } from "@/lib/discord";
 import ArticleCard from "@/components/ArticleCard";
 import FramedImage from "@/components/FramedImage";
 import MobileNav from "@/components/MobileNav";
+import { articleOfTheDay, didYouKnow } from "@/lib/analysis";
 
 export const metadata: Metadata = {
   title: "Accueil",
@@ -22,6 +23,12 @@ export default async function HomePage() {
   ]);
   const latest = articles.slice(0, 3);
   const count = articles.length;
+  const articleDuJour = articleOfTheDay(articles);
+  const accroches = didYouKnow(
+    articles,
+    3,
+    `${new Date().getUTCFullYear()}-${new Date().getUTCMonth() + 1}-${new Date().getUTCDate()}`,
+  );
 
   return (
     <div className="space-y-12">
@@ -80,6 +87,58 @@ export default async function HomePage() {
           Conseil Delphinal, Baillit).
         </p>
       </section>
+
+      {/* Sélection éditoriale du jour : un article complet, et trois accroches
+          tirées des infoboxes. Le choix est déterministe — même page pour tous
+          les visiteurs, renouvelée chaque jour. */}
+      {articleDuJour && (
+        <section className="grid gap-5 lg:grid-cols-[1.4fr_1fr]">
+          <article className="rounded-2xl border border-gold-500/30 bg-night-800/50 p-5">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-bronze-400">
+              Article du jour
+            </p>
+            <h2 className="mt-2 font-display text-2xl font-semibold text-gold-200">
+              <Link href={`/wiki/${articleDuJour.slug}`} className="hover:underline">
+                {articleDuJour.title}
+              </Link>
+            </h2>
+            <p className="mt-2 text-sm leading-relaxed text-slate-300">
+              {articleDuJour.summary}
+            </p>
+            <Link
+              href={`/wiki/${articleDuJour.slug}`}
+              className="mt-3 inline-block text-xs text-bronze-300 hover:text-gold-200"
+            >
+              Lire la page →
+            </Link>
+          </article>
+
+          <aside className="rounded-2xl border border-night-600 bg-night-800/30 p-5">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-bronze-400">
+              Le saviez-vous ?
+            </p>
+            {accroches.length === 0 ? (
+              <p className="mt-2 text-xs text-slate-500">
+                Les accroches se remplissent à mesure que les infoboxes se complètent.
+              </p>
+            ) : (
+              <ul className="mt-3 space-y-3 text-sm">
+                {accroches.map((accroche) => (
+                  <li key={accroche.article.slug}>
+                    <span className="text-slate-400">{accroche.label} : </span>
+                    <Link
+                      href={`/wiki/${accroche.article.slug}`}
+                      className="text-slate-200 hover:text-gold-200"
+                    >
+                      {accroche.value}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </aside>
+        </section>
+      )}
 
       {/* Hébergement temporaire — à retirer quand le site aura une adresse définitive.
 

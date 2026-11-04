@@ -290,12 +290,6 @@
       "namedRegex": "^/icon\\.png(?:/)?$"
     },
     {
-      "page": "/index",
-      "regex": "^/index(?:/)?$",
-      "routeKeys": {},
-      "namedRegex": "^/index(?:/)?$"
-    },
-    {
       "page": "/institutions",
       "regex": "^/institutions(?:/)?$",
       "routeKeys": {},
@@ -354,6 +348,12 @@
       "regex": "^/recherche(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/recherche(?:/)?$"
+    },
+    {
+      "page": "/repertoire",
+      "regex": "^/repertoire(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/repertoire(?:/)?$"
     },
     {
       "page": "/robots.txt",

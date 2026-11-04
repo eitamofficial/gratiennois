@@ -1,0 +1,5 @@
+#!/data/data/com.termux/files/usr/bin/bash
+# Service termux-services : maintient la sonde en vie.
+#   sv-enable sonde-wiki ; sv up sonde-wiki
+exec 2>&1
+exec "$HOME/wiki/deploy/termux/sonde-wiki"

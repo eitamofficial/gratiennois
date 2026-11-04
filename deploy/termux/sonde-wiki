@@ -1,0 +1,97 @@
+#!/data/data/com.termux/files/usr/bin/bash
+# Sonde de disponibilité du wiki.
+#
+# Le 4 novembre, le site est resté en 502 une dizaine de minutes sans que
+# personne ne l'apprenne. Un serveur unique sans supervision ne prévient jamais
+# de sa propre panne : c'est le seul rôle de ce script.
+#
+# Il interroge `/api/health` toutes les cinq minutes et n'alerte qu'après deux
+# échecs consécutifs — un redémarrage de quinze secondes ne doit pas réveiller
+# le Premier Ministre.
+set -u
+
+WIKI_DIR="${WIKI_DIR:-$HOME/wiki}"
+PORT="${WIKI_PORT:-3000}"
+URL_LOCAL="http://127.0.0.1:${PORT}/api/health"
+URL_PUBLIQUE="${WIKI_URL_PUBLIQUE:-https://wiki-gratiennois.duckdns.org/api/health}"
+ETAT="$HOME/.sonde-wiki.etat"
+JOURNAL="$HOME/sonde-wiki.log"
+INTERVALLE="${SONDE_INTERVALLE:-300}"
+SEUIL=2
+
+cd "$WIKI_DIR" || exit 1
+if [ -f .env.secrets ]; then
+  set -a
+  # shellcheck disable=SC1091
+  . ./.env.secrets
+  set +a
+fi
+
+journal() {
+  printf '%s %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$1" >> "$JOURNAL"
+  # Le journal ne doit pas grossir indéfiniment sur une tablette.
+  if [ "$(wc -l < "$JOURNAL" 2>/dev/null || echo 0)" -gt 2000 ]; then
+    tail -n 1000 "$JOURNAL" > "$JOURNAL.tmp" && mv "$JOURNAL.tmp" "$JOURNAL"
+  fi
+}
+
+# Message privé au responsable, via l'API Discord. Silencieux en cas d'échec :
+# une alerte qui plante ne doit pas tuer la sonde.
+alerter() {
+  local message="$1"
+  if [ -z "${DISCORD_BOT_TOKEN:-}" ] || [ -z "${ALERTE_DISCORD_ID:-}" ]; then
+    journal "alerte non envoyée : DISCORD_BOT_TOKEN ou ALERTE_DISCORD_ID absent"
+    return
+  fi
+  local salon
+  salon=$(curl -s -X POST "https://discord.com/api/v10/users/@me/channels" \
+    -H "Authorization: Bot ${DISCORD_BOT_TOKEN}" \
+    -H "Content-Type: application/json" \
+    -d "{\"recipient_id\":\"${ALERTE_DISCORD_ID}\"}" 2>/dev/null \
+    | sed -n 's/.*"id":"\([0-9]*\)".*/\1/p')
+  if [ -z "$salon" ]; then
+    journal "alerte non envoyée : ouverture du salon impossible"
+    return
+  fi
+  curl -s -o /dev/null -X POST "https://discord.com/api/v10/channels/${salon}/messages" \
+    -H "Authorization: Bot ${DISCORD_BOT_TOKEN}" \
+    -H "Content-Type: application/json" \
+    -d "$(printf '{"content":%s}' "$(printf '%s' "$message" | sed 's/\\/\\\\/g; s/"/\\"/g; s/$/\\n/' | tr -d '\n' | sed 's/\\n$//' | sed 's/^/"/; s/$/"/')")"
+  journal "alerte envoyée"
+}
+
+echecs=0
+etait_en_panne=0
+
+journal "sonde démarrée (intervalle ${INTERVALLE}s, seuil ${SEUIL})"
+
+while true; do
+  code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 8 "$URL_LOCAL" 2>/dev/null || echo "000")
+  # Le port local peut répondre alors que le portier est en panne : on vérifie
+  # aussi l'adresse publique, mais une seule fois sur trois pour ne pas dépendre
+  # du DNS à chaque tour.
+  public=""
+  if [ "$code" = "200" ]; then
+    public=$(curl -s -o /dev/null -w '%{http_code}' --max-time 12 "$URL_PUBLIQUE" 2>/dev/null || echo "000")
+    [ "$public" = "200" ] || code="$public"
+  fi
+
+  if [ "$code" = "200" ]; then
+    if [ "$etait_en_panne" = "1" ]; then
+      alerter "✅ Le wiki de Gratianopolis répond de nouveau (HTTP 200)."
+      journal "rétabli"
+      etait_en_panne=0
+    fi
+    echecs=0
+  else
+    echecs=$((echecs + 1))
+    journal "échec ${echecs}/${SEUIL} (HTTP ${code})"
+    if [ "$echecs" -ge "$SEUIL" ] && [ "$etait_en_panne" = "0" ]; then
+      alerter "⚠️ Le wiki de Gratianopolis ne répond plus (HTTP ${code}) depuis deux contrôles. Adresse : ${URL_PUBLIQUE}"
+      etait_en_panne=1
+    fi
+  fi
+
+  printf '%s %s %s\n' "$(date +%s)" "$code" "$echecs" > "$ETAT"
+  sleep "$INTERVALLE"
+done

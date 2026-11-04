@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { getPublishedArticleBySlug, getPublishedArticles, getRevisionsBySlug } from "@/lib/articles-store";
 import { getServerSession, canWrite } from "@/lib/auth";
@@ -19,6 +19,19 @@ import DiscordProfileCard from "@/components/DiscordProfileCard";
 import RevisionTimeline from "@/components/RevisionTimeline";
 import ReadingProgress from "@/components/ReadingProgress";
 import MobileNav from "@/components/MobileNav";
+import { isWatched, resolveRedirect } from "@/lib/features";
+import {
+  CategoryFooter,
+  MaintenanceBanners,
+  SourcesSection,
+  StatusBadges,
+} from "@/components/ArticleExtras";
+import {
+  AudioReader,
+  HighlightShare,
+  ReadingControls,
+  WatchButton,
+} from "@/components/ArticleTools";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -39,15 +52,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function ArticlePage({ params }: Props) {
   const { slug } = await params;
   const article = await getPublishedArticleBySlug(slug);
-  if (!article) notFound();
+  if (!article) {
+    // Un ancien titre ne doit pas produire une 404 : la redirection est
+    // l'équivalent encyclopédique d'un « voir » de renvoi.
+    const cible = await resolveRedirect(slug);
+    if (cible) redirect(`/wiki/${cible}`);
+    notFound();
+  }
 
   const headings = extractHeadings(article.content);
   const isPersonality = article.category === "personnalites";
-  const [all, revisions, discordSnapshot, session] = await Promise.all([
+  const session = await getServerSession();
+  const [all, revisions, discordSnapshot, suivi] = await Promise.all([
     getPublishedArticles(),
     getRevisionsBySlug(article.slug),
     isPersonality ? getDiscordSnapshot() : Promise.resolve(null),
-    getServerSession(),
+    // La liste de suivi n'a de sens que pour une session identifiée.
+    session ? isWatched(session.username, article.slug) : Promise.resolve(false),
   ]);
   const related = relatedArticles(all, article, 4);
   const backlinks = computeBacklinks(all, article.slug);
@@ -129,6 +150,23 @@ export default async function ArticlePage({ params }: Props) {
         ) : null}
       </header>
 
+      <StatusBadges article={article} />
+
+      {/* Outils de lecture et de contribution. Ils restent discrets : ce sont
+          des réglages, pas le contenu. */}
+      <div className="flex flex-wrap items-center gap-2">
+        <ReadingControls />
+        <AudioReader targetId="article" title={article.title} />
+        <HighlightShare />
+        {session && <WatchButton slug={article.slug} initial={suivi} />}
+        <Link
+          href={`/wiki/${article.slug}/imprimer`}
+          className="rounded-full border border-night-500 px-3 py-1 text-xs text-slate-300 hover:border-gold-500 hover:text-gold-200"
+        >
+          🖨 Version imprimable
+        </Link>
+      </div>
+
       <div className="grid gap-10 xl:grid-cols-[minmax(0,1fr)_290px]">
         {/* `min-w-0` : sans lui, l'article ne peut pas rétrécir sous la largeur
             de son contenu (un mot très long, un tableau) et la colonne déborde. */}
@@ -160,7 +198,12 @@ export default async function ArticlePage({ params }: Props) {
             />
           )}
 
+          <MaintenanceBanners article={article} />
+
           <MarkdownRenderer markdown={article.content} linkMap={linkMap} />
+
+          <SourcesSection article={article} />
+          <CategoryFooter article={article} />
 
           {article.slug === "la-constitution" && (
             <section className="mt-12" aria-labelledby="document-officiel">

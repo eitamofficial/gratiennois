@@ -12,6 +12,7 @@ import Oeuf from "@/components/Oeuf";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
 import FramedImage from "@/components/FramedImage";
+import { getSettings } from "@/lib/features";
 
 // Les trois polices sont chargées en **version variable** : un seul fichier
 // couvre toutes les graisses au lieu d'un fichier par graisse. Sur un article
@@ -99,6 +100,13 @@ export default async function RootLayout({
   const sante = await verifierStore();
   const storeIndisponible = !sante.ok;
 
+  // Bandeau global : une annonce de la rédaction, ou l'avertissement de lecture
+  // seule qui prime sur elle. Une lecture ratée ne doit pas casser la page.
+  const reglages = await getSettings().catch(() => null);
+  const annonce = reglages?.readOnly
+    ? `Wiki en lecture seule${reglages.readOnlyReason ? ` — ${reglages.readOnlyReason}` : ""}.`
+    : (reglages?.banner ?? "");
+
   // Nonce CSP posé par l'intergiciel. Le script de thème est en ligne : sans
   // cette valeur, il serait bloqué dès que la politique n'autorise plus
   // `'unsafe-inline'` — le thème clair cesserait de fonctionner, silencieusement.
@@ -125,6 +133,14 @@ export default async function RootLayout({
           Aller au contenu
         </a>
         <Header />
+        {annonce && (
+          <div
+            role="status"
+            className="border-b border-amber-500/40 bg-amber-500/10 px-4 py-2 text-center text-xs text-amber-200"
+          >
+            {annonce}
+          </div>
+        )}
         <div className="mx-auto flex w-full max-w-7xl flex-1 gap-8 px-4 py-8 sm:px-6">
           {storeIndisponible ? (
             <main id="contenu" className="min-w-0 flex-1">

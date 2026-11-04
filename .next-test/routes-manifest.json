@@ -78,6 +78,22 @@
       "namedRegex": "^/api/comments/(?<nxtPid>[^/]+?)(?:/)?$"
     },
     {
+      "page": "/api/export/[format]",
+      "regex": "^/api/export/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPformat": "nxtPformat"
+      },
+      "namedRegex": "^/api/export/(?<nxtPformat>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/api/features/[kind]",
+      "regex": "^/api/features/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPkind": "nxtPkind"
+      },
+      "namedRegex": "^/api/features/(?<nxtPkind>[^/]+?)(?:/)?$"
+    },
+    {
       "page": "/la-loba/[id]",
       "regex": "^/la\\-loba/([^/]+?)(?:/)?$",
       "routeKeys": {
@@ -118,6 +134,14 @@
       "namedRegex": "^/wiki/(?<nxtPslug>[^/]+?)(?:/)?$"
     },
     {
+      "page": "/wiki/[slug]/imprimer",
+      "regex": "^/wiki/([^/]+?)/imprimer(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/wiki/(?<nxtPslug>[^/]+?)/imprimer(?:/)?$"
+    },
+    {
       "page": "/wiki/[slug]/versions",
       "regex": "^/wiki/([^/]+?)/versions(?:/)?$",
       "routeKeys": {
@@ -146,6 +170,12 @@
       "namedRegex": "^/\\.well\\-known/security\\.txt(?:/)?$"
     },
     {
+      "page": "/a-propos",
+      "regex": "^/a\\-propos(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/a\\-propos(?:/)?$"
+    },
+    {
       "page": "/admin",
       "regex": "^/admin(?:/)?$",
       "routeKeys": {},
@@ -168,6 +198,18 @@
       "regex": "^/admin/nouveau(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/admin/nouveau(?:/)?$"
+    },
+    {
+      "page": "/admin/outils",
+      "regex": "^/admin/outils(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/outils(?:/)?$"
+    },
+    {
+      "page": "/atom.xml",
+      "regex": "^/atom\\.xml(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/atom\\.xml(?:/)?$"
     },
     {
       "page": "/bot",
@@ -194,10 +236,22 @@
       "namedRegex": "^/bot/liens(?:/)?$"
     },
     {
+      "page": "/calendrier",
+      "regex": "^/calendrier(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/calendrier(?:/)?$"
+    },
+    {
       "page": "/chronologie",
       "regex": "^/chronologie(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/chronologie(?:/)?$"
+    },
+    {
+      "page": "/comparer",
+      "regex": "^/comparer(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/comparer(?:/)?$"
     },
     {
       "page": "/connexion",
@@ -218,10 +272,28 @@
       "namedRegex": "^/credits(?:/)?$"
     },
     {
+      "page": "/galerie",
+      "regex": "^/galerie(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/galerie(?:/)?$"
+    },
+    {
+      "page": "/homonymie",
+      "regex": "^/homonymie(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/homonymie(?:/)?$"
+    },
+    {
       "page": "/icon.png",
       "regex": "^/icon\\.png(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/icon\\.png(?:/)?$"
+    },
+    {
+      "page": "/index",
+      "regex": "^/index(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/index(?:/)?$"
     },
     {
       "page": "/institutions",
@@ -260,6 +332,12 @@
       "namedRegex": "^/plan(?:/)?$"
     },
     {
+      "page": "/portails",
+      "regex": "^/portails(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/portails(?:/)?$"
+    },
+    {
       "page": "/programme",
       "regex": "^/programme(?:/)?$",
       "routeKeys": {},
@@ -290,10 +368,28 @@
       "namedRegex": "^/sitemap\\.xml(?:/)?$"
     },
     {
+      "page": "/sondages",
+      "regex": "^/sondages(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/sondages(?:/)?$"
+    },
+    {
       "page": "/statistiques",
       "regex": "^/statistiques(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/statistiques(?:/)?$"
+    },
+    {
+      "page": "/statut",
+      "regex": "^/statut(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/statut(?:/)?$"
+    },
+    {
+      "page": "/suivi",
+      "regex": "^/suivi(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/suivi(?:/)?$"
     },
     {
       "page": "/tags",

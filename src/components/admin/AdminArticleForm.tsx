@@ -5,7 +5,15 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { CATEGORY_LIST } from "@/lib/constants";
 import { slugify } from "@/lib/slug";
 import { renderMarkdown } from "@/components/MarkdownRenderer";
-import type { Article, ArticleInfobox, Category } from "@/lib/types";
+import type {
+  Article,
+  ArticleInfobox,
+  ArticleSource,
+  Category,
+  MaintenanceCode,
+  SourceKind,
+} from "@/lib/types";
+import { MAINTENANCE_CODES, SOURCE_KINDS } from "@/lib/types";
 import type { PageTemplate } from "@/content/templates";
 import AnalysisPanel from "./AnalysisPanel";
 import InfoboxEditor from "./InfoboxEditor";
@@ -100,6 +108,18 @@ export default function AdminArticleForm({ article, template }: Props) {
   const [showPreview, setShowPreview] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
   const [brouillonRestaure, setBrouillonRestaure] = useState(false);
+
+  // Métadonnées de fiabilité. Elles ne sont pas décoratives : la protection
+  // restreint l'écriture, les sources alimentent la bibliographie, les bandeaux
+  // préviennent le lecteur qu'une page n'est pas encore vérifiée.
+  const [protection, setProtection] = useState<"" | "semi" | "full">(
+    article?.protection ?? "",
+  );
+  const [lang, setLang] = useState(article?.lang ?? "");
+  const [sources, setSources] = useState<ArticleSource[]>(article?.sources ?? []);
+  const [maintenance, setMaintenance] = useState<MaintenanceCode[]>(
+    article?.maintenance ?? [],
+  );
 
   const zoneTexte = useRef<HTMLTextAreaElement>(null);
   const formulaire = useRef<HTMLFormElement>(null);
@@ -277,6 +297,10 @@ export default function AdminArticleForm({ article, template }: Props) {
             discordUserId,
             tags: tagList,
             infobox,
+            protection: protection || undefined,
+            lang: lang.trim() || undefined,
+            sources: sources.length > 0 ? sources : undefined,
+            maintenance: maintenance.length > 0 ? maintenance : undefined,
             comment: comment.trim() || undefined,
             minor: minor || undefined,
           }),
@@ -296,6 +320,18 @@ export default function AdminArticleForm({ article, template }: Props) {
     } finally {
       setPending(false);
     }
+  }
+
+  /** Ajoute une source vide ; l'identifiant sert d'ancre pour l'édition. */
+  function ajouterSource() {
+    setSources((liste) => [
+      ...liste,
+      { id: Math.random().toString(36).slice(2, 10), kind: "page", title: "", url: "" },
+    ]);
+  }
+
+  function majSource(id: string, patch: Partial<ArticleSource>) {
+    setSources((liste) => liste.map((source) => (source.id === id ? { ...source, ...patch } : source)));
   }
 
   const champ =
@@ -506,6 +542,141 @@ export default function AdminArticleForm({ article, template }: Props) {
           </>
         )}
       </div>
+
+      {/* --- Fiabilité : protection, sources, bandeaux --------------------- */}
+      <details className="rounded-lg border border-night-600 bg-night-900/50 px-4 py-3">
+        <summary className="cursor-pointer text-sm font-medium text-slate-300">
+          Fiabilité et protection
+          <span className="ml-2 text-xs font-normal text-slate-500">
+            {sources.length} source{sources.length > 1 ? "s" : ""}
+            {protection === "semi" && " · semi-protégée"}
+            {protection === "full" && " · protégée"}
+          </span>
+        </summary>
+
+        <div className="mt-3 grid gap-3 sm:grid-cols-2">
+          <label className="text-xs text-slate-400">
+            Protection
+            <select
+              value={protection}
+              onChange={(event) => setProtection(event.target.value as "" | "semi" | "full")}
+              className="mt-1 w-full rounded-md border border-night-500 bg-night-800 px-2 py-1.5 text-sm text-slate-100"
+            >
+              <option value="">Aucune</option>
+              <option value="semi">Semi-protégée — charges seulement</option>
+              <option value="full">Protégée — accès complet seulement</option>
+            </select>
+          </label>
+          <label className="text-xs text-slate-400">
+            Langue (code ISO)
+            <input
+              value={lang}
+              onChange={(event) => setLang(event.target.value)}
+              placeholder="fr"
+              maxLength={5}
+              className="mt-1 w-full rounded-md border border-night-500 bg-night-800 px-2 py-1.5 text-sm text-slate-100"
+            />
+          </label>
+        </div>
+
+        <fieldset className="mt-3">
+          <legend className="text-xs text-slate-400">Bandeaux d&apos;entretien</legend>
+          <div className="mt-1 flex flex-wrap gap-2">
+            {MAINTENANCE_CODES.map((code) => (
+              <label
+                key={code}
+                className="flex items-center gap-1.5 rounded-full border border-night-500 px-2 py-0.5 text-[11px] text-slate-300"
+              >
+                <input
+                  type="checkbox"
+                  checked={maintenance.includes(code)}
+                  onChange={(event) =>
+                    setMaintenance((liste) =>
+                      event.target.checked ? [...liste, code] : liste.filter((item) => item !== code),
+                    )
+                  }
+                  className="h-3 w-3 accent-amber-500"
+                />
+                {code}
+              </label>
+            ))}
+          </div>
+        </fieldset>
+
+        <div className="mt-4">
+          <div className="flex items-center justify-between">
+            <p className="text-xs text-slate-400">Sources</p>
+            <button
+              type="button"
+              onClick={ajouterSource}
+              className="rounded-md border border-night-500 px-2 py-0.5 text-[11px] text-slate-300 hover:border-gold-500"
+            >
+              + Ajouter
+            </button>
+          </div>
+          {sources.length === 0 && (
+            <p className="mt-1 text-[11px] text-slate-500">
+              Aucune source. Un bandeau « sources insuffisantes » sera affiché
+              automatiquement.
+            </p>
+          )}
+          <ul className="mt-2 space-y-2">
+            {sources.map((source) => (
+              <li key={source.id} className="space-y-2 rounded-md border border-night-500 p-2">
+                <div className="grid gap-2 sm:grid-cols-[130px_1fr]">
+                  <select
+                    value={source.kind}
+                    onChange={(event) =>
+                      majSource(source.id, { kind: event.target.value as SourceKind })
+                    }
+                    className="rounded-md border border-night-500 bg-night-800 px-2 py-1 text-xs text-slate-100"
+                  >
+                    {SOURCE_KINDS.map((kind) => (
+                      <option key={kind} value={kind}>
+                        {kind}
+                      </option>
+                    ))}
+                  </select>
+                  <input
+                    value={source.title}
+                    onChange={(event) => majSource(source.id, { title: event.target.value })}
+                    placeholder="Titre de la source"
+                    className="rounded-md border border-night-500 bg-night-800 px-2 py-1 text-xs text-slate-100"
+                  />
+                </div>
+                <div className="grid gap-2 sm:grid-cols-[1fr_120px]">
+                  <input
+                    value={source.url ?? ""}
+                    onChange={(event) => majSource(source.id, { url: event.target.value })}
+                    placeholder="https://… (facultatif)"
+                    className="rounded-md border border-night-500 bg-night-800 px-2 py-1 text-xs text-slate-100"
+                  />
+                  <input
+                    value={source.author ?? ""}
+                    onChange={(event) => majSource(source.id, { author: event.target.value })}
+                    placeholder="Auteur"
+                    className="rounded-md border border-night-500 bg-night-800 px-2 py-1 text-xs text-slate-100"
+                  />
+                </div>
+                <textarea
+                  value={source.quote ?? ""}
+                  onChange={(event) => majSource(source.id, { quote: event.target.value })}
+                  placeholder="Citation archivée — le texte qui reste lisible même si le lien meurt"
+                  rows={2}
+                  className="w-full rounded-md border border-night-500 bg-night-800 px-2 py-1 text-xs text-slate-100"
+                />
+                <button
+                  type="button"
+                  onClick={() => setSources((liste) => liste.filter((item) => item.id !== source.id))}
+                  className="text-[11px] text-rose-300 hover:underline"
+                >
+                  Retirer cette source
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </details>
 
       {/* --- Résumé de modification ---------------------------------------- */}
       {article && (

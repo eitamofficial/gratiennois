@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { canWrite, getServerSession, isDauphin } from "@/lib/auth";
+import { canWrite, getServerSession, hasFullAccess, isDauphin } from "@/lib/auth";
+import { isReadOnly } from "@/lib/features";
 import {
   deleteArticle,
   getArticleBySlug,
@@ -41,6 +42,15 @@ export async function PUT(request: Request, { params }: Params) {
     );
   }
 
+  // Interrupteur d'urgence : il prime sur le rôle. Couper l'écriture sans
+  // redéployer est ce qui distingue une réponse à incident d'une maintenance.
+  if (await isReadOnly()) {
+    return NextResponse.json(
+      { error: "Le wiki est en lecture seule." },
+      { status: 503 },
+    );
+  }
+
   const formatError = checkWriteRequest(request);
   if (formatError) {
     return NextResponse.json({ error: formatError }, { status: 415 });
@@ -56,6 +66,17 @@ export async function PUT(request: Request, { params }: Params) {
   }
 
   const { slug } = await params;
+
+  // Protection de page : elle est lue sur l'article **enregistré**, jamais sur
+  // la requête — sinon il suffirait d'envoyer `protection: null` pour lever sa
+  // propre protection dans le même appel.
+  const existant = await getArticleBySlug(slug);
+  if (existant?.protection === "full" && !hasFullAccess(session)) {
+    return NextResponse.json(
+      { error: "Cette page est protégée : seul l'accès complet peut la modifier." },
+      { status: 403 },
+    );
+  }
 
   let body: unknown;
   try {
@@ -89,6 +110,10 @@ export async function DELETE(_request: Request, { params }: Params) {
       { error: "Suppression réservée au Dauphin (article P-1 : pouvoir de véto)." },
       { status: 403 },
     );
+  }
+
+  if (await isReadOnly()) {
+    return NextResponse.json({ error: "Le wiki est en lecture seule." }, { status: 503 });
   }
 
   const { slug } = await params;

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { canWrite, getServerSession } from "@/lib/auth";
+import { isReadOnly } from "@/lib/features";
 import {
   createArticle,
   getAllArticles,
@@ -32,6 +33,15 @@ export async function POST(request: Request) {
     return NextResponse.json(
       { error: "Votre charge ne permet pas l'édition du wiki." },
       { status: 403 },
+    );
+  }
+
+  // Interrupteur d'urgence : il prime sur le rôle. Couper l'écriture sans
+  // redéployer est ce qui distingue une réponse à incident d'une maintenance.
+  if (await isReadOnly()) {
+    return NextResponse.json(
+      { error: "Le wiki est en lecture seule." },
+      { status: 503 },
     );
   }
 

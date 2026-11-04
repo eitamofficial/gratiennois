@@ -39,7 +39,8 @@
     "check:2fa": "node scripts/check-2fa.mjs",
     "assets:manifeste": "node scripts/generate_manifeste_pdf.mjs",
     "check:oeuf": "node scripts/check-oeuf.mjs",
-    "check:oeuf:navigateur": "node scripts/check-oeuf-navigateur.mjs"
+    "check:oeuf:navigateur": "node scripts/check-oeuf-navigateur.mjs",
+    "check:liens": "node scripts/check-liens.mjs"
   },
   "dependencies": {
     "next": "^15.5.29",
